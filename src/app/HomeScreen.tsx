@@ -55,6 +55,7 @@ export const HomeScreen: React.FC = () => {
       label: t("home.totalShirts"),
       icon: "file-tray-full-outline" as const,
       highlight: false,
+      onPress: () => navigation.navigate("MainTabs", { screen: "Collection" }),
     },
     ...favoriteTeamIds.map((teamId, index) => ({
       key: teamId,
@@ -62,6 +63,7 @@ export const HomeScreen: React.FC = () => {
       label: progressByTeam[teamId]?.teamName ?? "…",
       icon: "star" as const,
       highlight: index === 0,
+      onPress: () => navigation.navigate("TeamDetail", { teamId }),
     })),
     {
       key: "wishlist",
@@ -69,6 +71,7 @@ export const HomeScreen: React.FC = () => {
       label: t("home.wishlist"),
       icon: "heart-outline" as const,
       highlight: false,
+      onPress: () => navigation.navigate("MainTabs", { screen: "Wishlist" }),
     },
   ];
   const tileRows: (typeof tiles)[] = [];
@@ -117,6 +120,7 @@ export const HomeScreen: React.FC = () => {
                   label={tile.label}
                   icon={tile.icon}
                   highlight={tile.highlight}
+                  onPress={tile.onPress}
                 />
               ))}
               {row.length === 1 ? <View style={styles.tileSpacer} /> : null}
