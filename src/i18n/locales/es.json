@@ -91,7 +91,12 @@
     "soldTitle": "Marcar como vendida",
     "soldMessage": "La camiseta queda como registro histórico, oculta de tu colección.",
     "markSold": "Marcar como vendida",
-    "markOwned": "Devolver a la colección"
+    "markOwned": "Devolver a la colección",
+    "addPhotos": "Agregar fotos",
+    "photoFromWeb": "Buscar en Google",
+    "photoOptions": "Opciones de foto",
+    "setDefaultPhoto": "Usar como principal",
+    "defaultPhoto": "Principal"
   },
   "addShirt": {
     "title": "Agregar camiseta",

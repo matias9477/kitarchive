@@ -27,8 +27,11 @@ export type RootStackParamList = {
   CreateKit: { teamId?: string } | undefined;
   /** Optional desired configuration for a wishlist entry. */
   WishlistConfig: { kitId: string };
-  /** Pick a kit reference image from Google Images (modal WebView). */
-  WebImagePicker: { kitId: string; query: string };
+  /** Pick an image from Google Images (modal WebView): kit reference image
+   * (kitId) or collection-item photo (itemId). */
+  WebImagePicker:
+    | { kitId: string; itemId?: undefined; query: string }
+    | { itemId: string; kitId?: undefined; query: string };
   Search: undefined;
   Settings: undefined;
 };

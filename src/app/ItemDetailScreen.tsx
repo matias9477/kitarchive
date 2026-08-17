@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -21,6 +22,7 @@ import { Chip } from "@/components/shared/Chip";
 import { Section } from "@/components/shared/Section";
 import { KitPlaceholder } from "@/components/kits/KitPlaceholder";
 import { useCollectionStore } from "@/features/collection/collectionStore";
+import type { ItemPhoto } from "@/features/collection/types";
 import type { RootStackParamList } from "@/navigation/types";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ItemDetail">;
@@ -35,6 +37,11 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
   const loadItemDetail = useCollectionStore((s) => s.loadItemDetail);
   const addPhoto = useCollectionStore((s) => s.addPhoto);
   const removePhoto = useCollectionStore((s) => s.removePhoto);
+  const setDefaultPhoto = useCollectionStore((s) => s.setDefaultPhoto);
+  const { width: windowWidth } = useWindowDimensions();
+  const heroWidth = windowWidth - spacing.screen * 2;
+  const heroScrollRef = React.useRef<ScrollView>(null);
+  const [heroPage, setHeroPage] = React.useState(0);
   const markSold = useCollectionStore((s) => s.markSold);
   const markOwned = useCollectionStore((s) => s.markOwned);
   const remove = useCollectionStore((s) => s.remove);
@@ -68,6 +75,52 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
       await addPhoto({ itemId, uri });
     }
   };
+
+  const choosePhotoSource = () =>
+    Alert.alert(t("itemDetail.addPhotos"), undefined, [
+      {
+        text: t("itemDetail.takePhoto"),
+        onPress: () => void pickPhoto(true),
+      },
+      {
+        text: t("itemDetail.choosePhotos"),
+        onPress: () => void pickPhoto(false),
+      },
+      {
+        text: t("itemDetail.photoFromWeb"),
+        onPress: () =>
+          navigation.navigate("WebImagePicker", {
+            itemId,
+            query: `${detail.teamName} ${detail.eraLabel} ${t(
+              `enums.kitType.${detail.kitType}`,
+            )} ${t("kitDetail.imageSearchSuffix")}`,
+          }),
+      },
+      { text: t("common.cancel"), style: "cancel" },
+    ]);
+
+  const photoOptions = (photo: ItemPhoto, index: number) =>
+    Alert.alert(t("itemDetail.photoOptions"), undefined, [
+      ...(index > 0
+        ? [
+            {
+              text: t("itemDetail.setDefaultPhoto"),
+              onPress: () => {
+                void setDefaultPhoto(photo.id, itemId).then(() => {
+                  heroScrollRef.current?.scrollTo({ x: 0, animated: false });
+                  setHeroPage(0);
+                });
+              },
+            },
+          ]
+        : []),
+      {
+        text: t("common.remove"),
+        style: "destructive" as const,
+        onPress: () => void removePhoto(photo.id, itemId),
+      },
+      { text: t("common.cancel"), style: "cancel" as const },
+    ]);
 
   const confirmDelete = () =>
     Alert.alert(t("itemDetail.deleteTitle"), t("itemDetail.deleteMessage"), [
@@ -139,43 +192,54 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
         gap: spacing.lg,
       }}
     >
-      {/* Photos */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={{ marginHorizontal: -spacing.screen }}
-        contentContainerStyle={{
-          paddingHorizontal: spacing.screen,
-          gap: spacing.sm,
-        }}
-      >
+      {/* Photos: full-width paged carousel (tap a photo for options) */}
+      <View style={{ gap: spacing.sm }}>
         {detail.photos.length > 0 ? (
-          detail.photos.map((photo) => (
-            <Pressable
-              key={photo.id}
-              onLongPress={() =>
-                Alert.alert(t("itemDetail.removePhoto"), undefined, [
-                  { text: t("common.cancel"), style: "cancel" },
-                  {
-                    text: t("common.remove"),
-                    style: "destructive",
-                    onPress: () => void removePhoto(photo.id, itemId),
-                  },
-                ])
-              }
-            >
-              <Image
-                source={{ uri: photo.uri }}
-                style={[styles.photo, { borderRadius: radius.xl }]}
-                resizeMode="cover"
-              />
-            </Pressable>
-          ))
+          <ScrollView
+            ref={heroScrollRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onMomentumScrollEnd={(event) =>
+              setHeroPage(
+                Math.round(event.nativeEvent.contentOffset.x / heroWidth),
+              )
+            }
+          >
+            {detail.photos.map((photo, index) => (
+              <Pressable
+                key={photo.id}
+                onPress={() => photoOptions(photo, index)}
+              >
+                <Image
+                  source={{ uri: photo.uri }}
+                  style={[
+                    styles.photo,
+                    { width: heroWidth, borderRadius: radius.xl },
+                  ]}
+                  resizeMode="cover"
+                />
+                {index === 0 && detail.photos.length > 1 ? (
+                  <View style={styles.defaultBadge}>
+                    <Chip
+                      label={t("itemDetail.defaultPhoto")}
+                      icon="image"
+                      tone="goldSoft"
+                    />
+                  </View>
+                ) : null}
+              </Pressable>
+            ))}
+          </ScrollView>
         ) : (
           <View
             style={[
               styles.photo,
-              { borderRadius: radius.xl, overflow: "hidden" },
+              {
+                width: heroWidth,
+                borderRadius: radius.xl,
+                overflow: "hidden",
+              },
             ]}
           >
             <KitPlaceholder
@@ -184,41 +248,31 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
             />
           </View>
         )}
-        <View style={{ gap: spacing.sm }}>
-          <Pressable
-            onPress={() => void pickPhoto(true)}
-            style={[
-              styles.addPhoto,
-              { borderColor: colors.outlineVariant, borderRadius: radius.lg },
-            ]}
-          >
-            <Ionicons
-              name="camera-outline"
-              size={20}
-              color={colors.onSurfaceVariant}
-            />
-            <AppText variant="labelSm" color={colors.onSurfaceVariant}>
-              {t("itemDetail.takePhoto")}
-            </AppText>
-          </Pressable>
-          <Pressable
-            onPress={() => void pickPhoto(false)}
-            style={[
-              styles.addPhoto,
-              { borderColor: colors.outlineVariant, borderRadius: radius.lg },
-            ]}
-          >
-            <Ionicons
-              name="images-outline"
-              size={20}
-              color={colors.onSurfaceVariant}
-            />
-            <AppText variant="labelSm" color={colors.onSurfaceVariant}>
-              {t("itemDetail.choosePhotos")}
-            </AppText>
-          </Pressable>
-        </View>
-      </ScrollView>
+        {detail.photos.length > 1 ? (
+          <View style={styles.dots}>
+            {detail.photos.map((photo, index) => (
+              <View
+                key={photo.id}
+                style={[
+                  styles.dot,
+                  {
+                    backgroundColor:
+                      index === Math.min(heroPage, detail.photos.length - 1)
+                        ? colors.onSurface
+                        : colors.outlineVariant,
+                  },
+                ]}
+              />
+            ))}
+          </View>
+        ) : null}
+        <Button
+          label={t("itemDetail.addPhotos")}
+          icon="camera-outline"
+          variant="ghost"
+          onPress={choosePhotoSource}
+        />
+      </View>
 
       {/* Kit reference */}
       <Pressable
@@ -325,17 +379,10 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  photo: { width: 260, aspectRatio: 3 / 4 },
-  addPhoto: {
-    flex: 1,
-    width: 130,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-    padding: 8,
-  },
+  photo: { aspectRatio: 3 / 4 },
+  defaultBadge: { position: "absolute", top: 10, left: 10 },
+  dots: { flexDirection: "row", justifyContent: "center", gap: 6 },
+  dot: { width: 6, height: 6, borderRadius: 3 },
   kitRef: {
     flexDirection: "row",
     alignItems: "center",

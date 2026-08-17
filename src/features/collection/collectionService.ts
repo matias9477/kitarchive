@@ -268,6 +268,25 @@ export const addPhoto = async (input: AddPhotoInput): Promise<ItemPhoto> => {
   return row;
 };
 
+/** Make a photo the item's default (first by sortOrder everywhere). */
+export const setDefaultPhoto = async (
+  photoId: string,
+  itemId: string,
+): Promise<void> => {
+  const db = getDb();
+  const first = await db
+    .select({ sortOrder: itemPhotos.sortOrder })
+    .from(itemPhotos)
+    .where(eq(itemPhotos.itemId, itemId))
+    .orderBy(asc(itemPhotos.sortOrder))
+    .limit(1);
+  const minSort = first[0]?.sortOrder ?? 0;
+  await db
+    .update(itemPhotos)
+    .set({ sortOrder: minSort - 1 })
+    .where(eq(itemPhotos.id, photoId));
+};
+
 export const removePhoto = async (photoId: string): Promise<void> => {
   const db = getDb();
   const rows = await db

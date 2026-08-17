@@ -15,6 +15,7 @@ import {
 import { AppText } from "@/components/shared/AppText";
 import { Button } from "@/components/shared/Button";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
+import { useCollectionStore } from "@/features/collection/collectionStore";
 import type { RootStackParamList } from "@/navigation/types";
 
 type Props = NativeStackScreenProps<RootStackParamList, "WebImagePicker">;
@@ -22,14 +23,15 @@ type Props = NativeStackScreenProps<RootStackParamList, "WebImagePicker">;
 /**
  * Google Images inside a WebView: tapping any image selects it (the injected
  * script reports it here), and "Use this image" downloads it into app storage
- * and attaches it to the kit as a reference image.
+ * and attaches it as a kit reference image (kitId) or item photo (itemId).
  */
 export const WebImagePickerScreen: React.FC<Props> = ({ route }) => {
-  const { kitId, query } = route.params;
+  const { query } = route.params;
   const { colors, spacing, radius } = useTheme();
   const { t } = useTranslation();
   const navigation = useNavigation();
   const addKitImage = useCatalogueStore((s) => s.addKitImage);
+  const addItemPhoto = useCollectionStore((s) => s.addPhoto);
   const [selection, setSelection] = useState<WebImageSelection | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -38,7 +40,9 @@ export const WebImagePickerScreen: React.FC<Props> = ({ route }) => {
     setSaving(true);
     try {
       const uri = await persistRemoteImage(selection.src);
-      await addKitImage(kitId, uri);
+      if (route.params.itemId != null)
+        await addItemPhoto({ itemId: route.params.itemId, uri });
+      else await addKitImage(route.params.kitId, uri);
       navigation.goBack();
     } catch {
       setSaving(false);

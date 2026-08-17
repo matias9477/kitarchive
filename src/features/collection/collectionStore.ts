@@ -31,6 +31,7 @@ interface State {
   remove: (itemId: string) => Promise<void>;
   addPhoto: (input: AddPhotoInput) => Promise<void>;
   removePhoto: (photoId: string, itemId: string) => Promise<void>;
+  setDefaultPhoto: (photoId: string, itemId: string) => Promise<void>;
 }
 
 const message = (error: unknown) =>
@@ -114,6 +115,11 @@ export const useCollectionStore = create<State>((set, get) => ({
 
   removePhoto: async (photoId, itemId) => {
     await service.removePhoto(photoId);
+    await get().loadItemDetail(itemId);
+  },
+
+  setDefaultPhoto: async (photoId, itemId) => {
+    await service.setDefaultPhoto(photoId, itemId);
     await get().loadItemDetail(itemId);
   },
 }));

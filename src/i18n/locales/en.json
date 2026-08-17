@@ -91,7 +91,12 @@
     "soldTitle": "Mark as sold",
     "soldMessage": "The shirt is kept as a historical record, hidden from your collection.",
     "markSold": "Mark as sold",
-    "markOwned": "Return to collection"
+    "markOwned": "Return to collection",
+    "addPhotos": "Add photos",
+    "photoFromWeb": "Search on Google",
+    "photoOptions": "Photo options",
+    "setDefaultPhoto": "Set as default",
+    "defaultPhoto": "Default"
   },
   "addShirt": {
     "title": "Add shirt",
