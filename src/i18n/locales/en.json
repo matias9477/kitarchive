@@ -32,7 +32,11 @@
     "archive": "{{team}} Archive",
     "trackingAll": "Tracking every catalogued kit",
     "kitsCollected": "{{owned}} / {{total}} kits collected",
-    "noFavorites": "Star a team in Explore to feature it here"
+    "noFavorites": "Star a team in Explore to feature it here",
+    "stats": "Breakdown",
+    "byType": "By kit type",
+    "byDecade": "By decade",
+    "byCondition": "By condition"
   },
   "collection": {
     "title": "Collection",
@@ -41,7 +45,12 @@
     "emptyMessage": "Everything you add appears here as a visual archive.",
     "emptySold": "No sold items",
     "allTeams": "All teams",
-    "groupByTeam": "Group by team"
+    "groupByTeam": "Group by team",
+    "allConditions": "Any condition",
+    "sortTitle": "Sort by",
+    "sortNewest": "Newest first",
+    "sortOldest": "Oldest first",
+    "sortAlpha": "Team A–Z"
   },
   "explore": {
     "title": "Explore",

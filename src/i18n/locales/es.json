@@ -32,7 +32,11 @@
     "archive": "Archivo {{team}}",
     "trackingAll": "Siguiendo todos los modelos catalogados",
     "kitsCollected": "{{owned}} / {{total}} modelos coleccionados",
-    "noFavorites": "Marcá un equipo con la estrella en Explorar para destacarlo acá"
+    "noFavorites": "Marcá un equipo con la estrella en Explorar para destacarlo acá",
+    "stats": "Desglose",
+    "byType": "Por tipo",
+    "byDecade": "Por década",
+    "byCondition": "Por condición"
   },
   "collection": {
     "title": "Colección",
@@ -41,7 +45,12 @@
     "emptyMessage": "Todo lo que agregues aparece acá como un archivo visual.",
     "emptySold": "No hay camisetas vendidas",
     "allTeams": "Todos los equipos",
-    "groupByTeam": "Agrupar por equipo"
+    "groupByTeam": "Agrupar por equipo",
+    "allConditions": "Cualquier condición",
+    "sortTitle": "Ordenar por",
+    "sortNewest": "Más recientes primero",
+    "sortOldest": "Más antiguos primero",
+    "sortAlpha": "Equipo A–Z"
   },
   "explore": {
     "title": "Explorar",

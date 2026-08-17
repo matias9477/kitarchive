@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { usePreferencesStore } from "@/store/preferencesStore";
 import { AppText } from "@/components/shared/AppText";
+import { Chip } from "@/components/shared/Chip";
 import { StatTile } from "@/components/shared/StatTile";
 import { Section } from "@/components/shared/Section";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -231,6 +232,46 @@ export const HomeScreen: React.FC = () => {
           </Section>
         ) : null}
 
+        {/* Collection breakdowns (spec §29) */}
+        {dashboard && dashboard.totalOwned > 0 ? (
+          <Section title={t("home.stats")} icon="stats-chart-outline">
+            <View style={{ gap: spacing.sm }}>
+              {[
+                {
+                  label: t("home.byType"),
+                  buckets: dashboard.byType.map((b) => ({
+                    ...b,
+                    label: t(`enums.kitType.${b.key}`),
+                  })),
+                },
+                { label: t("home.byDecade"), buckets: dashboard.byDecade },
+                {
+                  label: t("home.byCondition"),
+                  buckets: dashboard.byCondition.map((b) => ({
+                    ...b,
+                    label: t(`enums.condition.${b.key}`),
+                  })),
+                },
+              ].map((group) => (
+                <View key={group.label} style={{ gap: 6 }}>
+                  <AppText variant="labelSm" color={colors.onSurfaceVariant}>
+                    {group.label}
+                  </AppText>
+                  <View style={styles.chipsWrap}>
+                    {group.buckets.map((bucket) => (
+                      <Chip
+                        key={bucket.key}
+                        label={`${bucket.label} · ${bucket.count}`}
+                        tone="neutral"
+                      />
+                    ))}
+                  </View>
+                </View>
+              ))}
+            </View>
+          </Section>
+        ) : null}
+
         {dashboard && dashboard.duplicates.length > 0 ? (
           <Section title={t("home.duplicates")} icon="copy-outline">
             <View style={{ gap: spacing.xs }}>
@@ -302,4 +343,5 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   rowLabel: { flex: 1 },
+  chipsWrap: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
 });

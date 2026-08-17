@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import {
+  Alert,
   FlatList,
   Pressable,
   ScrollView,
@@ -12,7 +13,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
-import { KIT_TYPES } from "@/config/constants";
+import { CONDITIONS, KIT_TYPES } from "@/config/constants";
 import { AppText } from "@/components/shared/AppText";
 import { Chip } from "@/components/shared/Chip";
 import { SegmentedControl } from "@/components/shared/SegmentedControl";
@@ -44,6 +45,8 @@ export const CollectionScreen: React.FC = () => {
   const setViewMode = usePreferencesStore((s) => s.setViewMode);
   const groupByTeam = usePreferencesStore((s) => s.groupByTeam);
   const toggleGroupByTeam = usePreferencesStore((s) => s.toggleGroupByTeam);
+  const sortOption = usePreferencesStore((s) => s.sortOption);
+  const setSortOption = usePreferencesStore((s) => s.setSortOption);
   const isGrid = viewMode === "grid";
 
   useFocusEffect(
@@ -63,10 +66,49 @@ export const CollectionScreen: React.FC = () => {
 
   const showingSold = filters.status === "sold";
 
+  const sortedItems = useMemo(() => {
+    if (sortOption === "dateDescending") return items; // service default order
+    const copy = [...items];
+    if (sortOption === "dateAscending")
+      copy.sort(
+        (a, b) => a.item.createdAt.getTime() - b.item.createdAt.getTime(),
+      );
+    else
+      copy.sort(
+        (a, b) =>
+          a.teamName.localeCompare(b.teamName) ||
+          a.eraLabel.localeCompare(b.eraLabel),
+      );
+    return copy;
+  }, [items, sortOption]);
+
+  const chooseSort = () => {
+    const mark = (option: typeof sortOption, label: string) =>
+      sortOption === option ? `✓ ${label}` : label;
+    Alert.alert(t("collection.sortTitle"), undefined, [
+      {
+        text: mark("dateDescending", t("collection.sortNewest")),
+        onPress: () => setSortOption("dateDescending"),
+      },
+      {
+        text: mark("dateAscending", t("collection.sortOldest")),
+        onPress: () => setSortOption("dateAscending"),
+      },
+      {
+        text: mark("alphabetical", t("collection.sortAlpha")),
+        onPress: () => setSortOption("alphabetical"),
+      },
+      { text: t("common.cancel"), style: "cancel" },
+    ]);
+  };
+
   // Pad odd counts with a spacer cell so the last card keeps half-row width.
   const listData = useMemo(
-    () => (isGrid && items.length % 2 === 1 ? [...items, null] : items),
-    [items, isGrid],
+    () =>
+      isGrid && sortedItems.length % 2 === 1
+        ? [...sortedItems, null]
+        : sortedItems,
+    [sortedItems, isGrid],
   );
 
   const sections = useMemo<TeamSection[] | null>(() => {
@@ -75,7 +117,7 @@ export const CollectionScreen: React.FC = () => {
       string,
       { title: string; items: CollectionItemSummary[] }
     >();
-    for (const summary of items) {
+    for (const summary of sortedItems) {
       const group = groups.get(summary.teamId);
       if (group) group.items.push(summary);
       else
@@ -93,7 +135,7 @@ export const CollectionScreen: React.FC = () => {
           rows.push(teamItems.slice(i, i + rowSize));
         return { title, count: teamItems.length, data: rows };
       });
-  }, [items, groupByTeam, isGrid]);
+  }, [sortedItems, groupByTeam, isGrid]);
 
   const renderSummary = (summary: CollectionItemSummary) => {
     const onPress = () =>
@@ -122,6 +164,22 @@ export const CollectionScreen: React.FC = () => {
       <View style={[styles.header, { paddingHorizontal: spacing.screen }]}>
         <AppText variant="headline">{t("collection.title")}</AppText>
         <View style={styles.headerActions}>
+          <Pressable
+            onPress={chooseSort}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={t("collection.sortTitle")}
+          >
+            <Ionicons
+              name="swap-vertical-outline"
+              size={22}
+              color={
+                sortOption === "dateDescending"
+                  ? colors.onSurface
+                  : colors.tertiary
+              }
+            />
+          </Pressable>
           <Pressable
             onPress={toggleGroupByTeam}
             hitSlop={8}
@@ -210,6 +268,47 @@ export const CollectionScreen: React.FC = () => {
               <Chip
                 label={team.name}
                 tone={filters.teamId === team.id ? "blue" : "outline"}
+              />
+            </Pressable>
+          ))}
+        </ScrollView>
+      ) : null}
+
+      {items.length > 0 || filters.condition ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.teamChips}
+          contentContainerStyle={{
+            paddingHorizontal: spacing.screen,
+            paddingBottom: spacing.sm,
+            gap: spacing.xs,
+          }}
+        >
+          <Pressable
+            onPress={() =>
+              void setFilters({ ...filters, condition: undefined })
+            }
+          >
+            <Chip
+              label={t("collection.allConditions")}
+              tone={!filters.condition ? "blue" : "outline"}
+            />
+          </Pressable>
+          {CONDITIONS.map((condition) => (
+            <Pressable
+              key={condition}
+              onPress={() =>
+                void setFilters({
+                  ...filters,
+                  condition:
+                    filters.condition === condition ? undefined : condition,
+                })
+              }
+            >
+              <Chip
+                label={t(`enums.condition.${condition}`)}
+                tone={filters.condition === condition ? "blue" : "outline"}
               />
             </Pressable>
           ))}
