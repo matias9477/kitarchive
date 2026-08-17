@@ -70,7 +70,7 @@
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
     "@digitalroute/cz-conventional-changelog-for-jira": "^8.0.1",
-    "@matias9477/expo-release": "github:matias9477/expo-release#v1.0.0",
+    "@matias9477/expo-release": "github:matias9477/expo-release",
     "@testing-library/react-native": "^14.0.1",
     "@types/jest": "^29.5.14",
     "@types/react": "~19.2.4",
