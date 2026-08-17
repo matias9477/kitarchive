@@ -2,6 +2,7 @@ import { drizzle } from "drizzle-orm/expo-sqlite";
 import * as SQLite from "expo-sqlite";
 import * as schema from "./schema";
 import { applySeed } from "./seed";
+import { applyDevSeed } from "./seed/dev";
 
 const DB_NAME = "kitarchive.db";
 
@@ -212,6 +213,8 @@ export const initializeDatabase = async () => {
   }
 
   await applySeed(db);
+
+  if (__DEV__) await applyDevSeed(db);
 
   return db;
 };
