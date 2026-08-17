@@ -11,13 +11,19 @@ import type { KitSummary } from "@/features/catalogue/types";
 interface KitCardProps {
   summary: KitSummary;
   onPress: () => void;
+  /** Extra context line inside the shelf (e.g. wishlist desired config). */
+  detail?: string | null;
 }
 
 /**
  * The centerpiece catalogue card: tall image container with a metadata shelf,
  * plus the user's ownership state (owned / wishlist / missing).
  */
-export const KitCard: React.FC<KitCardProps> = ({ summary, onPress }) => {
+export const KitCard: React.FC<KitCardProps> = ({
+  summary,
+  onPress,
+  detail,
+}) => {
   const { colors, radius, spacing } = useTheme();
   const { t } = useTranslation();
   const { kit, teamName, eraLabel, imageUri, ownedCount, wishlisted } = summary;
@@ -84,6 +90,11 @@ export const KitCard: React.FC<KitCardProps> = ({ summary, onPress }) => {
         >
           {eraLabel} · {t(`enums.kitType.${kit.type}`)}
         </AppText>
+        {detail ? (
+          <AppText variant="labelSm" color={colors.tertiary} numberOfLines={1}>
+            {detail}
+          </AppText>
+        ) : null}
       </View>
     </Pressable>
   );

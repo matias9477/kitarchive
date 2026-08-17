@@ -100,33 +100,16 @@ export const WishlistScreen: React.FC = () => {
             navigation.navigate("KitDetail", { kitId: entry.entry.kitId });
           if (!isGrid) {
             return (
-              <View style={styles.listCell}>
-                <KitListRow summary={entry.kit} onPress={onPress} />
-                {desired ? (
-                  <AppText
-                    variant="labelSm"
-                    color={colors.tertiary}
-                    numberOfLines={1}
-                    style={styles.listDesired}
-                  >
-                    {desired}
-                  </AppText>
-                ) : null}
-              </View>
+              <KitListRow
+                summary={entry.kit}
+                onPress={onPress}
+                detail={desired}
+              />
             );
           }
           return (
             <View style={styles.cell}>
-              <KitCard summary={entry.kit} onPress={onPress} />
-              {desired ? (
-                <AppText
-                  variant="labelSm"
-                  color={colors.tertiary}
-                  numberOfLines={1}
-                >
-                  {desired}
-                </AppText>
-              ) : null}
+              <KitCard summary={entry.kit} onPress={onPress} detail={desired} />
             </View>
           );
         }}
@@ -144,6 +127,4 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   cell: { flex: 1, gap: 4 },
-  listCell: { gap: 4 },
-  listDesired: { paddingHorizontal: 12 },
 });

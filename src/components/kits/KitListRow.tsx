@@ -13,6 +13,8 @@ interface KitListRowProps {
   onPress: () => void;
   /** Hide the team name when the surrounding list is already per-team. */
   showTeam?: boolean;
+  /** Extra context line inside the row (e.g. wishlist desired config). */
+  detail?: string | null;
 }
 
 /** Compact list alternative to KitCard: thumbnail, names, ownership state. */
@@ -20,6 +22,7 @@ export const KitListRow: React.FC<KitListRowProps> = ({
   summary,
   onPress,
   showTeam = true,
+  detail,
 }) => {
   const { colors, radius } = useTheme();
   const { t } = useTranslation();
@@ -69,6 +72,11 @@ export const KitListRow: React.FC<KitListRowProps> = ({
         >
           {subtitle}
         </AppText>
+        {detail ? (
+          <AppText variant="labelSm" color={colors.tertiary} numberOfLines={1}>
+            {detail}
+          </AppText>
+        ) : null}
       </View>
       {ownedCount > 0 ? (
         <Chip
