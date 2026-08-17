@@ -97,7 +97,8 @@
     "cantFind": "Can't find it? Add a kit to the catalogue",
     "browseTeams": "Browse by team",
     "owned_one": "own {{count}}",
-    "owned_other": "own {{count}}"
+    "owned_other": "own {{count}}",
+    "suggestions": "Suggested for you"
   },
   "itemForm": {
     "title": "Shirt details",

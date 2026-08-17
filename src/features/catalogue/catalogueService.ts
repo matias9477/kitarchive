@@ -193,6 +193,59 @@ export const getKitSummariesByIds = async (
     : toSummaries(await selectJoinedKits().where(inArray(kits.id, kitIds)));
 
 /**
+ * "Add next" suggestions: kits the user doesn't own yet, from the teams of
+ * the most recently added shirts, teams in recency order and nearest eras
+ * (by start year) first — after adding a 2003/04 Boca shirt, the 2002/03 and
+ * 2004/05 kits surface before the 1995/96 one.
+ */
+export const getSuggestedKits = async (limit = 6): Promise<KitSummary[]> => {
+  const db = getDb();
+  const recents = await db
+    .select({ teamId: kits.teamId, startYear: eras.startYear })
+    .from(collectionItems)
+    .innerJoin(kits, eq(collectionItems.kitId, kits.id))
+    .innerJoin(eras, eq(kits.eraId, eras.id))
+    .orderBy(desc(collectionItems.createdAt))
+    .limit(5);
+  if (recents.length === 0) return [];
+
+  const teamIds = [...new Set(recents.map((r) => r.teamId))];
+  const candidates = await toSummaries(
+    await selectJoinedKits().where(inArray(kits.teamId, teamIds)),
+  );
+
+  const eraYears = await db
+    .select({ id: eras.id, startYear: eras.startYear })
+    .from(eras)
+    .where(inArray(eras.teamId, teamIds));
+  const yearByEra = new Map(eraYears.map((e) => [e.id, e.startYear]));
+
+  const anchorsByTeam = new Map<string, number[]>();
+  for (const { teamId, startYear } of recents)
+    anchorsByTeam.set(teamId, [
+      ...(anchorsByTeam.get(teamId) ?? []),
+      startYear,
+    ]);
+  const teamRank = new Map(teamIds.map((id, index) => [id, index]));
+
+  const distance = (summary: KitSummary) => {
+    const year = yearByEra.get(summary.kit.eraId);
+    const anchors = anchorsByTeam.get(summary.kit.teamId);
+    if (year == null || !anchors?.length) return Number.MAX_SAFE_INTEGER;
+    return Math.min(...anchors.map((anchor) => Math.abs(anchor - year)));
+  };
+
+  return candidates
+    .filter((summary) => summary.ownedCount === 0)
+    .sort(
+      (a, b) =>
+        (teamRank.get(a.kit.teamId) ?? Infinity) -
+          (teamRank.get(b.kit.teamId) ?? Infinity) || distance(a) - distance(b),
+    )
+    .slice(0, limit);
+};
+
+/**
  * Tokenized inclusion search: every whitespace-separated term must match at
  * least one field (substring, case-insensitive), so "boca 2022" finds every
  * Boca kit whose era touches 2022. Era years are matched numerically too,

@@ -9,7 +9,10 @@ import { Chip } from "@/components/shared/Chip";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { KitPlaceholder } from "@/components/kits/KitPlaceholder";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
-import { searchKitSummaries } from "@/features/catalogue/catalogueService";
+import {
+  getSuggestedKits,
+  searchKitSummaries,
+} from "@/features/catalogue/catalogueService";
 import type { KitSummary } from "@/features/catalogue/types";
 
 /**
@@ -24,10 +27,12 @@ export const AddShirtScreen: React.FC = () => {
   const loadTeams = useCatalogueStore((s) => s.loadTeams);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<KitSummary[]>([]);
+  const [suggestions, setSuggestions] = useState<KitSummary[]>([]);
 
   useFocusEffect(
     useCallback(() => {
       void loadTeams();
+      void getSuggestedKits().then(setSuggestions);
     }, [loadTeams]),
   );
 
@@ -141,13 +146,27 @@ export const AddShirtScreen: React.FC = () => {
           }}
           keyboardShouldPersistTaps="handled"
           ListHeaderComponent={
-            <AppText
-              variant="label"
-              color={colors.onPrimaryContainer}
-              style={{ marginBottom: spacing.xs }}
-            >
-              {t("addShirt.browseTeams")}
-            </AppText>
+            <View>
+              {suggestions.length > 0 ? (
+                <View style={{ gap: spacing.xs, marginBottom: spacing.md }}>
+                  <AppText variant="label" color={colors.onPrimaryContainer}>
+                    {t("addShirt.suggestions")}
+                  </AppText>
+                  {suggestions.map((summary) => (
+                    <React.Fragment key={summary.kit.id}>
+                      {renderKitRow(summary)}
+                    </React.Fragment>
+                  ))}
+                </View>
+              ) : null}
+              <AppText
+                variant="label"
+                color={colors.onPrimaryContainer}
+                style={{ marginBottom: spacing.xs }}
+              >
+                {t("addShirt.browseTeams")}
+              </AppText>
+            </View>
           }
           renderItem={({ item: team }) => (
             <Pressable

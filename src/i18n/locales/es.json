@@ -97,7 +97,8 @@
     "cantFind": "¿No está? Agregá un modelo al catálogo",
     "browseTeams": "Buscar por equipo",
     "owned_one": "tenés {{count}}",
-    "owned_other": "tenés {{count}}"
+    "owned_other": "tenés {{count}}",
+    "suggestions": "Sugerencias para vos"
   },
   "itemForm": {
     "title": "Detalles de la camiseta",
