@@ -2,24 +2,114 @@
   "expo": {
     "name": "kitarchive",
     "slug": "kitarchive",
+    "scheme": "kitarchive",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "appleTeamId": "7VJ997Q842",
+      "bundleIdentifier": "com.matiasturra.kitarchive",
+      "buildNumber": "1",
+      "entitlements": {
+        "com.apple.security.application-groups": [
+          "group.com.matiasturra.kitarchive"
+        ],
+        "com.apple.developer.usernotifications.time-sensitive": true
+      },
+      "infoPlist": {
+        "NSUserNotificationUsageDescription": "This app uses notifications to remind you about the things you track.",
+        "NSPhotoLibraryUsageDescription": "Attach photos of your shirts and kit reference images.",
+        "NSPhotoLibraryAddUsageDescription": "Save shirt photos to your Photos library.",
+        "NSCameraUsageDescription": "Photograph the shirts in your collection.",
+        "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleLocalizations": ["en", "es"]
+      }
     },
     "android": {
+      "package": "com.matiasturra.kitarchive",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#fcba03"
       },
-      "predictiveBackGestureEnabled": false
+      "permissions": ["NOTIFICATIONS"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-font",
+      [
+        "expo-notifications",
+        { "icon": "./assets/icon.png", "color": "#fcba03" }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Attach photos of your shirts and kit reference images.",
+          "cameraPermission": "Photograph the shirts in your collection."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#101415",
+          "dark": {
+            "image": "./assets/splash-icon.png",
+            "backgroundColor": "#101415"
+          }
+        }
+      ],
+      [
+        "expo-widgets",
+        {
+          "groupIdentifier": "group.com.matiasturra.kitarchive",
+          "widgets": [
+            {
+              "name": "HomeWidget",
+              "displayName": "KitArchive",
+              "description": "Collection progress for one of your teams.",
+              "ios": {
+                "supportedFamilies": [
+                  "systemSmall",
+                  "systemMedium",
+                  "accessoryRectangular"
+                ],
+                "configuration": {
+                  "title": "Team",
+                  "description": "Pick the team to track.",
+                  "parameters": {
+                    "teamId": {
+                      "title": "Team",
+                      "type": "enum",
+                      "default": "boca_juniors",
+                      "values": [
+                        { "name": "Boca Juniors", "value": "boca_juniors" },
+                        { "name": "Argentina", "value": "argentina" },
+                        { "name": "Brazil", "value": "brazil" },
+                        { "name": "Uruguay", "value": "uruguay" },
+                        { "name": "England", "value": "england" },
+                        { "name": "France", "value": "france" },
+                        { "name": "Germany", "value": "germany" },
+                        { "name": "Italy", "value": "italy" },
+                        { "name": "Spain", "value": "spain" },
+                        { "name": "Netherlands", "value": "netherlands" },
+                        { "name": "Portugal", "value": "portugal" }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "expo-localization"
+    ]
   }
 }

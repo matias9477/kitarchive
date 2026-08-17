@@ -1,0 +1,219 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "collection": "Colección",
+    "explore": "Explorar",
+    "wishlist": "Deseados"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "remove": "Quitar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "save": "Guardar",
+    "select": "Elegir…",
+    "optional": "Opcional",
+    "done": "Listo",
+    "selectedCount_one": "{{count}} seleccionado",
+    "selectedCount_other": "{{count}} seleccionados"
+  },
+  "home": {
+    "title": "KitArchive",
+    "totalShirts": "Camisetas",
+    "wishlist": "Deseados",
+    "teams": "Equipos",
+    "emptyTitle": "Tu archivo empieza acá",
+    "emptyMessage": "Agregá tu primera camiseta con el botón + de abajo.",
+    "recentlyAdded": "Agregadas recientemente",
+    "byTeam": "Por equipo",
+    "duplicates": "Duplicadas"
+  },
+  "collection": {
+    "title": "Colección",
+    "showingSold": "Mostrando vendidas",
+    "emptyTitle": "Todavía no hay camisetas",
+    "emptyMessage": "Todo lo que agregues aparece acá como un archivo visual.",
+    "emptySold": "No hay camisetas vendidas"
+  },
+  "explore": {
+    "title": "Explorar",
+    "nationalTeams": "Selecciones",
+    "clubs": "Clubes",
+    "empty": "El catálogo está vacío"
+  },
+  "team": {
+    "kits": "modelos",
+    "shirts_one": "{{count}} camiseta",
+    "shirts_other": "{{count}} camisetas",
+    "empty": "Sin modelos catalogados",
+    "emptyMessage": "Agregá un modelo para este equipo desde Explorar."
+  },
+  "kitDetail": {
+    "addImage": "Agregar imagen de referencia",
+    "removeImage": "¿Quitar esta imagen de referencia?",
+    "youOwn_one": "Tenés {{count}}",
+    "youOwn_other": "Tenés {{count}}",
+    "notOwned": "No está en tu colección",
+    "addAnother": "Agregar otra",
+    "addToCollection": "Agregar a la colección",
+    "addWishlist": "Agregar a deseados",
+    "removeWishlist": "Quitar de deseados",
+    "editWishlistConfig": "Configuración deseada…"
+  },
+  "itemDetail": {
+    "title": "Camiseta",
+    "specs": "Ficha técnica",
+    "purchase": "Compra",
+    "manufacturer": "Marca",
+    "takePhoto": "Tomar foto",
+    "choosePhotos": "Elegir fotos",
+    "removePhoto": "¿Quitar esta foto?",
+    "deleteTitle": "Eliminar camiseta",
+    "deleteMessage": "Se elimina la camiseta y sus fotos de forma permanente.",
+    "soldTitle": "Marcar como vendida",
+    "soldMessage": "La camiseta queda como registro histórico, oculta de tu colección.",
+    "markSold": "Marcar como vendida",
+    "markOwned": "Devolver a la colección"
+  },
+  "addShirt": {
+    "title": "Agregar camiseta",
+    "searchPlaceholder": "Equipo, temporada, marca…",
+    "noResults": "No se encontraron modelos",
+    "cantFind": "¿No está? Agregá un modelo al catálogo",
+    "browseTeams": "Buscar por equipo",
+    "owned_one": "tenés {{count}}",
+    "owned_other": "tenés {{count}}"
+  },
+  "itemForm": {
+    "title": "Detalles de la camiseta",
+    "conditionSection": "Estado",
+    "condition": "Estado",
+    "conditionNote": "Nota sobre el estado",
+    "conditionNotePlaceholder": "Pequeña marca cerca del lateral inferior…",
+    "versionSection": "Versión",
+    "productVersion": "Versión del producto",
+    "edition": "Fan / Jugador",
+    "sleeve": "Mangas",
+    "backSection": "Espalda",
+    "back": "Personalización de la espalda",
+    "player": "Jugador",
+    "newPlayer": "＋ Nuevo jugador…",
+    "newPlayerTitle": "Nuevo jugador",
+    "newPlayerMessage": "Nombre tal como aparece en la camiseta",
+    "customName": "Nombre",
+    "number": "Número",
+    "addons": "Parches y agregados",
+    "purchaseSection": "Compra",
+    "purchaseDate": "Fecha de compra",
+    "seller": "Vendedor",
+    "price": "Precio",
+    "currency": "Moneda",
+    "addToCollection": "Agregar a la colección",
+    "addonsField": "Parches",
+    "addonsPlaceholder": "Ninguno"
+  },
+  "createKit": {
+    "title": "Nuevo modelo de catálogo",
+    "teamSection": "Equipo",
+    "newTeam": "Nuevo",
+    "teamName": "Nombre del equipo",
+    "teamType": "Tipo de equipo",
+    "country": "País",
+    "primaryColor": "Color primario (hex)",
+    "secondaryColor": "Color secundario (hex)",
+    "team": "Equipo",
+    "eraSection": "Temporada / ciclo",
+    "newEra": "Nuevo",
+    "era": "Temporada / ciclo",
+    "eraLabel": "Etiqueta",
+    "eraLabelPlaceholder": "2006/07 o 2004–06",
+    "startYear": "Año de inicio",
+    "endYear": "Año de fin",
+    "pickTeamFirst": "Elegí un equipo primero",
+    "kitSection": "Modelo",
+    "kitType": "Tipo de camiseta",
+    "manufacturer": "Marca",
+    "description": "Descripción",
+    "save": "Agregar al catálogo"
+  },
+  "wishlistConfig": {
+    "title": "Configuración deseada",
+    "notes": "Notas"
+  },
+  "wishlist": {
+    "title": "Deseados",
+    "emptyTitle": "No hay camisetas deseadas",
+    "emptyMessage": "Marcá un modelo desde su página de catálogo para seguirlo acá."
+  },
+  "search": {
+    "title": "Buscar",
+    "placeholder": "Equipo, temporada, jugador, número…",
+    "noResults": "Sin resultados",
+    "myCollection": "Mi colección",
+    "wishlist": "Deseados",
+    "catalogue": "Catálogo"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "language": "Idioma",
+    "system": "Sistema",
+    "about": "Acerca de",
+    "version": "Versión",
+    "catalogueVersion": "Versión del catálogo"
+  },
+  "enums": {
+    "teamType": {
+      "club": "Club",
+      "national": "Selección"
+    },
+    "kitType": {
+      "home": "Titular",
+      "away": "Suplente",
+      "third": "Tercera",
+      "goalkeeper": "Arquero",
+      "special": "Especial",
+      "commemorative": "Conmemorativa",
+      "championship": "Campeón"
+    },
+    "condition": {
+      "deadstock": "Deadstock",
+      "excellent": "Excelente",
+      "very_good": "Muy buena",
+      "good": "Buena",
+      "fair": "Regular",
+      "poor": "Mala"
+    },
+    "productVersion": {
+      "original": "Original",
+      "replica": "Réplica",
+      "match_issued": "Preparada para partido",
+      "match_worn": "Utilizada en partido"
+    },
+    "edition": {
+      "fan": "Fan",
+      "player": "Jugador"
+    },
+    "sleeve": {
+      "short": "Manga corta",
+      "long": "Manga larga"
+    },
+    "backType": {
+      "blank": "Sin personalizar",
+      "player": "Nombre y número de jugador",
+      "custom": "Nombre y número propios",
+      "number_only": "Solo número"
+    },
+    "status": {
+      "owned": "En colección",
+      "sold": "Vendida"
+    },
+    "addonType": {
+      "competition_patch": "Parche de competición",
+      "champion_patch": "Parche de campeón",
+      "final_patch": "Parche de final",
+      "anniversary": "Aniversario",
+      "marking": "Marcado especial",
+      "other": "Otro"
+    }
+  }
+}

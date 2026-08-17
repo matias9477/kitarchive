@@ -1,0 +1,219 @@
+{
+  "nav": {
+    "home": "Home",
+    "collection": "Collection",
+    "explore": "Explore",
+    "wishlist": "Wishlist"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "delete": "Delete",
+    "edit": "Edit",
+    "save": "Save",
+    "select": "Select…",
+    "optional": "Optional",
+    "done": "Done",
+    "selectedCount_one": "{{count}} selected",
+    "selectedCount_other": "{{count}} selected"
+  },
+  "home": {
+    "title": "KitArchive",
+    "totalShirts": "Shirts",
+    "wishlist": "Wishlist",
+    "teams": "Teams",
+    "emptyTitle": "Your archive starts here",
+    "emptyMessage": "Add your first shirt with the + button below.",
+    "recentlyAdded": "Recently added",
+    "byTeam": "By team",
+    "duplicates": "Duplicates"
+  },
+  "collection": {
+    "title": "Collection",
+    "showingSold": "Showing sold items",
+    "emptyTitle": "No shirts yet",
+    "emptyMessage": "Everything you add appears here as a visual archive.",
+    "emptySold": "No sold items"
+  },
+  "explore": {
+    "title": "Explore",
+    "nationalTeams": "National teams",
+    "clubs": "Clubs",
+    "empty": "The catalogue is empty"
+  },
+  "team": {
+    "kits": "kits",
+    "shirts_one": "{{count}} shirt",
+    "shirts_other": "{{count}} shirts",
+    "empty": "No kits catalogued yet",
+    "emptyMessage": "Add a kit for this team from Explore."
+  },
+  "kitDetail": {
+    "addImage": "Add reference image",
+    "removeImage": "Remove this reference image?",
+    "youOwn_one": "You own {{count}}",
+    "youOwn_other": "You own {{count}}",
+    "notOwned": "Not in your collection",
+    "addAnother": "Add another",
+    "addToCollection": "Add to collection",
+    "addWishlist": "Add to wishlist",
+    "removeWishlist": "Remove from wishlist",
+    "editWishlistConfig": "Desired configuration…"
+  },
+  "itemDetail": {
+    "title": "Shirt",
+    "specs": "Specification",
+    "purchase": "Purchase",
+    "manufacturer": "Manufacturer",
+    "takePhoto": "Take photo",
+    "choosePhotos": "Choose photos",
+    "removePhoto": "Remove this photo?",
+    "deleteTitle": "Delete shirt",
+    "deleteMessage": "This removes the shirt and its photos permanently.",
+    "soldTitle": "Mark as sold",
+    "soldMessage": "The shirt is kept as a historical record, hidden from your collection.",
+    "markSold": "Mark as sold",
+    "markOwned": "Return to collection"
+  },
+  "addShirt": {
+    "title": "Add shirt",
+    "searchPlaceholder": "Team, season, manufacturer…",
+    "noResults": "No kits found",
+    "cantFind": "Can't find it? Add a kit to the catalogue",
+    "browseTeams": "Browse by team",
+    "owned_one": "own {{count}}",
+    "owned_other": "own {{count}}"
+  },
+  "itemForm": {
+    "title": "Shirt details",
+    "conditionSection": "Condition",
+    "condition": "Condition",
+    "conditionNote": "Condition note",
+    "conditionNotePlaceholder": "Small mark near lower left side…",
+    "versionSection": "Version",
+    "productVersion": "Product version",
+    "edition": "Fan / Player",
+    "sleeve": "Sleeves",
+    "backSection": "Back",
+    "back": "Back customization",
+    "player": "Player",
+    "newPlayer": "＋ New player…",
+    "newPlayerTitle": "New player",
+    "newPlayerMessage": "Name as printed on the shirt",
+    "customName": "Name",
+    "number": "Number",
+    "addons": "Patches & add-ons",
+    "purchaseSection": "Purchase",
+    "purchaseDate": "Purchase date",
+    "seller": "Seller",
+    "price": "Price",
+    "currency": "Currency",
+    "addToCollection": "Add to collection",
+    "addonsField": "Patches",
+    "addonsPlaceholder": "None"
+  },
+  "createKit": {
+    "title": "New catalogue kit",
+    "teamSection": "Team",
+    "newTeam": "New",
+    "teamName": "Team name",
+    "teamType": "Team type",
+    "country": "Country",
+    "primaryColor": "Primary color (hex)",
+    "secondaryColor": "Secondary color (hex)",
+    "team": "Team",
+    "eraSection": "Season / kit cycle",
+    "newEra": "New",
+    "era": "Season / cycle",
+    "eraLabel": "Label",
+    "eraLabelPlaceholder": "2006/07 or 2004–06",
+    "startYear": "Start year",
+    "endYear": "End year",
+    "pickTeamFirst": "Pick a team first",
+    "kitSection": "Kit",
+    "kitType": "Kit type",
+    "manufacturer": "Manufacturer",
+    "description": "Description",
+    "save": "Add to catalogue"
+  },
+  "wishlistConfig": {
+    "title": "Desired configuration",
+    "notes": "Notes"
+  },
+  "wishlist": {
+    "title": "Wishlist",
+    "emptyTitle": "Nothing on the wishlist",
+    "emptyMessage": "Star a kit from its catalogue page to track it here."
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Team, season, player, number…",
+    "noResults": "Nothing found",
+    "myCollection": "My collection",
+    "wishlist": "Wishlist",
+    "catalogue": "Catalogue"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "system": "System",
+    "about": "About",
+    "version": "Version",
+    "catalogueVersion": "Catalogue version"
+  },
+  "enums": {
+    "teamType": {
+      "club": "Club",
+      "national": "National team"
+    },
+    "kitType": {
+      "home": "Home",
+      "away": "Away",
+      "third": "Third",
+      "goalkeeper": "Goalkeeper",
+      "special": "Special",
+      "commemorative": "Commemorative",
+      "championship": "Championship"
+    },
+    "condition": {
+      "deadstock": "Deadstock",
+      "excellent": "Excellent",
+      "very_good": "Very Good",
+      "good": "Good",
+      "fair": "Fair",
+      "poor": "Poor"
+    },
+    "productVersion": {
+      "original": "Original",
+      "replica": "Replica",
+      "match_issued": "Match-issued",
+      "match_worn": "Match-worn"
+    },
+    "edition": {
+      "fan": "Fan",
+      "player": "Player"
+    },
+    "sleeve": {
+      "short": "Short sleeve",
+      "long": "Long sleeve"
+    },
+    "backType": {
+      "blank": "Blank",
+      "player": "Player name + number",
+      "custom": "Custom name + number",
+      "number_only": "Number only"
+    },
+    "status": {
+      "owned": "Owned",
+      "sold": "Sold"
+    },
+    "addonType": {
+      "competition_patch": "Competition patch",
+      "champion_patch": "Champion patch",
+      "final_patch": "Final patch",
+      "anniversary": "Anniversary",
+      "marking": "Special marking",
+      "other": "Other"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "info": {
+      "en-US": {
+        "title": "kitarchive",
+        "subtitle": "",
+        "description": "",
+        "keywords": "",
+        "releaseNotes": "Initial release.",
+        "promotionalText": ""
+      },
+      "es-ES": {
+        "title": "kitarchive",
+        "subtitle": "",
+        "description": "",
+        "keywords": "",
+        "releaseNotes": "Versión inicial.",
+        "promotionalText": ""
+      }
+    }
+  }
+}

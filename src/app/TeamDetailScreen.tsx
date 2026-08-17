@@ -1,0 +1,115 @@
+import React, { useCallback } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
+import { useTheme } from "@/theme/index";
+import { AppText } from "@/components/shared/AppText";
+import { ProgressBar } from "@/components/shared/ProgressBar";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { KitCard } from "@/components/kits/KitCard";
+import { useStatsStore } from "@/features/stats/statsStore";
+import type { RootStackParamList } from "@/navigation/types";
+
+type Props = NativeStackScreenProps<RootStackParamList, "TeamDetail">;
+
+/** Team page: per-era kit grid with owned/missing progress (spec §33.7). */
+export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
+  const { teamId } = route.params;
+  const { colors, spacing } = useTheme();
+  const { t } = useTranslation();
+  const navigation = useNavigation();
+  const progress = useStatsStore((s) => s.progressByTeam[teamId]);
+  const loadTeamProgress = useStatsStore((s) => s.loadTeamProgress);
+
+  useFocusEffect(
+    useCallback(() => {
+      void loadTeamProgress(teamId);
+    }, [loadTeamProgress, teamId]),
+  );
+
+  React.useLayoutEffect(() => {
+    if (progress?.teamName) navigation.setOptions({ title: progress.teamName });
+  }, [navigation, progress?.teamName]);
+
+  if (!progress)
+    return (
+      <View
+        style={[styles.container, { backgroundColor: colors.background }]}
+      />
+    );
+
+  const erasWithKits = progress.eras.filter((e) => e.totalKits > 0);
+
+  return (
+    <ScrollView
+      style={[styles.container, { backgroundColor: colors.background }]}
+      contentContainerStyle={{
+        padding: spacing.screen,
+        paddingBottom: spacing.xl,
+        gap: spacing.lg,
+      }}
+    >
+      <View style={{ gap: spacing.sm }}>
+        <View style={styles.progressHeader}>
+          <AppText variant="headline">
+            {progress.ownedKits}
+            <AppText variant="title" color={colors.onSurfaceVariant}>
+              {" "}
+              / {progress.totalKits} {t("team.kits")}
+            </AppText>
+          </AppText>
+          <AppText variant="titleSm" color={colors.tertiary}>
+            {t("team.shirts", { count: progress.ownedItems })}
+          </AppText>
+        </View>
+        <ProgressBar value={progress.ownedKits} total={progress.totalKits} />
+      </View>
+
+      {erasWithKits.length === 0 ? (
+        <EmptyState title={t("team.empty")} message={t("team.emptyMessage")} />
+      ) : (
+        erasWithKits.map(({ era, kits, ownedKits, totalKits }) => (
+          <View key={era.id} style={{ gap: spacing.sm }}>
+            <View style={styles.eraHeader}>
+              <AppText variant="title">{era.label}</AppText>
+              <AppText variant="labelSm" color={colors.onSurfaceVariant}>
+                {ownedKits} / {totalKits}
+              </AppText>
+            </View>
+            <View style={styles.grid}>
+              {kits.map((summary) => (
+                <View key={summary.kit.id} style={styles.gridCell}>
+                  <KitCard
+                    summary={summary}
+                    onPress={() =>
+                      navigation.navigate("KitDetail", {
+                        kitId: summary.kit.id,
+                      })
+                    }
+                  />
+                </View>
+              ))}
+            </View>
+          </View>
+        ))
+      )}
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: { flex: 1 },
+  progressHeader: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+  },
+  eraHeader: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    justifyContent: "space-between",
+  },
+  grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
+  gridCell: { width: "47.5%" },
+});

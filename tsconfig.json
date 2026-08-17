@@ -1,6 +1,32 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
-  }
+    "strict": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/src/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/app/*": ["./src/app/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/theme/*": ["./src/theme/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/config/*": ["./src/config/*"],
+      "@/i18n/*": ["./src/i18n/*"],
+      "@/db/*": ["./src/db/*"],
+      "@/navigation/*": ["./src/navigation/*"],
+      "@/store/*": ["./src/store/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/widgets/*": ["./src/widgets/*"]
+    },
+    "types": ["jest", "node", "react"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }
