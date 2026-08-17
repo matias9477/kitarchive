@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -22,6 +23,7 @@ import { KitPlaceholder } from "@/components/kits/KitPlaceholder";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
 import { useWishlistStore } from "@/features/wishlist/wishlistStore";
 import { getItemsByKit } from "@/features/collection/collectionService";
+import type { KitImage as KitImageRow } from "@/features/catalogue/types";
 import type { CollectionItemSummary } from "@/features/collection/types";
 import type { RootStackParamList } from "@/navigation/types";
 
@@ -40,6 +42,11 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
   const loadKitDetail = useCatalogueStore((s) => s.loadKitDetail);
   const addKitImage = useCatalogueStore((s) => s.addKitImage);
   const removeKitImage = useCatalogueStore((s) => s.removeKitImage);
+  const setDefaultKitImage = useCatalogueStore((s) => s.setDefaultKitImage);
+  const { width: windowWidth } = useWindowDimensions();
+  const heroWidth = windowWidth - spacing.screen * 2;
+  const heroScrollRef = React.useRef<ScrollView>(null);
+  const [heroPage, setHeroPage] = React.useState(0);
   const wishlistLoad = useWishlistStore((s) => s.load);
   const wishlistAdd = useWishlistStore((s) => s.add);
   const wishlistRemove = useWishlistStore((s) => s.removeByKit);
@@ -100,6 +107,29 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
       { text: t("common.cancel"), style: "cancel" },
     ]);
 
+  const imageOptions = (image: KitImageRow, index: number) =>
+    Alert.alert(t("kitDetail.imageOptions"), undefined, [
+      ...(index > 0
+        ? [
+            {
+              text: t("kitDetail.setDefaultImage"),
+              onPress: () => {
+                void setDefaultKitImage(image.id, kitId).then(() => {
+                  heroScrollRef.current?.scrollTo({ x: 0, animated: false });
+                  setHeroPage(0);
+                });
+              },
+            },
+          ]
+        : []),
+      {
+        text: t("common.remove"),
+        style: "destructive" as const,
+        onPress: () => void removeKitImage(image.id, kitId),
+      },
+      { text: t("common.cancel"), style: "cancel" as const },
+    ]);
+
   const toggleWishlist = async () => {
     if (detail.wishlisted) await wishlistRemove(kitId);
     else await wishlistAdd(kitId);
@@ -117,43 +147,54 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
         gap: spacing.lg,
       }}
     >
-      {/* Hero: reference images or placeholder */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={{ marginHorizontal: -spacing.screen }}
-        contentContainerStyle={{
-          paddingHorizontal: spacing.screen,
-          gap: spacing.sm,
-        }}
-      >
+      {/* Hero: full-width paged reference images (tap one for options) */}
+      <View style={{ gap: spacing.sm }}>
         {detail.images.length > 0 ? (
-          detail.images.map((image) => (
-            <Pressable
-              key={image.id}
-              onLongPress={() =>
-                Alert.alert(t("kitDetail.removeImage"), undefined, [
-                  { text: t("common.cancel"), style: "cancel" },
-                  {
-                    text: t("common.remove"),
-                    style: "destructive",
-                    onPress: () => void removeKitImage(image.id, kitId),
-                  },
-                ])
-              }
-            >
-              <Image
-                source={{ uri: image.uri }}
-                style={[styles.hero, { borderRadius: radius.xl }]}
-                resizeMode="cover"
-              />
-            </Pressable>
-          ))
+          <ScrollView
+            ref={heroScrollRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onMomentumScrollEnd={(event) =>
+              setHeroPage(
+                Math.round(event.nativeEvent.contentOffset.x / heroWidth),
+              )
+            }
+          >
+            {detail.images.map((image, index) => (
+              <Pressable
+                key={image.id}
+                onPress={() => imageOptions(image, index)}
+              >
+                <Image
+                  source={{ uri: image.uri }}
+                  style={[
+                    styles.hero,
+                    { width: heroWidth, borderRadius: radius.xl },
+                  ]}
+                  resizeMode="cover"
+                />
+                {index === 0 && detail.images.length > 1 ? (
+                  <View style={styles.defaultBadge}>
+                    <Chip
+                      label={t("kitDetail.defaultImage")}
+                      icon="image"
+                      tone="goldSoft"
+                    />
+                  </View>
+                ) : null}
+              </Pressable>
+            ))}
+          </ScrollView>
         ) : (
           <View
             style={[
               styles.hero,
-              { borderRadius: radius.xl, overflow: "hidden" },
+              {
+                width: heroWidth,
+                borderRadius: radius.xl,
+                overflow: "hidden",
+              },
             ]}
           >
             <KitPlaceholder
@@ -162,27 +203,31 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
             />
           </View>
         )}
-        <Pressable
+        {detail.images.length > 1 ? (
+          <View style={styles.dots}>
+            {detail.images.map((image, index) => (
+              <View
+                key={image.id}
+                style={[
+                  styles.dot,
+                  {
+                    backgroundColor:
+                      index === Math.min(heroPage, detail.images.length - 1)
+                        ? colors.onSurface
+                        : colors.outlineVariant,
+                  },
+                ]}
+              />
+            ))}
+          </View>
+        ) : null}
+        <Button
+          label={t("kitDetail.addImage")}
+          icon="images-outline"
+          variant="ghost"
           onPress={chooseImageSource}
-          style={[
-            styles.addImage,
-            { borderColor: colors.outlineVariant, borderRadius: radius.xl },
-          ]}
-        >
-          <Ionicons
-            name="image-outline"
-            size={22}
-            color={colors.onSurfaceVariant}
-          />
-          <AppText
-            variant="labelSm"
-            color={colors.onSurfaceVariant}
-            align="center"
-          >
-            {t("kitDetail.addImage")}
-          </AppText>
-        </Pressable>
-      </ScrollView>
+        />
+      </View>
 
       {/* Title + spec chips */}
       <View style={{ gap: spacing.sm }}>
@@ -305,17 +350,10 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  hero: { width: 260, aspectRatio: 3 / 4 },
-  addImage: {
-    width: 120,
-    aspectRatio: 3 / 4,
-    borderWidth: 1,
-    borderStyle: "dashed",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    padding: 8,
-  },
+  hero: { aspectRatio: 3 / 4 },
+  defaultBadge: { position: "absolute", top: 10, left: 10 },
+  dots: { flexDirection: "row", justifyContent: "center", gap: 6 },
+  dot: { width: 6, height: 6, borderRadius: 3 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
   itemRow: {
     flexDirection: "row",

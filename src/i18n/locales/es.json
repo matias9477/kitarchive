@@ -73,7 +73,10 @@
     "imageFromCamera": "Sacar foto",
     "imageFromLibrary": "Elegir de la galería",
     "imageFromWeb": "Buscar en Google",
-    "imageSearchSuffix": "camiseta"
+    "imageSearchSuffix": "camiseta",
+    "imageOptions": "Opciones de imagen",
+    "setDefaultImage": "Usar como principal",
+    "defaultImage": "Principal"
   },
   "itemDetail": {
     "title": "Camiseta",

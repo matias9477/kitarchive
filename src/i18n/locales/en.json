@@ -73,7 +73,10 @@
     "imageFromCamera": "Take photo",
     "imageFromLibrary": "Choose from library",
     "imageFromWeb": "Search on Google",
-    "imageSearchSuffix": "shirt"
+    "imageSearchSuffix": "shirt",
+    "imageOptions": "Image options",
+    "setDefaultImage": "Set as default",
+    "defaultImage": "Default"
   },
   "itemDetail": {
     "title": "Shirt",

@@ -15,6 +15,7 @@ import {
   wishlistItems,
 } from "@/db/schema";
 import { generateId } from "@/lib/id";
+import { deleteStoredImage } from "@/lib/images";
 import type {
   Addon,
   Competition,
@@ -419,5 +420,32 @@ export const addKitImage = async (
 };
 
 export const removeKitImage = async (imageId: string): Promise<void> => {
-  await getDb().delete(kitImages).where(eq(kitImages.id, imageId));
+  const db = getDb();
+  const rows = await db
+    .select()
+    .from(kitImages)
+    .where(eq(kitImages.id, imageId))
+    .limit(1);
+  await db.delete(kitImages).where(eq(kitImages.id, imageId));
+  const image = rows[0];
+  if (image) await deleteStoredImage(image.uri);
+};
+
+/** Make an image the kit's default (first by sortOrder everywhere). */
+export const setDefaultKitImage = async (
+  imageId: string,
+  kitId: string,
+): Promise<void> => {
+  const db = getDb();
+  const first = await db
+    .select({ sortOrder: kitImages.sortOrder })
+    .from(kitImages)
+    .where(eq(kitImages.kitId, kitId))
+    .orderBy(asc(kitImages.sortOrder))
+    .limit(1);
+  const minSort = first[0]?.sortOrder ?? 0;
+  await db
+    .update(kitImages)
+    .set({ sortOrder: minSort - 1 })
+    .where(eq(kitImages.id, imageId));
 };

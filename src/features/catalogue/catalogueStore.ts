@@ -41,6 +41,7 @@ interface State {
   createPlayer: (name: string, fullName?: string) => Promise<Player>;
   addKitImage: (kitId: string, uri: string) => Promise<void>;
   removeKitImage: (imageId: string, kitId: string) => Promise<void>;
+  setDefaultKitImage: (imageId: string, kitId: string) => Promise<void>;
 }
 
 const message = (error: unknown) =>
@@ -146,6 +147,11 @@ export const useCatalogueStore = create<State>((set, get) => ({
 
   removeKitImage: async (imageId, kitId) => {
     await service.removeKitImage(imageId);
+    await get().loadKitDetail(kitId);
+  },
+
+  setDefaultKitImage: async (imageId, kitId) => {
+    await service.setDefaultKitImage(imageId, kitId);
     await get().loadKitDetail(kitId);
   },
 }));
