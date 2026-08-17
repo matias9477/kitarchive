@@ -67,13 +67,38 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
     );
   }
 
-  const pickReferenceImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({ quality: 0.85 });
+  const pickReferenceImage = async (fromCamera: boolean) => {
+    const result = fromCamera
+      ? await ImagePicker.launchCameraAsync({ quality: 0.85 })
+      : await ImagePicker.launchImageLibraryAsync({ quality: 0.85 });
     const asset = result.assets?.[0];
     if (!asset) return;
     const uri = await persistPickedImage(asset.uri);
     await addKitImage(kitId, uri);
   };
+
+  const chooseImageSource = () =>
+    Alert.alert(t("kitDetail.addImage"), undefined, [
+      {
+        text: t("kitDetail.imageFromCamera"),
+        onPress: () => void pickReferenceImage(true),
+      },
+      {
+        text: t("kitDetail.imageFromLibrary"),
+        onPress: () => void pickReferenceImage(false),
+      },
+      {
+        text: t("kitDetail.imageFromWeb"),
+        onPress: () =>
+          navigation.navigate("WebImagePicker", {
+            kitId,
+            query: `${detail.teamName} ${detail.eraLabel} ${t(
+              `enums.kitType.${detail.kit.type}`,
+            )} ${t("kitDetail.imageSearchSuffix")}`,
+          }),
+      },
+      { text: t("common.cancel"), style: "cancel" },
+    ]);
 
   const toggleWishlist = async () => {
     if (detail.wishlisted) await wishlistRemove(kitId);
@@ -138,7 +163,7 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
           </View>
         )}
         <Pressable
-          onPress={() => void pickReferenceImage()}
+          onPress={chooseImageSource}
           style={[
             styles.addImage,
             { borderColor: colors.outlineVariant, borderRadius: radius.xl },

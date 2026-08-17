@@ -69,7 +69,11 @@
     "addToCollection": "Add to collection",
     "addWishlist": "Add to wishlist",
     "removeWishlist": "Remove from wishlist",
-    "editWishlistConfig": "Desired configuration…"
+    "editWishlistConfig": "Desired configuration…",
+    "imageFromCamera": "Take photo",
+    "imageFromLibrary": "Choose from library",
+    "imageFromWeb": "Search on Google",
+    "imageSearchSuffix": "shirt"
   },
   "itemDetail": {
     "title": "Shirt",
@@ -226,5 +230,12 @@
       "marking": "Special marking",
       "other": "Other"
     }
+  },
+  "webImagePicker": {
+    "title": "Find an image",
+    "hint": "Tap an image to select it",
+    "selected": "Image selected",
+    "use": "Use this image",
+    "downloadFailed": "Couldn't download that image. Try another one."
   }
 }

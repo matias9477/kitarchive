@@ -69,7 +69,11 @@
     "addToCollection": "Agregar a la colección",
     "addWishlist": "Agregar a deseados",
     "removeWishlist": "Quitar de deseados",
-    "editWishlistConfig": "Configuración deseada…"
+    "editWishlistConfig": "Configuración deseada…",
+    "imageFromCamera": "Sacar foto",
+    "imageFromLibrary": "Elegir de la galería",
+    "imageFromWeb": "Buscar en Google",
+    "imageSearchSuffix": "camiseta"
   },
   "itemDetail": {
     "title": "Camiseta",
@@ -226,5 +230,12 @@
       "marking": "Marcado especial",
       "other": "Otro"
     }
+  },
+  "webImagePicker": {
+    "title": "Buscar imagen",
+    "hint": "Tocá una imagen para seleccionarla",
+    "selected": "Imagen seleccionada",
+    "use": "Usar esta imagen",
+    "downloadFailed": "No se pudo descargar esa imagen. Probá con otra."
   }
 }

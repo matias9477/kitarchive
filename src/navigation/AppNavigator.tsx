@@ -20,6 +20,7 @@ import { AddShirtScreen } from "@/app/AddShirtScreen";
 import { ItemFormScreen } from "@/app/ItemFormScreen";
 import { CreateKitScreen } from "@/app/CreateKitScreen";
 import { WishlistConfigScreen } from "@/app/WishlistConfigScreen";
+import { WebImagePickerScreen } from "@/app/WebImagePickerScreen";
 import { SearchScreen } from "@/app/SearchScreen";
 import { SettingsScreen } from "@/app/SettingsScreen";
 import { TabNavigator } from "./TabNavigator";
@@ -156,6 +157,15 @@ export const AppNavigator: React.FC<AppNavigatorProps> = ({
           component={WishlistConfigScreen}
           options={{
             title: t("wishlistConfig.title"),
+            presentation: "modal",
+            headerLeft: headerClose,
+          }}
+        />
+        <Stack.Screen
+          name="WebImagePicker"
+          component={WebImagePickerScreen}
+          options={{
+            title: t("webImagePicker.title"),
             presentation: "modal",
             headerLeft: headerClose,
           }}
