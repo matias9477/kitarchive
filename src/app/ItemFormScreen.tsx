@@ -206,7 +206,7 @@ export const ItemFormScreen: React.FC<Props> = ({ route, navigation }) => {
         </View>
       ) : null}
 
-      <Section title={t("itemForm.conditionSection")}>
+      <Section title={t("itemForm.conditionSection")} icon="ribbon-outline">
         <PickerField
           label={t("itemForm.condition")}
           placeholder={t("common.select")}
@@ -223,7 +223,10 @@ export const ItemFormScreen: React.FC<Props> = ({ route, navigation }) => {
         />
       </Section>
 
-      <Section title={t("itemForm.versionSection")}>
+      <Section
+        title={t("itemForm.versionSection")}
+        icon="shield-checkmark-outline"
+      >
         <PickerField
           label={t("itemForm.productVersion")}
           placeholder={t("common.optional")}
@@ -250,7 +253,7 @@ export const ItemFormScreen: React.FC<Props> = ({ route, navigation }) => {
         />
       </Section>
 
-      <Section title={t("itemForm.backSection")}>
+      <Section title={t("itemForm.backSection")} icon="person-outline">
         <PickerField
           label={t("itemForm.back")}
           placeholder={t("common.select")}
@@ -297,7 +300,7 @@ export const ItemFormScreen: React.FC<Props> = ({ route, navigation }) => {
         ) : null}
       </Section>
 
-      <Section title={t("itemForm.addons")}>
+      <Section title={t("itemForm.addons")} icon="medal-outline">
         <MultiPickerField
           label={t("itemForm.addonsField")}
           placeholder={t("itemForm.addonsPlaceholder")}
@@ -311,7 +314,7 @@ export const ItemFormScreen: React.FC<Props> = ({ route, navigation }) => {
         />
       </Section>
 
-      <Section title={t("itemForm.purchaseSection")}>
+      <Section title={t("itemForm.purchaseSection")} icon="receipt-outline">
         <View style={{ gap: spacing.xs }}>
           <AppText variant="labelSm" color={colors.onSurfaceVariant}>
             {t("itemForm.purchaseDate")}
@@ -371,6 +374,7 @@ export const ItemFormScreen: React.FC<Props> = ({ route, navigation }) => {
 
       <Button
         label={isEdit ? t("common.save") : t("itemForm.addToCollection")}
+        icon={isEdit ? "checkmark-outline" : "add-circle-outline"}
         onPress={() => void save()}
         disabled={!kitId}
         loading={saving}

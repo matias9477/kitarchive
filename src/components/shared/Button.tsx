@@ -1,5 +1,6 @@
 import React from "react";
 import { ActivityIndicator, Pressable, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/theme/index";
 import { AppText } from "./AppText";
 
@@ -7,6 +8,7 @@ interface ButtonProps {
   label: string;
   onPress: () => void;
   variant?: "primary" | "ghost" | "danger";
+  icon?: keyof typeof Ionicons.glyphMap;
   disabled?: boolean;
   loading?: boolean;
 }
@@ -16,6 +18,7 @@ export const Button: React.FC<ButtonProps> = ({
   label,
   onPress,
   variant = "primary",
+  icon,
   disabled = false,
   loading = false,
 }) => {
@@ -54,9 +57,12 @@ export const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <ActivityIndicator color={foreground} />
       ) : (
-        <AppText variant="titleSm" color={foreground}>
-          {label}
-        </AppText>
+        <>
+          {icon ? <Ionicons name={icon} size={17} color={foreground} /> : null}
+          <AppText variant="titleSm" color={foreground}>
+            {label}
+          </AppText>
+        </>
       )}
     </Pressable>
   );
@@ -66,7 +72,9 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 14,
     paddingHorizontal: 20,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: 8,
   },
 });

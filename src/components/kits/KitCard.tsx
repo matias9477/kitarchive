@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { AppText } from "@/components/shared/AppText";
+import { Chip } from "@/components/shared/Chip";
 import { KitPlaceholder } from "./KitPlaceholder";
 import type { KitSummary } from "@/features/catalogue/types";
 
@@ -47,15 +48,16 @@ export const KitCard: React.FC<KitCardProps> = ({ summary, onPress }) => {
           />
         )}
         {ownedCount > 0 ? (
-          <View
-            style={[
-              styles.badge,
-              { backgroundColor: colors.tertiary, borderRadius: radius.full },
-            ]}
-          >
-            <AppText variant="labelSm" color={colors.onTertiary}>
-              {ownedCount > 1 ? `×${ownedCount}` : "✓"}
-            </AppText>
+          <View style={styles.ownedBadge}>
+            <Chip
+              label={
+                ownedCount > 1
+                  ? `${t("enums.status.owned")} ×${ownedCount}`
+                  : t("enums.status.owned")
+              }
+              icon="checkmark-circle"
+              tone="goldSoft"
+            />
           </View>
         ) : wishlisted ? (
           <View
@@ -100,5 +102,6 @@ const styles = StyleSheet.create({
     minWidth: 24,
     alignItems: "center",
   },
+  ownedBadge: { position: "absolute", top: 8, right: 8 },
   shelf: { gap: 2 },
 });

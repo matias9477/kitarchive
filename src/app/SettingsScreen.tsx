@@ -28,7 +28,7 @@ export const SettingsScreen: React.FC = () => {
       style={[styles.container, { backgroundColor: colors.background }]}
       contentContainerStyle={{ padding: spacing.screen, gap: spacing.lg }}
     >
-      <Section title={t("settings.language")}>
+      <Section title={t("settings.language")} icon="language-outline">
         <View style={{ gap: spacing.xs }}>
           {languageOptions.map((option) => {
             const active = option.value === language;
@@ -60,7 +60,7 @@ export const SettingsScreen: React.FC = () => {
         </View>
       </Section>
 
-      <Section title={t("settings.about")}>
+      <Section title={t("settings.about")} icon="information-circle-outline">
         <View style={{ gap: spacing.xs }}>
           <View
             style={[

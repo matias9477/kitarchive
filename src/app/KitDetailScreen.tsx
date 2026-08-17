@@ -165,6 +165,13 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
           {detail.teamName} · {t(`enums.kitType.${detail.kit.type}`)}
         </AppText>
         <View style={styles.chips}>
+          {ownedItems.length > 0 ? (
+            <Chip
+              label={t("enums.status.owned")}
+              icon="checkmark-circle"
+              tone="goldSoft"
+            />
+          ) : null}
           <Chip label={detail.eraLabel} tone="neutral" />
           {detail.manufacturerName ? (
             <Chip label={detail.manufacturerName} tone="outline" />
@@ -187,6 +194,7 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
             ? t("kitDetail.youOwn", { count: ownedItems.length })
             : t("kitDetail.notOwned")
         }
+        icon="shirt-outline"
       >
         <View style={{ gap: spacing.xs }}>
           {ownedItems.map((summary) => {
@@ -244,6 +252,7 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
               ? t("kitDetail.addAnother")
               : t("kitDetail.addToCollection")
           }
+          icon="add-circle-outline"
           onPress={() => navigation.navigate("ItemForm", { kitId })}
         />
         <Button
@@ -252,12 +261,14 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
               ? t("kitDetail.removeWishlist")
               : t("kitDetail.addWishlist")
           }
+          icon={detail.wishlisted ? "heart-dislike-outline" : "heart-outline"}
           variant="ghost"
           onPress={() => void toggleWishlist()}
         />
         {detail.wishlisted ? (
           <Button
             label={t("kitDetail.editWishlistConfig")}
+            icon="options-outline"
             variant="ghost"
             onPress={() => navigation.navigate("WishlistConfig", { kitId })}
           />

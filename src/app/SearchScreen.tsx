@@ -79,7 +79,15 @@ export const SearchScreen: React.FC = () => {
               </AppText>
             </View>
             {summary.ownedCount > 0 ? (
-              <Chip label={`×${summary.ownedCount}`} tone="gold" />
+              <Chip
+                label={
+                  summary.ownedCount > 1
+                    ? `×${summary.ownedCount}`
+                    : t("enums.status.owned")
+                }
+                icon="checkmark-circle"
+                tone="goldSoft"
+              />
             ) : summary.wishlisted ? (
               <Ionicons name="star" size={16} color={colors.tertiary} />
             ) : null}

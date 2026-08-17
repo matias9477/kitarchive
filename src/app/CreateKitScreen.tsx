@@ -138,6 +138,7 @@ export const CreateKitScreen: React.FC<Props> = ({ route, navigation }) => {
     >
       <Section
         title={t("createKit.teamSection")}
+        icon="shield-outline"
         trailing={
           <View style={styles.toggle}>
             <AppText variant="labelSm" color={colors.onSurfaceVariant}>
@@ -209,6 +210,7 @@ export const CreateKitScreen: React.FC<Props> = ({ route, navigation }) => {
 
       <Section
         title={t("createKit.eraSection")}
+        icon="calendar-outline"
         trailing={
           <View style={styles.toggle}>
             <AppText variant="labelSm" color={colors.onSurfaceVariant}>
@@ -267,7 +269,7 @@ export const CreateKitScreen: React.FC<Props> = ({ route, navigation }) => {
         )}
       </Section>
 
-      <Section title={t("createKit.kitSection")}>
+      <Section title={t("createKit.kitSection")} icon="shirt-outline">
         <PickerField
           label={t("createKit.kitType")}
           placeholder={t("common.select")}
@@ -297,6 +299,7 @@ export const CreateKitScreen: React.FC<Props> = ({ route, navigation }) => {
 
       <Button
         label={t("createKit.save")}
+        icon="checkmark-outline"
         onPress={() => void save()}
         disabled={!canSave}
         loading={saving}

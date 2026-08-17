@@ -156,6 +156,7 @@ export const WishlistConfigScreen: React.FC<Props> = ({
       />
       <Button
         label={t("common.save")}
+        icon="checkmark-outline"
         onPress={() => void save()}
         loading={saving}
       />

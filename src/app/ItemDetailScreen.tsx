@@ -240,7 +240,7 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
       ) : null}
 
       {/* Spec list */}
-      <Section title={t("itemDetail.specs")}>
+      <Section title={t("itemDetail.specs")} icon="shirt-outline">
         <View style={{ gap: spacing.xs }}>
           {specRows
             .filter(([, value]) => value != null)
@@ -274,7 +274,7 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
 
       {/* Purchase */}
       {purchaseRows.some(([, value]) => value != null) ? (
-        <Section title={t("itemDetail.purchase")}>
+        <Section title={t("itemDetail.purchase")} icon="receipt-outline">
           <View style={{ gap: spacing.xs }}>
             {purchaseRows
               .filter(([, value]) => value != null)
@@ -294,23 +294,27 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
       <View style={{ gap: spacing.sm }}>
         <Button
           label={t("common.edit")}
+          icon="pencil-outline"
           onPress={() => navigation.navigate("ItemForm", { itemId })}
         />
         {item.status === "owned" ? (
           <Button
             label={t("itemDetail.markSold")}
+            icon="pricetag-outline"
             variant="ghost"
             onPress={confirmSold}
           />
         ) : (
           <Button
             label={t("itemDetail.markOwned")}
+            icon="arrow-undo-outline"
             variant="ghost"
             onPress={() => void markOwned(itemId)}
           />
         )}
         <Button
           label={t("common.delete")}
+          icon="trash-outline"
           variant="danger"
           onPress={confirmDelete}
         />
