@@ -193,56 +193,42 @@ export const getKitSummariesByIds = async (
     : toSummaries(await selectJoinedKits().where(inArray(kits.id, kitIds)));
 
 /**
- * "Add next" suggestions: kits the user doesn't own yet, from the teams of
- * the most recently added shirts, teams in recency order and nearest eras
- * (by start year) first — after adding a 2003/04 Boca shirt, the 2002/03 and
- * 2004/05 kits surface before the 1995/96 one.
+ * "Add next" suggestions: the teams of the most recently added shirts, in
+ * recency order — you usually keep adding to the collection you were just
+ * working on.
  */
-export const getSuggestedKits = async (limit = 6): Promise<KitSummary[]> => {
-  const db = getDb();
-  const recents = await db
-    .select({ teamId: kits.teamId, startYear: eras.startYear })
+export const getSuggestedTeams = async (
+  limit = 3,
+): Promise<TeamWithCountry[]> => {
+  const recents = await getDb()
+    .select({ teamId: kits.teamId })
     .from(collectionItems)
     .innerJoin(kits, eq(collectionItems.kitId, kits.id))
-    .innerJoin(eras, eq(kits.eraId, eras.id))
     .orderBy(desc(collectionItems.createdAt))
-    .limit(5);
-  if (recents.length === 0) return [];
+    .limit(20);
 
-  const teamIds = [...new Set(recents.map((r) => r.teamId))];
-  const candidates = await toSummaries(
-    await selectJoinedKits().where(inArray(kits.teamId, teamIds)),
+  const teamIds: string[] = [];
+  for (const { teamId } of recents)
+    if (!teamIds.includes(teamId)) teamIds.push(teamId);
+  const top = teamIds.slice(0, limit);
+  if (top.length === 0) return [];
+
+  const rows = await getDb()
+    .select({
+      team: teams,
+      countryName: countries.name,
+      flagEmoji: countries.flagEmoji,
+    })
+    .from(teams)
+    .innerJoin(countries, eq(teams.countryId, countries.id))
+    .where(inArray(teams.id, top));
+  const byId = new Map(
+    rows.map((r) => [
+      r.team.id,
+      { ...r.team, countryName: r.countryName, flagEmoji: r.flagEmoji },
+    ]),
   );
-
-  const eraYears = await db
-    .select({ id: eras.id, startYear: eras.startYear })
-    .from(eras)
-    .where(inArray(eras.teamId, teamIds));
-  const yearByEra = new Map(eraYears.map((e) => [e.id, e.startYear]));
-
-  const anchorsByTeam = new Map<string, number[]>();
-  for (const { teamId, startYear } of recents)
-    anchorsByTeam.set(teamId, [
-      ...(anchorsByTeam.get(teamId) ?? []),
-      startYear,
-    ]);
-  const teamRank = new Map(teamIds.map((id, index) => [id, index]));
-
-  const distance = (summary: KitSummary) => {
-    const year = yearByEra.get(summary.kit.eraId);
-    const anchors = anchorsByTeam.get(summary.kit.teamId);
-    if (year == null || !anchors?.length) return Number.MAX_SAFE_INTEGER;
-    return Math.min(...anchors.map((anchor) => Math.abs(anchor - year)));
-  };
-
-  return candidates
-    .filter((summary) => summary.ownedCount === 0)
-    .sort(
-      (a, b) =>
-        (teamRank.get(a.kit.teamId) ?? Infinity) -
-          (teamRank.get(b.kit.teamId) ?? Infinity) || distance(a) - distance(b),
-    )
-    .slice(0, limit);
+  return top.flatMap((id) => byId.get(id) ?? []);
 };
 
 /**

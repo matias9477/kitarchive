@@ -10,10 +10,10 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { KitPlaceholder } from "@/components/kits/KitPlaceholder";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
 import {
-  getSuggestedKits,
+  getSuggestedTeams,
   searchKitSummaries,
 } from "@/features/catalogue/catalogueService";
-import type { KitSummary } from "@/features/catalogue/types";
+import type { KitSummary, TeamWithCountry } from "@/features/catalogue/types";
 
 /**
  * Add-shirt wizard, step 1: identify the catalogue kit — search first,
@@ -27,12 +27,12 @@ export const AddShirtScreen: React.FC = () => {
   const loadTeams = useCatalogueStore((s) => s.loadTeams);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<KitSummary[]>([]);
-  const [suggestions, setSuggestions] = useState<KitSummary[]>([]);
+  const [suggestions, setSuggestions] = useState<TeamWithCountry[]>([]);
 
   useFocusEffect(
     useCallback(() => {
       void loadTeams();
-      void getSuggestedKits().then(setSuggestions);
+      void getSuggestedTeams().then(setSuggestions);
     }, [loadTeams]),
   );
 
@@ -80,6 +80,37 @@ export const AddShirtScreen: React.FC = () => {
           tone="gold"
         />
       ) : null}
+    </Pressable>
+  );
+
+  const renderTeamRow = (team: TeamWithCountry) => (
+    <Pressable
+      onPress={() => navigation.navigate("TeamDetail", { teamId: team.id })}
+      style={({ pressed }) => [
+        styles.row,
+        {
+          backgroundColor: colors.surfaceContainer,
+          borderRadius: radius.md,
+          opacity: pressed ? 0.85 : 1,
+        },
+      ]}
+    >
+      <View
+        style={[
+          styles.swatch,
+          {
+            backgroundColor: team.primaryColor,
+            borderRadius: radius.sm + 4,
+          },
+        ]}
+      />
+      <View style={styles.rowText}>
+        <AppText variant="titleSm">{team.name}</AppText>
+        <AppText variant="labelSm" color={colors.onSurfaceVariant}>
+          {team.countryName}
+        </AppText>
+      </View>
+      <Ionicons name="chevron-forward" size={18} color={colors.outline} />
     </Pressable>
   );
 
@@ -152,9 +183,9 @@ export const AddShirtScreen: React.FC = () => {
                   <AppText variant="label" color={colors.onPrimaryContainer}>
                     {t("addShirt.suggestions")}
                   </AppText>
-                  {suggestions.map((summary) => (
-                    <React.Fragment key={summary.kit.id}>
-                      {renderKitRow(summary)}
+                  {suggestions.map((team) => (
+                    <React.Fragment key={team.id}>
+                      {renderTeamRow(team)}
                     </React.Fragment>
                   ))}
                 </View>
@@ -168,42 +199,7 @@ export const AddShirtScreen: React.FC = () => {
               </AppText>
             </View>
           }
-          renderItem={({ item: team }) => (
-            <Pressable
-              onPress={() =>
-                navigation.navigate("TeamDetail", { teamId: team.id })
-              }
-              style={({ pressed }) => [
-                styles.row,
-                {
-                  backgroundColor: colors.surfaceContainer,
-                  borderRadius: radius.md,
-                  opacity: pressed ? 0.85 : 1,
-                },
-              ]}
-            >
-              <View
-                style={[
-                  styles.swatch,
-                  {
-                    backgroundColor: team.primaryColor,
-                    borderRadius: radius.sm + 4,
-                  },
-                ]}
-              />
-              <View style={styles.rowText}>
-                <AppText variant="titleSm">{team.name}</AppText>
-                <AppText variant="labelSm" color={colors.onSurfaceVariant}>
-                  {team.countryName}
-                </AppText>
-              </View>
-              <Ionicons
-                name="chevron-forward"
-                size={18}
-                color={colors.outline}
-              />
-            </Pressable>
-          )}
+          renderItem={({ item: team }) => renderTeamRow(team)}
         />
       )}
     </View>
