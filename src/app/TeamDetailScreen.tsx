@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -7,9 +7,11 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { usePreferencesStore } from "@/store/preferencesStore";
 import { AppText } from "@/components/shared/AppText";
+import { Chip } from "@/components/shared/Chip";
 import { ProgressBar } from "@/components/shared/ProgressBar";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { KitCard } from "@/components/kits/KitCard";
+import { KitListRow } from "@/components/kits/KitListRow";
 import { useStatsStore } from "@/features/stats/statsStore";
 import type { RootStackParamList } from "@/navigation/types";
 
@@ -26,6 +28,10 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
   const favoriteTeamIds = usePreferencesStore((s) => s.favoriteTeamIds);
   const toggleFavoriteTeam = usePreferencesStore((s) => s.toggleFavoriteTeam);
   const isFavorite = favoriteTeamIds.includes(teamId);
+  const viewMode = usePreferencesStore((s) => s.viewMode);
+  const setViewMode = usePreferencesStore((s) => s.setViewMode);
+  const isGrid = viewMode === "grid";
+  const [ownedOnly, setOwnedOnly] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -68,7 +74,11 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
       />
     );
 
-  const erasWithKits = progress.eras.filter((e) => e.totalKits > 0);
+  const erasWithKits = progress.eras
+    .map((e) =>
+      ownedOnly ? { ...e, kits: e.kits.filter((k) => k.ownedCount > 0) } : e,
+    )
+    .filter((e) => e.kits.length > 0);
 
   return (
     <ScrollView
@@ -93,10 +103,43 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
           </AppText>
         </View>
         <ProgressBar value={progress.ownedKits} total={progress.totalKits} />
+        <View style={styles.filterRow}>
+          <Pressable
+            onPress={() => setOwnedOnly((v) => !v)}
+            hitSlop={8}
+            accessibilityRole="switch"
+            accessibilityState={{ checked: ownedOnly }}
+          >
+            <Chip
+              label={t("team.ownedOnly")}
+              icon={ownedOnly ? "checkmark-circle" : "checkmark-circle-outline"}
+              tone={ownedOnly ? "goldSoft" : "outline"}
+            />
+          </Pressable>
+          <Pressable
+            onPress={() => setViewMode(isGrid ? "list" : "grid")}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={t("common.toggleView")}
+          >
+            <Ionicons
+              name={isGrid ? "list-outline" : "grid-outline"}
+              size={20}
+              color={colors.onSurfaceVariant}
+            />
+          </Pressable>
+        </View>
       </View>
 
       {erasWithKits.length === 0 ? (
-        <EmptyState title={t("team.empty")} message={t("team.emptyMessage")} />
+        ownedOnly ? (
+          <EmptyState title={t("team.noOwned")} />
+        ) : (
+          <EmptyState
+            title={t("team.empty")}
+            message={t("team.emptyMessage")}
+          />
+        )
       ) : (
         erasWithKits.map(({ era, kits, ownedKits, totalKits }) => (
           <View key={era.id} style={{ gap: spacing.sm }}>
@@ -106,19 +149,23 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
                 {ownedKits} / {totalKits}
               </AppText>
             </View>
-            <View style={styles.grid}>
-              {kits.map((summary) => (
-                <View key={summary.kit.id} style={styles.gridCell}>
-                  <KitCard
+            <View style={isGrid ? styles.grid : styles.list}>
+              {kits.map((summary) => {
+                const onPress = () =>
+                  navigation.navigate("KitDetail", { kitId: summary.kit.id });
+                return isGrid ? (
+                  <View key={summary.kit.id} style={styles.gridCell}>
+                    <KitCard summary={summary} onPress={onPress} />
+                  </View>
+                ) : (
+                  <KitListRow
+                    key={summary.kit.id}
                     summary={summary}
-                    onPress={() =>
-                      navigation.navigate("KitDetail", {
-                        kitId: summary.kit.id,
-                      })
-                    }
+                    onPress={onPress}
+                    showTeam={false}
                   />
-                </View>
-              ))}
+                );
+              })}
             </View>
           </View>
         ))
@@ -139,6 +186,12 @@ const styles = StyleSheet.create({
     alignItems: "baseline",
     justifyContent: "space-between",
   },
+  filterRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
   gridCell: { width: "47.5%" },
+  list: { gap: 8 },
 });
