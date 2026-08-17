@@ -32,7 +32,7 @@
       "package": "com.matiasturra.kitarchive",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#fcba03"
+        "backgroundColor": "#0a234e"
       },
       "permissions": ["NOTIFICATIONS"]
     },
@@ -43,7 +43,10 @@
       "expo-font",
       [
         "expo-notifications",
-        { "icon": "./assets/icon.png", "color": "#fcba03" }
+        {
+          "icon": "./assets/icon.png",
+          "color": "#fcba03"
+        }
       ],
       [
         "expo-image-picker",
@@ -58,10 +61,10 @@
           "image": "./assets/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#101415",
+          "backgroundColor": "#0f172a",
           "dark": {
             "image": "./assets/splash-icon.png",
-            "backgroundColor": "#101415"
+            "backgroundColor": "#0f172a"
           }
         }
       ],
@@ -89,17 +92,50 @@
                       "type": "enum",
                       "default": "boca_juniors",
                       "values": [
-                        { "name": "Boca Juniors", "value": "boca_juniors" },
-                        { "name": "Argentina", "value": "argentina" },
-                        { "name": "Brazil", "value": "brazil" },
-                        { "name": "Uruguay", "value": "uruguay" },
-                        { "name": "England", "value": "england" },
-                        { "name": "France", "value": "france" },
-                        { "name": "Germany", "value": "germany" },
-                        { "name": "Italy", "value": "italy" },
-                        { "name": "Spain", "value": "spain" },
-                        { "name": "Netherlands", "value": "netherlands" },
-                        { "name": "Portugal", "value": "portugal" }
+                        {
+                          "name": "Boca Juniors",
+                          "value": "boca_juniors"
+                        },
+                        {
+                          "name": "Argentina",
+                          "value": "argentina"
+                        },
+                        {
+                          "name": "Brazil",
+                          "value": "brazil"
+                        },
+                        {
+                          "name": "Uruguay",
+                          "value": "uruguay"
+                        },
+                        {
+                          "name": "England",
+                          "value": "england"
+                        },
+                        {
+                          "name": "France",
+                          "value": "france"
+                        },
+                        {
+                          "name": "Germany",
+                          "value": "germany"
+                        },
+                        {
+                          "name": "Italy",
+                          "value": "italy"
+                        },
+                        {
+                          "name": "Spain",
+                          "value": "spain"
+                        },
+                        {
+                          "name": "Netherlands",
+                          "value": "netherlands"
+                        },
+                        {
+                          "name": "Portugal",
+                          "value": "portugal"
+                        }
                       ]
                     }
                   }
