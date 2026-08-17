@@ -170,7 +170,7 @@ export const CreateKitScreen: React.FC<Props> = ({ route, navigation }) => {
               placeholder={t("common.select")}
               options={countries.map((c) => ({
                 value: c.id,
-                label: `${c.flagEmoji ? `${c.flagEmoji} ` : ""}${c.name}`,
+                label: c.name,
               }))}
               value={countryId}
               onChange={setCountryId}

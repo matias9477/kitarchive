@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { AppText } from "@/components/shared/AppText";
+import { CountryFlag } from "@/components/shared/CountryFlag";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
 import type { TeamWithCountry } from "@/features/catalogue/types";
@@ -65,10 +66,16 @@ export const ExploreScreen: React.FC = () => {
       </View>
       <View style={styles.rowText}>
         <AppText variant="titleSm">{team.name}</AppText>
-        <AppText variant="labelSm" color={colors.onSurfaceVariant}>
-          {team.flagEmoji ? `${team.flagEmoji} ` : ""}
-          {team.countryName}
-        </AppText>
+        <View style={styles.countryRow}>
+          <CountryFlag
+            countryId={team.countryId}
+            countryName={team.countryName}
+            size={12}
+          />
+          <AppText variant="labelSm" color={colors.onSurfaceVariant}>
+            {team.countryName}
+          </AppText>
+        </View>
       </View>
       <Ionicons name="chevron-forward" size={18} color={colors.outline} />
     </Pressable>
@@ -140,6 +147,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   rowText: { flex: 1, gap: 2 },
+  countryRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   swatch: {
     width: 36,
     height: 36,
