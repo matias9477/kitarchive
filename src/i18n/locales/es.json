@@ -26,7 +26,12 @@
     "emptyMessage": "Agregá tu primera camiseta con el botón + de abajo.",
     "recentlyAdded": "Agregadas recientemente",
     "byTeam": "Por equipo",
-    "duplicates": "Duplicadas"
+    "duplicates": "Duplicadas",
+    "viewAll": "Ver todas",
+    "archive": "Archivo {{team}}",
+    "trackingAll": "Siguiendo todos los modelos catalogados",
+    "kitsCollected": "{{owned}} / {{total}} modelos coleccionados",
+    "noFavorites": "Marcá un equipo con la estrella en Explorar para destacarlo acá"
   },
   "collection": {
     "title": "Colección",
@@ -46,7 +51,8 @@
     "shirts_one": "{{count}} camiseta",
     "shirts_other": "{{count}} camisetas",
     "empty": "Sin modelos catalogados",
-    "emptyMessage": "Agregá un modelo para este equipo desde Explorar."
+    "emptyMessage": "Agregá un modelo para este equipo desde Explorar.",
+    "favorite": "Equipo favorito"
   },
   "kitDetail": {
     "addImage": "Agregar imagen de referencia",

@@ -7,8 +7,10 @@ export type TabParamList = {
   Wishlist: undefined;
 };
 
+import type { NavigatorScreenParams } from "@react-navigation/native";
+
 export type RootStackParamList = {
-  MainTabs: undefined;
+  MainTabs: NavigatorScreenParams<TabParamList> | undefined;
   /** Team page: eras, kits, progress. */
   TeamDetail: { teamId: string };
   /** Catalogue kit page: reference images, owned items, wishlist state. */

@@ -1,9 +1,11 @@
 import React, { useCallback } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
+import { usePreferencesStore } from "@/store/preferencesStore";
 import { AppText } from "@/components/shared/AppText";
 import { ProgressBar } from "@/components/shared/ProgressBar";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -21,6 +23,9 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
   const navigation = useNavigation();
   const progress = useStatsStore((s) => s.progressByTeam[teamId]);
   const loadTeamProgress = useStatsStore((s) => s.loadTeamProgress);
+  const favoriteTeamIds = usePreferencesStore((s) => s.favoriteTeamIds);
+  const toggleFavoriteTeam = usePreferencesStore((s) => s.toggleFavoriteTeam);
+  const isFavorite = favoriteTeamIds.includes(teamId);
 
   useFocusEffect(
     useCallback(() => {
@@ -29,8 +34,32 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
   );
 
   React.useLayoutEffect(() => {
-    if (progress?.teamName) navigation.setOptions({ title: progress.teamName });
-  }, [navigation, progress?.teamName]);
+    navigation.setOptions({
+      ...(progress?.teamName ? { title: progress.teamName } : {}),
+      headerRight: () => (
+        <Pressable
+          onPress={() => toggleFavoriteTeam(teamId)}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel={t("team.favorite")}
+        >
+          <Ionicons
+            name={isFavorite ? "star" : "star-outline"}
+            size={22}
+            color={isFavorite ? colors.tertiary : colors.onSurface}
+          />
+        </Pressable>
+      ),
+    });
+  }, [
+    navigation,
+    progress?.teamName,
+    isFavorite,
+    teamId,
+    toggleFavoriteTeam,
+    colors,
+    t,
+  ]);
 
   if (!progress)
     return (

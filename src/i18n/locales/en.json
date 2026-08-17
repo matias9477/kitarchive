@@ -26,7 +26,12 @@
     "emptyMessage": "Add your first shirt with the + button below.",
     "recentlyAdded": "Recently added",
     "byTeam": "By team",
-    "duplicates": "Duplicates"
+    "duplicates": "Duplicates",
+    "viewAll": "View All",
+    "archive": "{{team}} Archive",
+    "trackingAll": "Tracking every catalogued kit",
+    "kitsCollected": "{{owned}} / {{total}} kits collected",
+    "noFavorites": "Star a team in Explore to feature it here"
   },
   "collection": {
     "title": "Collection",
@@ -46,7 +51,8 @@
     "shirts_one": "{{count}} shirt",
     "shirts_other": "{{count}} shirts",
     "empty": "No kits catalogued yet",
-    "emptyMessage": "Add a kit for this team from Explore."
+    "emptyMessage": "Add a kit for this team from Explore.",
+    "favorite": "Favorite team"
   },
   "kitDetail": {
     "addImage": "Add reference image",
