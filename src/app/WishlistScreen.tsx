@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -22,6 +22,12 @@ export const WishlistScreen: React.FC = () => {
     useCallback(() => {
       void load();
     }, [load]),
+  );
+
+  // Pad odd counts with a spacer cell so the last card keeps half-row width.
+  const listData = useMemo(
+    () => (entries.length % 2 === 1 ? [...entries, null] : entries),
+    [entries],
   );
 
   const desiredLine = ({ entry, playerName }: WishlistEntry): string | null => {
@@ -52,8 +58,8 @@ export const WishlistScreen: React.FC = () => {
         <AppText variant="headline">{t("wishlist.title")}</AppText>
       </View>
       <FlatList
-        data={entries}
-        keyExtractor={(e) => e.entry.id}
+        data={listData}
+        keyExtractor={(e) => e?.entry.id ?? "spacer"}
         numColumns={2}
         columnWrapperStyle={{ gap: spacing.gutter }}
         contentContainerStyle={{
@@ -69,6 +75,7 @@ export const WishlistScreen: React.FC = () => {
           />
         }
         renderItem={({ item: entry }) => {
+          if (!entry) return <View style={styles.cell} />;
           const desired = desiredLine(entry);
           return (
             <View style={styles.cell}>

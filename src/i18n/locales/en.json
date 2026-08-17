@@ -15,7 +15,8 @@
     "optional": "Optional",
     "done": "Done",
     "selectedCount_one": "{{count}} selected",
-    "selectedCount_other": "{{count}} selected"
+    "selectedCount_other": "{{count}} selected",
+    "toggleView": "Switch view"
   },
   "home": {
     "title": "KitArchive",
@@ -38,7 +39,9 @@
     "showingSold": "Showing sold items",
     "emptyTitle": "No shirts yet",
     "emptyMessage": "Everything you add appears here as a visual archive.",
-    "emptySold": "No sold items"
+    "emptySold": "No sold items",
+    "allTeams": "All teams",
+    "groupByTeam": "Group by team"
   },
   "explore": {
     "title": "Explore",
@@ -52,7 +55,9 @@
     "shirts_other": "{{count}} shirts",
     "empty": "No kits catalogued yet",
     "emptyMessage": "Add a kit for this team from Explore.",
-    "favorite": "Favorite team"
+    "favorite": "Favorite team",
+    "ownedOnly": "Owned only",
+    "noOwned": "You don't own any kit from this team yet"
   },
   "kitDetail": {
     "addImage": "Add reference image",

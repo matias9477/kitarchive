@@ -3,10 +3,17 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type SortOption = "dateDescending" | "dateAscending" | "alphabetical";
+export type ViewMode = "grid" | "list";
 
 export interface PreferencesState {
   sortOption: SortOption;
   setSortOption: (option: SortOption) => void;
+  /** Card grid vs compact rows, shared by the collection and kit lists. */
+  viewMode: ViewMode;
+  setViewMode: (mode: ViewMode) => void;
+  /** Collection screen: section the list by team. */
+  groupByTeam: boolean;
+  toggleGroupByTeam: () => void;
   /** Teams featured on the dashboard (stat tiles + archive progress). */
   favoriteTeamIds: string[];
   toggleFavoriteTeam: (teamId: string) => void;
@@ -18,6 +25,11 @@ export const usePreferencesStore = create<PreferencesState>()(
     (set, get) => ({
       sortOption: "dateDescending",
       setSortOption: (option) => set({ sortOption: option }),
+      viewMode: "grid",
+      setViewMode: (mode) => set({ viewMode: mode }),
+      groupByTeam: false,
+      toggleGroupByTeam: () =>
+        set((state) => ({ groupByTeam: !state.groupByTeam })),
       // Starts empty — only teams the user stars appear on the dashboard.
       favoriteTeamIds: [],
       toggleFavoriteTeam: (teamId) =>

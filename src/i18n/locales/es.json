@@ -15,7 +15,8 @@
     "optional": "Opcional",
     "done": "Listo",
     "selectedCount_one": "{{count}} seleccionado",
-    "selectedCount_other": "{{count}} seleccionados"
+    "selectedCount_other": "{{count}} seleccionados",
+    "toggleView": "Cambiar vista"
   },
   "home": {
     "title": "KitArchive",
@@ -38,7 +39,9 @@
     "showingSold": "Mostrando vendidas",
     "emptyTitle": "Todavía no hay camisetas",
     "emptyMessage": "Todo lo que agregues aparece acá como un archivo visual.",
-    "emptySold": "No hay camisetas vendidas"
+    "emptySold": "No hay camisetas vendidas",
+    "allTeams": "Todos los equipos",
+    "groupByTeam": "Agrupar por equipo"
   },
   "explore": {
     "title": "Explorar",
@@ -52,7 +55,9 @@
     "shirts_other": "{{count}} camisetas",
     "empty": "Sin modelos catalogados",
     "emptyMessage": "Agregá un modelo para este equipo desde Explorar.",
-    "favorite": "Equipo favorito"
+    "favorite": "Equipo favorito",
+    "ownedOnly": "Solo en colección",
+    "noOwned": "Todavía no tenés modelos de este equipo"
   },
   "kitDetail": {
     "addImage": "Agregar imagen de referencia",

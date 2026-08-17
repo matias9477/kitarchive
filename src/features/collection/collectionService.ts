@@ -97,6 +97,18 @@ export const getItems = async (
   return toSummaries(rows);
 };
 
+/** Teams the user has shirts of (for the collection team filter). */
+export const getCollectionTeams = async (
+  status: "owned" | "sold" = "owned",
+): Promise<{ id: string; name: string }[]> =>
+  getDb()
+    .selectDistinct({ id: teams.id, name: teams.name })
+    .from(collectionItems)
+    .innerJoin(kits, eq(collectionItems.kitId, kits.id))
+    .innerJoin(teams, eq(kits.teamId, teams.id))
+    .where(eq(collectionItems.status, status))
+    .orderBy(asc(teams.name));
+
 export const getItemsByKit = async (
   kitId: string,
 ): Promise<CollectionItemSummary[]> => {

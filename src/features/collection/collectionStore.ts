@@ -13,6 +13,8 @@ import type {
 
 interface State {
   items: CollectionItemSummary[];
+  /** Teams present in the collection (for the team filter chips). */
+  teams: { id: string; name: string }[];
   filters: CollectionFilters;
   itemDetail: CollectionItemDetail | null;
   isLoading: boolean;
@@ -37,6 +39,7 @@ const message = (error: unknown) =>
 /** Zustand store wrapping the collection service; the only thing UI talks to. */
 export const useCollectionStore = create<State>((set, get) => ({
   items: [],
+  teams: [],
   filters: {},
   itemDetail: null,
   isLoading: false,
@@ -45,7 +48,12 @@ export const useCollectionStore = create<State>((set, get) => ({
   load: async () => {
     set({ isLoading: true, error: null });
     try {
-      set({ items: await service.getItems(get().filters), isLoading: false });
+      const filters = get().filters;
+      const [items, teams] = await Promise.all([
+        service.getItems(filters),
+        service.getCollectionTeams(filters.status ?? "owned"),
+      ]);
+      set({ items, teams, isLoading: false });
     } catch (error) {
       set({ error: message(error), isLoading: false });
     }
