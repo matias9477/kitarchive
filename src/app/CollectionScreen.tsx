@@ -305,7 +305,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   headerActions: { flexDirection: "row", gap: 16 },
-  teamChips: { flexGrow: 0 },
+  // flexShrink 0: ScrollView defaults to shrink 1, letting a tall list below
+  // squeeze and clip the chip row.
+  teamChips: { flexGrow: 0, flexShrink: 0 },
   sectionHeader: {
     flexDirection: "row",
     alignItems: "baseline",

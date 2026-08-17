@@ -171,8 +171,24 @@ export const ItemFormScreen: React.FC<Props> = ({ route, navigation }) => {
           ...(parsedPrice != null && currency ? { currency } : {}),
           addonIds,
         });
-        // Land on the new item so photos can be added right away (Flow 1, step 10).
-        navigation.replace("ItemDetail", { itemId: item.id });
+        // Land on the new item so photos can be added right away (Flow 1,
+        // step 10), collapsing the add-flow screens underneath (AddShirt /
+        // TeamDetail / KitDetail) so one back tap returns to the tabs.
+        const rootRoute = navigation.getState()?.routes[0];
+        // Plain RESET action: CommonActions.reset's return type clashes with
+        // exactOptionalPropertyTypes (payload typed `| undefined`).
+        navigation.dispatch({
+          type: "RESET",
+          payload: {
+            index: rootRoute ? 1 : 0,
+            routes: [
+              ...(rootRoute
+                ? [{ name: rootRoute.name, params: rootRoute.params }]
+                : []),
+              { name: "ItemDetail", params: { itemId: item.id } },
+            ],
+          },
+        });
       }
     } finally {
       setSaving(false);
