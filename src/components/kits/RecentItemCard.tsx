@@ -1,9 +1,9 @@
 import React from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { AppText } from "@/components/shared/AppText";
+import { ImageOverlayShelf } from "./ImageOverlayShelf";
 import { KitPlaceholder } from "./KitPlaceholder";
 import type { CollectionItemSummary } from "@/features/collection/types";
 
@@ -59,11 +59,9 @@ export const RecentItemCard: React.FC<RecentItemCardProps> = ({
         </View>
       )}
 
-      {/* Bottom vignette (DESIGN.md image treatment) */}
-      <LinearGradient
-        colors={["transparent", "rgba(11,15,16,0.55)", "rgba(11,15,16,0.92)"]}
-        locations={[0.45, 0.75, 1]}
-        style={StyleSheet.absoluteFill}
+      <ImageOverlayShelf
+        labels={[eraLabel, t(`enums.kitType.${kitType}`).toUpperCase()]}
+        title={teamName}
       />
 
       {/* Top-left badge */}
@@ -89,25 +87,6 @@ export const RecentItemCard: React.FC<RecentItemCardProps> = ({
           {badgeLabel}
         </AppText>
       </View>
-
-      {/* Bottom shelf */}
-      <View style={styles.shelf}>
-        <View style={styles.pills}>
-          <View style={[styles.pill, { borderRadius: radius.sm + 2 }]}>
-            <AppText variant="labelSm" color={colors.onSurface}>
-              {eraLabel}
-            </AppText>
-          </View>
-          <View style={[styles.pill, { borderRadius: radius.sm + 2 }]}>
-            <AppText variant="labelSm" color={colors.onSurface}>
-              {t(`enums.kitType.${kitType}`).toUpperCase()}
-            </AppText>
-          </View>
-        </View>
-        <AppText variant="title" numberOfLines={1}>
-          {teamName}
-        </AppText>
-      </View>
     </Pressable>
   );
 };
@@ -125,19 +104,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderWidth: 1,
-  },
-  shelf: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    padding: 12,
-    gap: 6,
-  },
-  pills: { flexDirection: "row", gap: 6 },
-  pill: {
-    backgroundColor: "rgba(11,15,16,0.7)",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
   },
 });
