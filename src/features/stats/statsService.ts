@@ -6,6 +6,7 @@ import {
   getEras,
   getKitSummariesByIds,
   getKitSummariesByTeam,
+  getTeamById,
 } from "@/features/catalogue/catalogueService";
 import { getItems } from "@/features/collection/collectionService";
 import type {
@@ -107,11 +108,14 @@ export const getDashboardStats = async (): Promise<DashboardStats> => {
 export const getTeamProgress = async (
   teamId: string,
 ): Promise<TeamProgress | null> => {
-  const [teamEras, kitSummaries] = await Promise.all([
+  const [team, teamEras, kitSummaries] = await Promise.all([
+    getTeamById(teamId),
     getEras(teamId),
     getKitSummariesByTeam(teamId),
   ]);
-  const teamName = kitSummaries[0]?.teamName;
+  // From the team row, not kitSummaries[0] — a favorited team with no
+  // catalogue kits yet must still get its name on the dashboard tile.
+  if (!team) return null;
 
   const byEra = new Map<string, EraProgress>();
   for (const era of teamEras)
@@ -127,7 +131,7 @@ export const getTeamProgress = async (
   const eraProgress = [...byEra.values()];
   return {
     teamId,
-    teamName: teamName ?? "",
+    teamName: team.name,
     eras: eraProgress,
     ownedKits: eraProgress.reduce((n, e) => n + e.ownedKits, 0),
     totalKits: eraProgress.reduce((n, e) => n + e.totalKits, 0),

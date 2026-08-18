@@ -33,6 +33,8 @@
     "trackingAll": "Tracking every catalogued kit",
     "kitsCollected": "{{owned}} / {{total}} kits collected",
     "noFavorites": "Star a team in Explore to feature it here",
+    "showAllTeams": "Show all {{count}} teams",
+    "showLessTeams": "Show fewer teams",
     "stats": "Breakdown",
     "byType": "By kit type",
     "byDecade": "By decade",

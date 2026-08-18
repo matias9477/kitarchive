@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,6 +14,9 @@ interface StatTileGridProps {
   progressByTeam: Record<string, TeamProgress>;
 }
 
+/** Favorite tiles shown while collapsed; the rest sit behind "show all". */
+const MAX_COLLAPSED_FAVORITES = 3;
+
 /**
  * Home tile grid: total shirts, one tile per favorite team (first one
  * featured), wishlist — in rows of two, plus an Explore hint when no
@@ -27,6 +30,11 @@ export const StatTileGrid: React.FC<StatTileGridProps> = ({
   const { colors, spacing } = useTheme();
   const { t } = useTranslation();
   const navigation = useNavigation();
+  const [expanded, setExpanded] = useState(false);
+  const hiddenCount = favoriteTeamIds.length - MAX_COLLAPSED_FAVORITES;
+  const visibleFavorites = expanded
+    ? favoriteTeamIds
+    : favoriteTeamIds.slice(0, MAX_COLLAPSED_FAVORITES);
 
   const shirtsFor = (teamId: string) =>
     dashboard?.byTeam.find((bucket) => bucket.key === teamId)?.count ?? 0;
@@ -40,7 +48,7 @@ export const StatTileGrid: React.FC<StatTileGridProps> = ({
       highlight: false,
       onPress: () => navigation.navigate("MainTabs", { screen: "Collection" }),
     },
-    ...favoriteTeamIds.map((teamId, index) => ({
+    ...visibleFavorites.map((teamId, index) => ({
       key: teamId,
       value: shirtsFor(teamId),
       label: progressByTeam[teamId]?.teamName ?? "…",
@@ -78,6 +86,25 @@ export const StatTileGrid: React.FC<StatTileGridProps> = ({
           {row.length === 1 ? <View style={styles.tileSpacer} /> : null}
         </View>
       ))}
+      {hiddenCount > 0 ? (
+        <Pressable
+          onPress={() => setExpanded((v) => !v)}
+          hitSlop={8}
+          accessibilityRole="button"
+          style={styles.toggleRow}
+        >
+          <AppText variant="labelSm" color={colors.secondary}>
+            {expanded
+              ? t("home.showLessTeams")
+              : t("home.showAllTeams", { count: favoriteTeamIds.length })}
+          </AppText>
+          <Ionicons
+            name={expanded ? "chevron-up" : "chevron-down"}
+            size={14}
+            color={colors.secondary}
+          />
+        </Pressable>
+      ) : null}
       {favoriteTeamIds.length === 0 ? (
         <Pressable
           onPress={() => navigation.navigate("MainTabs", { screen: "Explore" })}
@@ -96,6 +123,13 @@ export const StatTileGrid: React.FC<StatTileGridProps> = ({
 const styles = StyleSheet.create({
   tileRow: { flexDirection: "row", gap: 12 },
   tileSpacer: { flex: 1 },
+  toggleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+    paddingVertical: 2,
+  },
   hintRow: {
     flexDirection: "row",
     alignItems: "center",

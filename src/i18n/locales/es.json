@@ -33,6 +33,8 @@
     "trackingAll": "Siguiendo todos los modelos catalogados",
     "kitsCollected": "{{owned}} / {{total}} modelos coleccionados",
     "noFavorites": "Marcá un equipo con la estrella en Explorar para destacarlo acá",
+    "showAllTeams": "Ver los {{count}} equipos",
+    "showLessTeams": "Ver menos equipos",
     "stats": "Desglose",
     "byType": "Por tipo",
     "byDecade": "Por década",
