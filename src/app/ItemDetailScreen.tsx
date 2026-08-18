@@ -231,6 +231,17 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
               </Pressable>
             ))}
           </ScrollView>
+        ) : detail.imageUri ? (
+          // No photos of its own — show the kit's reference image, like the
+          // collection/home cards do.
+          <Image
+            source={{ uri: detail.imageUri }}
+            style={[
+              styles.photo,
+              { width: heroWidth, borderRadius: radius.xl },
+            ]}
+            resizeMode="cover"
+          />
         ) : (
           <View
             style={[

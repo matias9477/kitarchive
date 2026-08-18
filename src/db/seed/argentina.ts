@@ -1,3 +1,4 @@
+import { LATEST_SEASON_START } from "./season";
 import type { EraSeed, KitCompetitionSeed, KitSeed } from "./types";
 
 /**
@@ -16,7 +17,7 @@ interface Cycle {
   competitions?: string[];
 }
 
-const CYCLES: Cycle[] = [
+const CURATED_CYCLES: Cycle[] = [
   {
     start: 1990,
     end: 1991,
@@ -161,6 +162,20 @@ const CYCLES: Cycle[] = [
     competitions: ["world-cup"],
   },
 ];
+
+/** Curated cycles end at 2025–26; pad with generic one-year Adidas cycles
+ * up to the current horizon so new shirts are always cataloguable. */
+const paddedCycles = (): Cycle[] => {
+  const cycles = [...CURATED_CYCLES];
+  let last = cycles[cycles.length - 1];
+  while (last && last.end <= LATEST_SEASON_START) {
+    last = { start: last.end, end: last.end + 1, manufacturerId: "adidas" };
+    cycles.push(last);
+  }
+  return cycles;
+};
+
+const CYCLES = paddedCycles();
 
 const cycleLabel = ({ start, end }: Cycle) => {
   const shortEnd =

@@ -16,6 +16,7 @@ import {
   argentinaKitSeeds,
 } from "./argentina";
 import { nationEraSeeds, nationKitSeeds } from "./nations";
+import { LATEST_SEASON_START } from "./season";
 import type { SeedBundle } from "./types";
 
 /**
@@ -24,6 +25,14 @@ import type { SeedBundle } from "./types";
  * including seed rows the user has corrected in-app — are never overwritten.
  */
 export const SEED_VERSION = 1;
+
+/**
+ * The stored version also encodes the season horizon (season.ts), so the
+ * seeder re-runs — and adds the freshly generated eras/kits — when the
+ * calendar year rolls over, without a manual SEED_VERSION bump. Monotonic as
+ * long as SEED_VERSION only ever increments.
+ */
+const EFFECTIVE_SEED_VERSION = SEED_VERSION * 10_000 + LATEST_SEASON_START;
 
 const bundle: SeedBundle = {
   countries: countrySeeds,
@@ -69,7 +78,7 @@ export const applySeed = async (
     .where(eq(schema.settings.id, "default"))
     .limit(1);
   const currentVersion = row[0]?.seedVersion ?? 0;
-  if (currentVersion >= SEED_VERSION) return;
+  if (currentVersion >= EFFECTIVE_SEED_VERSION) return;
 
   // Insert in FK dependency order.
   await insertIgnoring(typedDb, schema.countries, bundle.countries);
@@ -84,6 +93,6 @@ export const applySeed = async (
 
   await typedDb
     .update(schema.settings)
-    .set({ seedVersion: SEED_VERSION, updatedAt: new Date() })
+    .set({ seedVersion: EFFECTIVE_SEED_VERSION, updatedAt: new Date() })
     .where(eq(schema.settings.id, "default"));
 };

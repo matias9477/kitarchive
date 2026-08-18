@@ -1,8 +1,9 @@
 import type { KitType } from "@/config/types";
+import { LATEST_SEASON_START } from "./season";
 import type { EraSeed, KitCompetitionSeed, KitSeed } from "./types";
 
 /**
- * Boca Juniors seasons 1995/96 → 2024/25 with home/away kits.
+ * Boca Juniors seasons 1995/96 → present with home/away kits.
  * Best-effort historical data (spec §37) — correct in-app as needed; the
  * seeder never overwrites existing rows. Manufacturers: Olan (1995/96),
  * Nike (1996/97–2023/24), Adidas (2024/25–).
@@ -22,7 +23,11 @@ const manufacturerFor = (start: number): string => {
   return "adidas";
 };
 
-const SEASON_STARTS = Array.from({ length: 30 }, (_, i) => 1995 + i); // 1995/96 … 2024/25
+// 1995/96 … the season starting this year (see season.ts).
+const SEASON_STARTS = Array.from(
+  { length: LATEST_SEASON_START - 1995 + 1 },
+  (_, i) => 1995 + i,
+);
 
 export const bocaEraSeeds: EraSeed[] = SEASON_STARTS.map((start) => ({
   id: eraId(start),

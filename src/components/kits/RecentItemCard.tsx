@@ -104,7 +104,7 @@ export const RecentItemCard: React.FC<RecentItemCardProps> = ({
             </AppText>
           </View>
         </View>
-        <AppText variant="headline" numberOfLines={1}>
+        <AppText variant="title" numberOfLines={1}>
           {teamName}
         </AppText>
       </View>
@@ -114,16 +114,16 @@ export const RecentItemCard: React.FC<RecentItemCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    width: 280,
+    width: 210,
     aspectRatio: 4 / 5,
     overflow: "hidden",
   },
   badge: {
     position: "absolute",
-    top: 12,
-    left: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    top: 10,
+    left: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderWidth: 1,
   },
   shelf: {
@@ -131,8 +131,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    padding: 16,
-    gap: 8,
+    padding: 12,
+    gap: 6,
   },
   pills: { flexDirection: "row", gap: 6 },
   pill: {

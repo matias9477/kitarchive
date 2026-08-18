@@ -93,6 +93,19 @@ describe("catalogue seed integrity", () => {
     ).toBeGreaterThanOrEqual(48);
   });
 
+  it("season seeds extend to the current year (next season available)", () => {
+    const year = new Date().getFullYear();
+    expect(bocaEraSeeds.some((era) => era.startYear === year)).toBe(true);
+    expect(argentinaEraSeeds.some((era) => (era.endYear ?? 0) >= year)).toBe(
+      true,
+    );
+    // Nations run on even-year cycles, so the latest start is at most 1 back.
+    const latestNationStart = Math.max(
+      ...nationEraSeeds.map((era) => era.startYear),
+    );
+    expect(latestNationStart).toBeGreaterThanOrEqual(year - 1);
+  });
+
   it("every widget picker team exists in the seed", () => {
     // Keep in sync with the teamId enum values in app.json (expo-widgets).
     const appJson = require("../../../../app.json");

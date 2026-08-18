@@ -1,3 +1,4 @@
+import { LATEST_SEASON_START } from "./season";
 import type { EraSeed, KitSeed } from "./types";
 
 /**
@@ -24,7 +25,11 @@ const NATIONS: NationCycles[] = [
   { teamId: "portugal", manufacturer: () => "nike" },
 ];
 
-const CYCLE_STARTS = [2018, 2020, 2022, 2024];
+// Even-year tournament cycles from 2018 up to the current horizon.
+const CYCLE_STARTS = Array.from(
+  { length: Math.floor((LATEST_SEASON_START - 2018) / 2) + 1 },
+  (_, i) => 2018 + i * 2,
+);
 
 const eraId = (teamId: string, start: number) =>
   `${teamId}-${start}-${start + 1}`;
