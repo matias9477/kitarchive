@@ -14,8 +14,11 @@ interface StatTileGridProps {
   progressByTeam: Record<string, TeamProgress>;
 }
 
-/** Favorite tiles shown while collapsed; the rest sit behind "show all". */
-const MAX_COLLAPSED_FAVORITES = 3;
+/**
+ * Favorite tiles shown while collapsed; with the total + wishlist tiles the
+ * collapsed grid tops out at 4 tiles (2 rows), the rest behind "show all".
+ */
+const MAX_COLLAPSED_FAVORITES = 2;
 
 /**
  * Home tile grid: total shirts, one tile per favorite team (first one
