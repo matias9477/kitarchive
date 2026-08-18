@@ -3,7 +3,6 @@ import {
   Alert,
   FlatList,
   Pressable,
-  ScrollView,
   SectionList,
   StyleSheet,
   View,
@@ -15,8 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { CONDITIONS, KIT_TYPES } from "@/config/constants";
 import { AppText } from "@/components/shared/AppText";
-import { Chip } from "@/components/shared/Chip";
-import { SegmentedControl } from "@/components/shared/SegmentedControl";
+import { FilterSelector } from "@/components/shared/FilterSelector";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ItemCard } from "@/components/kits/ItemCard";
 import { ItemListRow } from "@/components/kits/ItemListRow";
@@ -176,7 +174,7 @@ export const CollectionScreen: React.FC = () => {
               color={
                 sortOption === "dateDescending"
                   ? colors.onSurface
-                  : colors.tertiary
+                  : colors.secondary
               }
             />
           </Pressable>
@@ -190,7 +188,7 @@ export const CollectionScreen: React.FC = () => {
             <Ionicons
               name={groupByTeam ? "albums" : "albums-outline"}
               size={22}
-              color={groupByTeam ? colors.tertiary : colors.onSurface}
+              color={groupByTeam ? colors.secondary : colors.onSurface}
             />
           </Pressable>
           <Pressable
@@ -214,7 +212,7 @@ export const CollectionScreen: React.FC = () => {
             <Ionicons
               name={showingSold ? "archive" : "archive-outline"}
               size={22}
-              color={showingSold ? colors.tertiary : colors.onSurface}
+              color={showingSold ? colors.secondary : colors.onSurface}
             />
           </Pressable>
           <Pressable onPress={() => navigation.navigate("Search")} hitSlop={8}>
@@ -223,96 +221,54 @@ export const CollectionScreen: React.FC = () => {
         </View>
       </View>
 
-      <View
-        style={{ paddingHorizontal: spacing.screen, paddingBottom: spacing.sm }}
-      >
-        <SegmentedControl
-          options={typeOptions}
-          value={filters.kitType ?? null}
-          onChange={(kitType) =>
-            setFilters({ ...filters, kitType: kitType ?? undefined })
-          }
-          clearable
-        />
-      </View>
-
-      {teams.length > 0 ? (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.teamChips}
-          contentContainerStyle={{
-            paddingHorizontal: spacing.screen,
-            paddingBottom: spacing.sm,
-            gap: spacing.xs,
-          }}
+      {items.length > 0 ||
+      filters.kitType ||
+      filters.teamId ||
+      filters.condition ? (
+        <View
+          style={[
+            styles.filterBar,
+            {
+              paddingHorizontal: spacing.screen,
+              paddingBottom: spacing.sm,
+              gap: spacing.xs,
+            },
+          ]}
         >
-          <Pressable
-            onPress={() => void setFilters({ ...filters, teamId: undefined })}
-          >
-            <Chip
-              label={t("collection.allTeams")}
-              tone={!filters.teamId ? "blue" : "outline"}
-            />
-          </Pressable>
-          {teams.map((team) => (
-            <Pressable
-              key={team.id}
-              onPress={() =>
-                void setFilters({
-                  ...filters,
-                  teamId: filters.teamId === team.id ? undefined : team.id,
-                })
-              }
-            >
-              <Chip
-                label={team.name}
-                tone={filters.teamId === team.id ? "blue" : "outline"}
-              />
-            </Pressable>
-          ))}
-        </ScrollView>
-      ) : null}
-
-      {items.length > 0 || filters.condition ? (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.teamChips}
-          contentContainerStyle={{
-            paddingHorizontal: spacing.screen,
-            paddingBottom: spacing.sm,
-            gap: spacing.xs,
-          }}
-        >
-          <Pressable
-            onPress={() =>
-              void setFilters({ ...filters, condition: undefined })
+          <FilterSelector
+            label={t("collection.filterType")}
+            allLabel={t("collection.allTypes")}
+            options={typeOptions}
+            value={filters.kitType ?? null}
+            onChange={(kitType) =>
+              setFilters({ ...filters, kitType: kitType ?? undefined })
             }
-          >
-            <Chip
-              label={t("collection.allConditions")}
-              tone={!filters.condition ? "blue" : "outline"}
-            />
-          </Pressable>
-          {CONDITIONS.map((condition) => (
-            <Pressable
-              key={condition}
-              onPress={() =>
-                void setFilters({
-                  ...filters,
-                  condition:
-                    filters.condition === condition ? undefined : condition,
-                })
-              }
-            >
-              <Chip
-                label={t(`enums.condition.${condition}`)}
-                tone={filters.condition === condition ? "blue" : "outline"}
-              />
-            </Pressable>
-          ))}
-        </ScrollView>
+          />
+          <FilterSelector
+            label={t("collection.filterTeam")}
+            allLabel={t("collection.allTeams")}
+            options={teams.map((team) => ({
+              value: team.id,
+              label: team.name,
+            }))}
+            value={filters.teamId ?? null}
+            onChange={(teamId) =>
+              setFilters({ ...filters, teamId: teamId ?? undefined })
+            }
+          />
+          <FilterSelector
+            label={t("collection.filterCondition")}
+            allLabel={t("collection.allConditions")}
+            options={CONDITIONS.map((condition) => ({
+              value: condition,
+              label: t(`enums.condition.${condition}`),
+            }))}
+            value={filters.condition ?? null}
+            onChange={(condition) =>
+              setFilters({ ...filters, condition: condition ?? undefined })
+            }
+          />
+        </View>
       ) : null}
 
       {showingSold ? (
@@ -404,9 +360,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   headerActions: { flexDirection: "row", gap: 16 },
-  // flexShrink 0: ScrollView defaults to shrink 1, letting a tall list below
-  // squeeze and clip the chip row.
-  teamChips: { flexGrow: 0, flexShrink: 0 },
+  // Wraps if a long selected value doesn't fit next to the other pills.
+  filterBar: { flexDirection: "row", flexWrap: "wrap" },
   sectionHeader: {
     flexDirection: "row",
     alignItems: "baseline",

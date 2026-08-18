@@ -113,7 +113,7 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
             <Chip
               label={t("team.ownedOnly")}
               icon={ownedOnly ? "checkmark-circle" : "checkmark-circle-outline"}
-              tone={ownedOnly ? "goldSoft" : "outline"}
+              tone={ownedOnly ? "blue" : "outline"}
             />
           </Pressable>
           <Pressable

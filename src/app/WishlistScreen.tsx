@@ -1,11 +1,14 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
+import { KIT_TYPES } from "@/config/constants";
+import type { KitType } from "@/config/types";
 import { AppText } from "@/components/shared/AppText";
+import { FilterSelector } from "@/components/shared/FilterSelector";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { KitCard } from "@/components/kits/KitCard";
 import { KitListRow } from "@/components/kits/KitListRow";
@@ -23,6 +26,8 @@ export const WishlistScreen: React.FC = () => {
   const viewMode = usePreferencesStore((s) => s.viewMode);
   const setViewMode = usePreferencesStore((s) => s.setViewMode);
   const isGrid = viewMode === "grid";
+  const [kitType, setKitType] = useState<KitType | null>(null);
+  const [teamId, setTeamId] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -30,10 +35,38 @@ export const WishlistScreen: React.FC = () => {
     }, [load]),
   );
 
+  const typeOptions = useMemo(
+    () =>
+      KIT_TYPES.map((type) => ({
+        value: type,
+        label: t(`enums.kitType.${type}`),
+      })),
+    [t],
+  );
+
+  const teamOptions = useMemo(() => {
+    const byId = new Map<string, string>();
+    for (const { kit } of entries) byId.set(kit.kit.teamId, kit.teamName);
+    return [...byId]
+      .map(([value, label]) => ({ value, label }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [entries]);
+
+  const filtered = useMemo(
+    () =>
+      entries.filter(
+        ({ kit }) =>
+          (!kitType || kit.kit.type === kitType) &&
+          (!teamId || kit.kit.teamId === teamId),
+      ),
+    [entries, kitType, teamId],
+  );
+
   // Pad odd counts with a spacer cell so the last card keeps half-row width.
   const listData = useMemo(
-    () => (isGrid && entries.length % 2 === 1 ? [...entries, null] : entries),
-    [entries, isGrid],
+    () =>
+      isGrid && filtered.length % 2 === 1 ? [...filtered, null] : filtered,
+    [filtered, isGrid],
   );
 
   const desiredLine = ({ entry, playerName }: WishlistEntry): string | null => {
@@ -75,6 +108,35 @@ export const WishlistScreen: React.FC = () => {
           />
         </Pressable>
       </View>
+
+      {entries.length > 0 ? (
+        <View
+          style={[
+            styles.filterBar,
+            {
+              paddingHorizontal: spacing.screen,
+              paddingBottom: spacing.sm,
+              gap: spacing.xs,
+            },
+          ]}
+        >
+          <FilterSelector
+            label={t("collection.filterType")}
+            allLabel={t("collection.allTypes")}
+            options={typeOptions}
+            value={kitType}
+            onChange={setKitType}
+          />
+          <FilterSelector
+            label={t("collection.filterTeam")}
+            allLabel={t("collection.allTeams")}
+            options={teamOptions}
+            value={teamId}
+            onChange={setTeamId}
+          />
+        </View>
+      ) : null}
+
       <FlatList
         key={viewMode}
         data={listData}
@@ -87,11 +149,15 @@ export const WishlistScreen: React.FC = () => {
           gap: isGrid ? spacing.gutter : spacing.xs,
         }}
         ListEmptyComponent={
-          <EmptyState
-            icon="star-outline"
-            title={t("wishlist.emptyTitle")}
-            message={t("wishlist.emptyMessage")}
-          />
+          entries.length > 0 ? (
+            <EmptyState icon="star-outline" title={t("addShirt.noResults")} />
+          ) : (
+            <EmptyState
+              icon="star-outline"
+              title={t("wishlist.emptyTitle")}
+              message={t("wishlist.emptyMessage")}
+            />
+          )
         }
         renderItem={({ item: entry }) => {
           if (!entry) return <View style={styles.cell} />;
@@ -126,5 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 12,
   },
+  // Wraps if a long selected value doesn't fit next to the other pills.
+  filterBar: { flexDirection: "row", flexWrap: "wrap" },
   cell: { flex: 1, gap: 4 },
 });
