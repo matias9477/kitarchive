@@ -13,7 +13,7 @@ interface StatsBreakdownSectionProps {
   byCondition: CountBucket<Condition>[];
 }
 
-/** Collection breakdowns (spec §29) as bar lists: type, decade, condition. */
+/** Collection breakdowns (spec §29): one stacked bar per dimension. */
 export const StatsBreakdownSection: React.FC<StatsBreakdownSectionProps> = ({
   byType,
   byDecade,
@@ -26,7 +26,7 @@ export const StatsBreakdownSection: React.FC<StatsBreakdownSectionProps> = ({
 
   return (
     <Section title={t("home.stats")} icon="stats-chart-outline">
-      <View style={{ gap: spacing.md }}>
+      <View style={{ gap: spacing.sm }}>
         <BreakdownBars
           title={t("home.byType")}
           buckets={byType.map((b) => ({

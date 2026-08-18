@@ -5,15 +5,9 @@ import { useTheme } from "@/theme/index";
 interface ProgressBarProps {
   value: number;
   total: number;
-  /** Fixed fill color — skips the default gold-when-complete treatment. */
-  color?: string;
 }
 
-export const ProgressBar: React.FC<ProgressBarProps> = ({
-  value,
-  total,
-  color,
-}) => {
+export const ProgressBar: React.FC<ProgressBarProps> = ({ value, total }) => {
   const { colors, radius } = useTheme();
   const ratio = total > 0 ? Math.min(1, value / total) : 0;
   return (
@@ -31,8 +25,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
           styles.fill,
           {
             backgroundColor:
-              color ??
-              (ratio >= 1 ? colors.tertiary : colors.secondaryContainer),
+              ratio >= 1 ? colors.tertiary : colors.secondaryContainer,
             borderRadius: radius.full,
             width: `${ratio * 100}%`,
           },
