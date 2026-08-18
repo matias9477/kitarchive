@@ -8,6 +8,7 @@ import { AppText } from "@/components/shared/AppText";
 import { Chip } from "@/components/shared/Chip";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { KitPlaceholder } from "@/components/kits/KitPlaceholder";
+import { TeamRow } from "@/components/kits/TeamRow";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
 import {
   getSuggestedTeams,
@@ -84,34 +85,10 @@ export const AddShirtScreen: React.FC = () => {
   );
 
   const renderTeamRow = (team: TeamWithCountry) => (
-    <Pressable
+    <TeamRow
+      team={team}
       onPress={() => navigation.navigate("TeamDetail", { teamId: team.id })}
-      style={({ pressed }) => [
-        styles.row,
-        {
-          backgroundColor: colors.surfaceContainer,
-          borderRadius: radius.md,
-          opacity: pressed ? 0.85 : 1,
-        },
-      ]}
-    >
-      <View
-        style={[
-          styles.swatch,
-          {
-            backgroundColor: team.primaryColor,
-            borderRadius: radius.sm + 4,
-          },
-        ]}
-      />
-      <View style={styles.rowText}>
-        <AppText variant="titleSm">{team.name}</AppText>
-        <AppText variant="labelSm" color={colors.onSurfaceVariant}>
-          {team.countryName}
-        </AppText>
-      </View>
-      <Ionicons name="chevron-forward" size={18} color={colors.outline} />
-    </Pressable>
+    />
   );
 
   return (
@@ -224,6 +201,5 @@ const styles = StyleSheet.create({
   },
   rowText: { flex: 1, gap: 2 },
   thumb: { width: 40, height: 52, overflow: "hidden" },
-  swatch: { width: 36, height: 36 },
   footerLink: { paddingVertical: 16, alignItems: "center" },
 });
