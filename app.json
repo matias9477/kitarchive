@@ -3,7 +3,7 @@
     "name": "kitarchive",
     "slug": "kitarchive",
     "scheme": "kitarchive",
-    "version": "1.1.0",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -12,7 +12,7 @@
       "supportsTablet": true,
       "appleTeamId": "7VJ997Q842",
       "bundleIdentifier": "com.matiasturra.kitarchive",
-      "buildNumber": "2",
+      "buildNumber": "1",
       "entitlements": {
         "com.apple.security.application-groups": [
           "group.com.matiasturra.kitarchive"
@@ -25,10 +25,7 @@
         "NSPhotoLibraryAddUsageDescription": "Save shirt photos to your Photos library.",
         "NSCameraUsageDescription": "Photograph the shirts in your collection.",
         "ITSAppUsesNonExemptEncryption": false,
-        "CFBundleLocalizations": [
-          "en",
-          "es"
-        ]
+        "CFBundleLocalizations": ["en", "es"]
       }
     },
     "android": {
@@ -37,10 +34,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0a234e"
       },
-      "permissions": [
-        "android.permission.NOTIFICATIONS",
-        "android.permission.RECORD_AUDIO"
-      ]
+      "permissions": ["NOTIFICATIONS"]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -152,28 +146,6 @@
         }
       ],
       "expo-localization"
-    ],
-    "extra": {
-      "eas": {
-        "build": {
-          "experimental": {
-            "ios": {
-              "appExtensions": [
-                {
-                  "targetName": "ExpoWidgetsTarget",
-                  "bundleIdentifier": "com.matiasturra.kitarchive.ExpoWidgetsTarget",
-                  "entitlements": {
-                    "com.apple.security.application-groups": [
-                      "group.com.matiasturra.kitarchive"
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        },
-        "projectId": "3ad9af1f-3af2-4ae9-97a3-3539a3176f6f"
-      }
-    }
+    ]
   }
 }
