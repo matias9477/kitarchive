@@ -12,7 +12,7 @@
       "supportsTablet": true,
       "appleTeamId": "7VJ997Q842",
       "bundleIdentifier": "com.matiasturra.kitarchive",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "entitlements": {
         "com.apple.security.application-groups": [
           "group.com.matiasturra.kitarchive"
