@@ -1,19 +1,9 @@
+import Constants from "expo-constants";
+
 /**
- * App version, read from package.json at bundle time (Metro resolves the
- * require). Falls back to app.json, then '1.0.0'.
+ * App version from app.json (expo.version — the store marketing version,
+ * bumped by expo-release), resolved through expo-constants at runtime so it
+ * always matches the built binary's config.
  */
-export const getAppVersion = (): string => {
-  try {
-    const packageJson = require("../../package.json");
-    if (packageJson?.version) return packageJson.version;
-  } catch {
-    // fall through
-  }
-  try {
-    const appJson = require("../../app.json");
-    if (appJson?.expo?.version) return appJson.expo.version;
-  } catch (error) {
-    console.warn("Could not read version, using fallback:", error);
-  }
-  return "1.0.0";
-};
+export const getAppVersion = (): string =>
+  Constants.expoConfig?.version ?? "1.0.0";
