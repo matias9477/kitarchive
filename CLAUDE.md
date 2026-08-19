@@ -101,6 +101,11 @@ components; `createWidget()` exports the handle. Declared in `app.json` under
   decoded in `KitsWidget.tsx` (enforced by the seed test).
 - Families and parameter shape/values live in `app.json` and need a new binary
   to change.
+- The `'widget'`-directive component is shipped to the widget extension as a
+  **source string** and evaluated in a JS context where only injected globals
+  (SwiftUI components, modifiers, React) exist. It must not reference anything
+  from module scope — constants, helpers, non-type imports — or the widget
+  renders a red ReferenceError; define everything inside the function body.
 - Requires a development build — widgets do not work in Expo Go. `expo-widgets`
   throws at _import_ time when the native module is missing (and with Metro
   lazy bundling that throw escapes try/catch around require), so app code must

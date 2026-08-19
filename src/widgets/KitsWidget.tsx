@@ -28,14 +28,16 @@ type KitsWidgetConfig = {
   teamId?: string;
 };
 
-const GOLD = "#efc200";
-const MUTED = "#c6c6cd";
-
 const KitsWidgetComponent = (
   props: KitsWidgetProps,
   environment: WidgetEnvironment<KitsWidgetConfig>,
 ) => {
   "widget";
+  // The 'widget' directive makes expo-widgets ship this function to the
+  // widget extension as a source string, evaluated in a JS context where only
+  // globals exist — every value it uses must be defined inside the function.
+  const GOLD = "#efc200";
+  const MUTED = "#c6c6cd";
   const teams = props.teams ?? [];
   const selectedId = environment.configuration?.teamId;
   const team =
