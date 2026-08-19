@@ -148,7 +148,8 @@
           ]
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "expo-sharing"
     ],
     "extra": {
       "eas": {

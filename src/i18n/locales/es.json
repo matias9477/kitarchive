@@ -236,7 +236,21 @@
     "about": "Acerca de",
     "version": "Versión",
     "catalogueVersion": "Versión del catálogo",
-    "privacyPolicy": "Política de privacidad"
+    "privacyPolicy": "Política de privacidad",
+    "backup": "Copia de seguridad",
+    "exportBackup": "Exportar copia",
+    "importBackup": "Restaurar copia",
+    "exportErrorTitle": "Error al exportar",
+    "exportErrorMessage": "No se pudo crear la copia de seguridad. Inténtalo de nuevo.",
+    "importConfirmTitle": "¿Restaurar copia?",
+    "importConfirmMessage": "Esto reemplaza tu catálogo, colección y lista de deseos con el contenido de la copia. No se puede deshacer.",
+    "importConfirmAction": "Restaurar",
+    "importSuccessTitle": "Copia restaurada",
+    "importSuccessMessage": "Tus datos se han restaurado.",
+    "importErrorTitle": "Error al restaurar",
+    "importErrorInvalid": "Este archivo no es una copia de seguridad válida de KitArchive.",
+    "importErrorNewer": "Esta copia se creó con una versión más reciente de la app. Actualiza la app e inténtalo de nuevo.",
+    "importErrorGeneric": "No se pudo restaurar la copia. Tus datos no se modificaron."
   },
   "enums": {
     "teamType": {

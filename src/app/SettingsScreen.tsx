@@ -1,125 +1,26 @@
 import React from "react";
-import { Linking, Pressable, ScrollView, StyleSheet, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useTranslation } from "react-i18next";
+import { ScrollView, StyleSheet } from "react-native";
 import { useTheme } from "@/theme/index";
-import { AppText } from "@/components/shared/AppText";
-import { Section } from "@/components/shared/Section";
-import { PRIVACY_POLICY_URL } from "@/config/constants";
-import { useLanguageStore } from "@/store/languageStore";
-import type { LanguagePreference } from "@/i18n/index";
-import { getAppVersion } from "@/utils/version";
-import { SEED_VERSION } from "@/db/seed";
+import { LanguageSection } from "@/components/settings/LanguageSection";
+import { DataSection } from "@/components/settings/DataSection";
+import { AboutSection } from "@/components/settings/AboutSection";
 
-/** Language + about. The app is dark-only by design, so no theme toggle. */
+/** Language + backup + about. Dark-only by design, so no theme toggle. */
 export const SettingsScreen: React.FC = () => {
-  const { colors, spacing, radius } = useTheme();
-  const { t } = useTranslation();
-  const language = useLanguageStore((s) => s.language);
-  const setLanguage = useLanguageStore((s) => s.setLanguage);
-
-  const languageOptions: { value: LanguagePreference; label: string }[] = [
-    { value: "system", label: t("settings.system") },
-    { value: "en", label: "English" },
-    { value: "es", label: "Español" },
-  ];
+  const { colors, spacing } = useTheme();
 
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.background }]}
       contentContainerStyle={{ padding: spacing.screen, gap: spacing.lg }}
     >
-      <Section title={t("settings.language")} icon="language-outline">
-        <View style={{ gap: spacing.xs }}>
-          {languageOptions.map((option) => {
-            const active = option.value === language;
-            return (
-              <Pressable
-                key={option.value}
-                onPress={() => setLanguage(option.value)}
-                style={[
-                  styles.row,
-                  {
-                    backgroundColor: colors.surfaceContainer,
-                    borderRadius: radius.md,
-                  },
-                ]}
-              >
-                <AppText color={active ? colors.secondary : colors.onSurface}>
-                  {option.label}
-                </AppText>
-                {active ? (
-                  <Ionicons
-                    name="checkmark"
-                    size={18}
-                    color={colors.secondary}
-                  />
-                ) : null}
-              </Pressable>
-            );
-          })}
-        </View>
-      </Section>
-
-      <Section title={t("settings.about")} icon="information-circle-outline">
-        <View style={{ gap: spacing.xs }}>
-          <View
-            style={[
-              styles.row,
-              {
-                backgroundColor: colors.surfaceContainer,
-                borderRadius: radius.md,
-              },
-            ]}
-          >
-            <AppText color={colors.onSurfaceVariant}>
-              {t("settings.version")}
-            </AppText>
-            <AppText>{getAppVersion()}</AppText>
-          </View>
-          <View
-            style={[
-              styles.row,
-              {
-                backgroundColor: colors.surfaceContainer,
-                borderRadius: radius.md,
-              },
-            ]}
-          >
-            <AppText color={colors.onSurfaceVariant}>
-              {t("settings.catalogueVersion")}
-            </AppText>
-            <AppText>{SEED_VERSION}</AppText>
-          </View>
-          <Pressable
-            onPress={() => void Linking.openURL(PRIVACY_POLICY_URL)}
-            accessibilityRole="link"
-            style={[
-              styles.row,
-              {
-                backgroundColor: colors.surfaceContainer,
-                borderRadius: radius.md,
-              },
-            ]}
-          >
-            <AppText color={colors.onSurfaceVariant}>
-              {t("settings.privacyPolicy")}
-            </AppText>
-            <Ionicons name="open-outline" size={18} color={colors.outline} />
-          </Pressable>
-        </View>
-      </Section>
+      <LanguageSection />
+      <DataSection />
+      <AboutSection />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-  },
 });

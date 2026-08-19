@@ -236,7 +236,21 @@
     "about": "About",
     "version": "Version",
     "catalogueVersion": "Catalogue version",
-    "privacyPolicy": "Privacy policy"
+    "privacyPolicy": "Privacy policy",
+    "backup": "Backup",
+    "exportBackup": "Export backup",
+    "importBackup": "Restore backup",
+    "exportErrorTitle": "Export failed",
+    "exportErrorMessage": "The backup could not be created. Please try again.",
+    "importConfirmTitle": "Restore backup?",
+    "importConfirmMessage": "This replaces your catalogue, collection and wishlist with the backup contents. This cannot be undone.",
+    "importConfirmAction": "Restore",
+    "importSuccessTitle": "Backup restored",
+    "importSuccessMessage": "Your data has been restored.",
+    "importErrorTitle": "Restore failed",
+    "importErrorInvalid": "This file is not a valid KitArchive backup.",
+    "importErrorNewer": "This backup was created with a newer version of the app. Update the app and try again.",
+    "importErrorGeneric": "The backup could not be restored. Your data was not changed."
   },
   "enums": {
     "teamType": {
