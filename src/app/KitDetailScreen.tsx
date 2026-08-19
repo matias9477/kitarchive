@@ -20,9 +20,10 @@ import { AppText } from "@/components/shared/AppText";
 import { Button } from "@/components/shared/Button";
 import { Chip } from "@/components/shared/Chip";
 import { Section } from "@/components/shared/Section";
-import { ImageOverlayShelf } from "@/components/kits/ImageOverlayShelf";
-import { KitImageView } from "@/components/kits/KitImageView";
-import { KitPlaceholder } from "@/components/kits/KitPlaceholder";
+import {
+  HeroGallery,
+  type HeroGalleryHandle,
+} from "@/components/kits/HeroGallery";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
 import { useWishlistStore } from "@/features/wishlist/wishlistStore";
 import { getItemsByKit } from "@/features/collection/collectionService";
@@ -52,8 +53,7 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
   // Cap the hero so title/specs peek above the fold; the sticky action bar
   // below keeps add/wishlist reachable without scrolling.
   const heroHeight = Math.min((heroWidth * 4) / 3, windowHeight * 0.45);
-  const heroScrollRef = React.useRef<ScrollView>(null);
-  const [heroPage, setHeroPage] = React.useState(0);
+  const heroRef = React.useRef<HeroGalleryHandle>(null);
   const wishlistLoad = useWishlistStore((s) => s.load);
   const wishlistAdd = useWishlistStore((s) => s.add);
   const wishlistRemove = useWishlistStore((s) => s.removeByKit);
@@ -134,8 +134,7 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
               text: t("kitDetail.setDefaultImage"),
               onPress: () => {
                 void setDefaultKitImage(image.id, kitId).then(() => {
-                  heroScrollRef.current?.scrollTo({ x: 0, animated: false });
-                  setHeroPage(0);
+                  heroRef.current?.resetToFirst();
                 });
               },
             },
@@ -169,87 +168,37 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
         {/* Hero: paged reference images with the kit metadata overlaid
           (tap an image for options) */}
         <View style={{ gap: spacing.sm }}>
-          <View style={{ borderRadius: radius.xl, overflow: "hidden" }}>
-            {detail.images.length > 0 ? (
-              <ScrollView
-                ref={heroScrollRef}
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                onMomentumScrollEnd={(event) =>
-                  setHeroPage(
-                    Math.round(event.nativeEvent.contentOffset.x / heroWidth),
-                  )
-                }
-              >
-                {detail.images.map((image, index) => (
-                  <Pressable
-                    key={image.id}
-                    onPress={() => imageOptions(image, index)}
-                  >
-                    <KitImageView
-                      uri={image.uri}
-                      primaryColor={detail.teamPrimaryColor}
-                      secondaryColor={detail.teamSecondaryColor}
-                      style={{ width: heroWidth, height: heroHeight }}
-                    />
-                    {index === 0 && detail.images.length > 1 ? (
-                      <View style={styles.defaultBadge}>
-                        <Chip
-                          label={t("kitDetail.defaultImage")}
-                          icon="image"
-                          tone="goldSoft"
-                        />
-                      </View>
-                    ) : null}
-                  </Pressable>
-                ))}
-              </ScrollView>
-            ) : (
-              <View style={{ width: heroWidth, height: heroHeight }}>
-                <KitPlaceholder
-                  primaryColor={detail.teamPrimaryColor}
-                  secondaryColor={detail.teamSecondaryColor}
-                />
-              </View>
-            )}
-            <ImageOverlayShelf
-              labels={[
-                detail.eraLabel,
-                t(`enums.kitType.${detail.kit.type}`).toUpperCase(),
-                ...(detail.manufacturerName ? [detail.manufacturerName] : []),
-              ]}
-              title={detail.teamName}
-              titleVariant="headline"
-            />
-            {ownedItems.length > 0 ? (
-              <View pointerEvents="none" style={styles.ownedBadge}>
+          <HeroGallery
+            ref={heroRef}
+            images={detail.images}
+            primaryColor={detail.teamPrimaryColor}
+            secondaryColor={detail.teamSecondaryColor}
+            width={heroWidth}
+            height={heroHeight}
+            overlayLabels={[
+              detail.eraLabel,
+              t(`enums.kitType.${detail.kit.type}`).toUpperCase(),
+              ...(detail.manufacturerName ? [detail.manufacturerName] : []),
+            ]}
+            overlayTitle={detail.teamName}
+            defaultBadgeLabel={t("kitDetail.defaultImage")}
+            badge={
+              ownedItems.length > 0 ? (
                 <Chip
                   label={t("enums.status.owned")}
                   icon="checkmark-circle"
                   tone="goldSoft"
                 />
-              </View>
-            ) : null}
-          </View>
-          {detail.images.length > 1 ? (
-            <View style={styles.dots}>
-              {detail.images.map((image, index) => (
-                <View
-                  key={image.id}
-                  style={[
-                    styles.dot,
-                    {
-                      backgroundColor:
-                        index === Math.min(heroPage, detail.images.length - 1)
-                          ? colors.onSurface
-                          : colors.outlineVariant,
-                    },
-                  ]}
-                />
-              ))}
-            </View>
-          ) : null}
+              ) : null
+            }
+            onImagePress={(index) => {
+              const image = detail.images[index];
+              if (image) imageOptions(image, index);
+            }}
+            onTitlePress={() =>
+              navigation.navigate("TeamDetail", { teamId: detail.kit.teamId })
+            }
+          />
           <Button
             label={t("kitDetail.addImage")}
             icon="images-outline"
@@ -402,10 +351,6 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  defaultBadge: { position: "absolute", top: 10, left: 10 },
-  ownedBadge: { position: "absolute", top: 10, right: 10 },
-  dots: { flexDirection: "row", justifyContent: "center", gap: 6 },
-  dot: { width: 6, height: 6, borderRadius: 3 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
   itemRow: {
     flexDirection: "row",

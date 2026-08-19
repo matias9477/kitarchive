@@ -20,8 +20,10 @@ import { AppText } from "@/components/shared/AppText";
 import { Button } from "@/components/shared/Button";
 import { Chip } from "@/components/shared/Chip";
 import { Section } from "@/components/shared/Section";
-import { KitImageView } from "@/components/kits/KitImageView";
-import { KitPlaceholder } from "@/components/kits/KitPlaceholder";
+import {
+  HeroGallery,
+  type HeroGalleryHandle,
+} from "@/components/kits/HeroGallery";
 import { useCollectionStore } from "@/features/collection/collectionStore";
 import type { ItemPhoto } from "@/features/collection/types";
 import type { RootStackParamList } from "@/navigation/types";
@@ -31,7 +33,7 @@ type Props = NativeStackScreenProps<RootStackParamList, "ItemDetail">;
 /** Physical-shirt page: photos, spec list, purchase info, actions (§33.4). */
 export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
   const { itemId } = route.params;
-  const { colors, spacing, radius } = useTheme();
+  const { colors, spacing } = useTheme();
   const { t } = useTranslation();
   const navigation = useNavigation();
   const detail = useCollectionStore((s) => s.itemDetail);
@@ -39,10 +41,11 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
   const addPhoto = useCollectionStore((s) => s.addPhoto);
   const removePhoto = useCollectionStore((s) => s.removePhoto);
   const setDefaultPhoto = useCollectionStore((s) => s.setDefaultPhoto);
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const heroWidth = windowWidth - spacing.screen * 2;
-  const heroScrollRef = React.useRef<ScrollView>(null);
-  const [heroPage, setHeroPage] = React.useState(0);
+  // Same cap as the kit page, so the spec list peeks above the fold.
+  const heroHeight = Math.min((heroWidth * 4) / 3, windowHeight * 0.45);
+  const heroRef = React.useRef<HeroGalleryHandle>(null);
   const markSold = useCollectionStore((s) => s.markSold);
   const markOwned = useCollectionStore((s) => s.markOwned);
   const remove = useCollectionStore((s) => s.remove);
@@ -120,8 +123,7 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
               text: t("itemDetail.setDefaultPhoto"),
               onPress: () => {
                 void setDefaultPhoto(photo.id, itemId).then(() => {
-                  heroScrollRef.current?.scrollTo({ x: 0, animated: false });
-                  setHeroPage(0);
+                  heroRef.current?.resetToFirst();
                 });
               },
             },
@@ -205,93 +207,33 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
         gap: spacing.lg,
       }}
     >
-      {/* Photos: full-width paged carousel (tap a photo for options) */}
+      {/* Photos: full-width paged carousel with the kit identity overlaid
+        (tap a photo for options); falls back to the kit's reference image
+        like the collection/home cards do. */}
       <View style={{ gap: spacing.sm }}>
-        {detail.photos.length > 0 ? (
-          <ScrollView
-            ref={heroScrollRef}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            onMomentumScrollEnd={(event) =>
-              setHeroPage(
-                Math.round(event.nativeEvent.contentOffset.x / heroWidth),
-              )
-            }
-          >
-            {detail.photos.map((photo, index) => (
-              <Pressable
-                key={photo.id}
-                onPress={() => photoOptions(photo, index)}
-              >
-                <KitImageView
-                  uri={photo.uri}
-                  primaryColor={detail.teamPrimaryColor}
-                  secondaryColor={detail.teamSecondaryColor}
-                  style={[
-                    styles.photo,
-                    { width: heroWidth, borderRadius: radius.xl },
-                  ]}
-                />
-                {index === 0 && detail.photos.length > 1 ? (
-                  <View style={styles.defaultBadge}>
-                    <Chip
-                      label={t("itemDetail.defaultPhoto")}
-                      icon="image"
-                      tone="goldSoft"
-                    />
-                  </View>
-                ) : null}
-              </Pressable>
-            ))}
-          </ScrollView>
-        ) : detail.imageUri ? (
-          // No photos of its own — show the kit's reference image, like the
-          // collection/home cards do.
-          <KitImageView
-            uri={detail.imageUri}
-            primaryColor={detail.teamPrimaryColor}
-            secondaryColor={detail.teamSecondaryColor}
-            style={[
-              styles.photo,
-              { width: heroWidth, borderRadius: radius.xl },
-            ]}
-          />
-        ) : (
-          <View
-            style={[
-              styles.photo,
-              {
-                width: heroWidth,
-                borderRadius: radius.xl,
-                overflow: "hidden",
-              },
-            ]}
-          >
-            <KitPlaceholder
-              primaryColor={detail.teamPrimaryColor}
-              secondaryColor={detail.teamSecondaryColor}
-            />
-          </View>
-        )}
-        {detail.photos.length > 1 ? (
-          <View style={styles.dots}>
-            {detail.photos.map((photo, index) => (
-              <View
-                key={photo.id}
-                style={[
-                  styles.dot,
-                  {
-                    backgroundColor:
-                      index === Math.min(heroPage, detail.photos.length - 1)
-                        ? colors.onSurface
-                        : colors.outlineVariant,
-                  },
-                ]}
-              />
-            ))}
-          </View>
-        ) : null}
+        <HeroGallery
+          ref={heroRef}
+          images={detail.photos}
+          fallbackUri={detail.imageUri}
+          primaryColor={detail.teamPrimaryColor}
+          secondaryColor={detail.teamSecondaryColor}
+          width={heroWidth}
+          height={heroHeight}
+          overlayLabels={[
+            detail.eraLabel,
+            t(`enums.kitType.${detail.kitType}`).toUpperCase(),
+            ...(detail.manufacturerName ? [detail.manufacturerName] : []),
+          ]}
+          overlayTitle={detail.teamName}
+          defaultBadgeLabel={t("itemDetail.defaultPhoto")}
+          onImagePress={(index) => {
+            const photo = detail.photos[index];
+            if (photo) photoOptions(photo, index);
+          }}
+          onTitlePress={() =>
+            navigation.navigate("TeamDetail", { teamId: detail.teamId })
+          }
+        />
         <Button
           label={t("itemDetail.addPhotos")}
           icon="camera-outline"
@@ -405,10 +347,6 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  photo: { aspectRatio: 3 / 4 },
-  defaultBadge: { position: "absolute", top: 10, left: 10 },
-  dots: { flexDirection: "row", justifyContent: "center", gap: 6 },
-  dot: { width: 6, height: 6, borderRadius: 3 },
   kitRef: {
     flexDirection: "row",
     alignItems: "center",
