@@ -1,10 +1,10 @@
 import React from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { AppText } from "@/components/shared/AppText";
 import { ImageOverlayShelf } from "./ImageOverlayShelf";
-import { KitPlaceholder } from "./KitPlaceholder";
+import { KitImageView } from "./KitImageView";
 import type { CollectionItemSummary } from "@/features/collection/types";
 
 interface RecentItemCardProps {
@@ -44,20 +44,12 @@ export const RecentItemCard: React.FC<RecentItemCardProps> = ({
         },
       ]}
     >
-      {imageUri ? (
-        <Image
-          source={{ uri: imageUri }}
-          style={StyleSheet.absoluteFill}
-          resizeMode="cover"
-        />
-      ) : (
-        <View style={StyleSheet.absoluteFill}>
-          <KitPlaceholder
-            primaryColor={summary.teamPrimaryColor}
-            secondaryColor={summary.teamSecondaryColor}
-          />
-        </View>
-      )}
+      <KitImageView
+        uri={imageUri}
+        primaryColor={summary.teamPrimaryColor}
+        secondaryColor={summary.teamSecondaryColor}
+        style={StyleSheet.absoluteFill}
+      />
 
       <ImageOverlayShelf
         labels={[eraLabel, t(`enums.kitType.${kitType}`).toUpperCase()]}

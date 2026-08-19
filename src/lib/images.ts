@@ -7,7 +7,7 @@ import { generateId } from "@/lib/id";
  * stores the resulting file:// URI.
  */
 
-const imagesDir = () => new Directory(Paths.document, "images");
+export const imagesDir = () => new Directory(Paths.document, "images");
 
 export const persistPickedImage = async (
   sourceUri: string,

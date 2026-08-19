@@ -1,11 +1,11 @@
 import React from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { AppText } from "@/components/shared/AppText";
 import { Chip } from "@/components/shared/Chip";
-import { KitPlaceholder } from "./KitPlaceholder";
+import { KitImageView } from "./KitImageView";
 import type { KitSummary } from "@/features/catalogue/types";
 
 interface KitListRowProps {
@@ -51,18 +51,12 @@ export const KitListRow: React.FC<KitListRowProps> = ({
       ]}
     >
       <View style={[styles.thumb, { borderRadius: radius.sm }]}>
-        {imageUri ? (
-          <Image
-            source={{ uri: imageUri }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-        ) : (
-          <KitPlaceholder
-            primaryColor={summary.teamPrimaryColor}
-            secondaryColor={summary.teamSecondaryColor}
-          />
-        )}
+        <KitImageView
+          uri={imageUri}
+          primaryColor={summary.teamPrimaryColor}
+          secondaryColor={summary.teamSecondaryColor}
+          style={styles.image}
+        />
       </View>
       <View style={styles.text}>
         <AppText variant="titleSm" numberOfLines={1}>

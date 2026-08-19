@@ -3,6 +3,7 @@ import * as SQLite from "expo-sqlite";
 import * as schema from "./schema";
 import { applySeed } from "./seed";
 import { applyDevSeed } from "./seed/dev";
+import { normalizeImageUris } from "./imagePaths";
 
 const DB_NAME = "kitarchive.db";
 
@@ -28,7 +29,7 @@ export const getDb = () => getDatabase();
  * theme columns) with the catalogue/collection schema. The template shape
  * never shipped, so an epoch-0 database is dev data — rebuild it.
  */
-const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 1;
 
 const runMigrations = async () => {
   if (!sqliteDb) sqliteDb = SQLite.openDatabaseSync(DB_NAME);
@@ -211,6 +212,8 @@ export const initializeDatabase = async () => {
   if (existing.length === 0) {
     await db.insert(schema.settings).values({ id: "default" });
   }
+
+  await normalizeImageUris(db);
 
   await applySeed(db);
 
