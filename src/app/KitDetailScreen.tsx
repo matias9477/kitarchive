@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import {
   Alert,
-  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -16,11 +15,13 @@ import * as ImagePicker from "expo-image-picker";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { persistPickedImage } from "@/lib/images";
+import { kitImageQuery } from "@/lib/webImagePicker";
 import { AppText } from "@/components/shared/AppText";
 import { Button } from "@/components/shared/Button";
 import { Chip } from "@/components/shared/Chip";
 import { Section } from "@/components/shared/Section";
 import { ImageOverlayShelf } from "@/components/kits/ImageOverlayShelf";
+import { KitImageView } from "@/components/kits/KitImageView";
 import { KitPlaceholder } from "@/components/kits/KitPlaceholder";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
 import { useWishlistStore } from "@/features/wishlist/wishlistStore";
@@ -90,6 +91,14 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
     await addKitImage(kitId, uri);
   };
 
+  const imageQuery = kitImageQuery({
+    teamName: detail.teamName,
+    eraLabel: detail.eraLabel,
+    kitTypeLabel: t(`enums.kitType.${detail.kit.type}`),
+    manufacturerName: detail.manufacturerName,
+    suffix: t("kitDetail.imageSearchSuffix"),
+  });
+
   const chooseImageSource = () =>
     Alert.alert(t("kitDetail.addImage"), undefined, [
       {
@@ -103,11 +112,15 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
       {
         text: t("kitDetail.imageFromWeb"),
         onPress: () =>
+          navigation.navigate("WebImagePicker", { kitId, query: imageQuery }),
+      },
+      {
+        text: t("webImagePicker.autoSearch"),
+        onPress: () =>
           navigation.navigate("WebImagePicker", {
             kitId,
-            query: `${detail.teamName} ${detail.eraLabel} ${t(
-              `enums.kitType.${detail.kit.type}`,
-            )} ${t("kitDetail.imageSearchSuffix")}`,
+            query: imageQuery,
+            autoSelect: true,
           }),
       },
       { text: t("common.cancel"), style: "cancel" },
@@ -174,10 +187,11 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
                     key={image.id}
                     onPress={() => imageOptions(image, index)}
                   >
-                    <Image
-                      source={{ uri: image.uri }}
+                    <KitImageView
+                      uri={image.uri}
+                      primaryColor={detail.teamPrimaryColor}
+                      secondaryColor={detail.teamSecondaryColor}
                       style={{ width: heroWidth, height: heroHeight }}
-                      resizeMode="cover"
                     />
                     {index === 0 && detail.images.length > 1 ? (
                       <View style={styles.defaultBadge}>

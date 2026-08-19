@@ -30,10 +30,16 @@ export type RootStackParamList = {
   /** Optional desired configuration for a wishlist entry. */
   WishlistConfig: { kitId: string };
   /** Pick an image from Google Images (modal WebView): kit reference image
-   * (kitId) or collection-item photo (itemId). */
+   * (kitId) or collection-item photo (itemId). With autoSelect, the first
+   * result is picked and saved automatically (manual picking as fallback). */
   WebImagePicker:
-    | { kitId: string; itemId?: undefined; query: string }
-    | { itemId: string; kitId?: undefined; query: string };
+    | { kitId: string; itemId?: undefined; query: string; autoSelect?: boolean }
+    | {
+        itemId: string;
+        kitId?: undefined;
+        query: string;
+        autoSelect?: boolean;
+      };
   Search: undefined;
   Settings: undefined;
 };

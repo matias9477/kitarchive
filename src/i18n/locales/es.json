@@ -295,6 +295,8 @@
   },
   "webImagePicker": {
     "title": "Buscar imagen",
+    "autoSearch": "Búsqueda automática",
+    "searching": "Buscando la mejor imagen…",
     "hint": "Tocá una imagen para seleccionarla",
     "selected": "Imagen seleccionada",
     "use": "Usar esta imagen",

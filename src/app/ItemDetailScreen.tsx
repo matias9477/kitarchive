@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import {
   Alert,
-  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -16,10 +15,12 @@ import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { persistPickedImage } from "@/lib/images";
+import { kitImageQuery } from "@/lib/webImagePicker";
 import { AppText } from "@/components/shared/AppText";
 import { Button } from "@/components/shared/Button";
 import { Chip } from "@/components/shared/Chip";
 import { Section } from "@/components/shared/Section";
+import { KitImageView } from "@/components/kits/KitImageView";
 import { KitPlaceholder } from "@/components/kits/KitPlaceholder";
 import { useCollectionStore } from "@/features/collection/collectionStore";
 import type { ItemPhoto } from "@/features/collection/types";
@@ -76,6 +77,14 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
     }
   };
 
+  const imageQuery = kitImageQuery({
+    teamName: detail.teamName,
+    eraLabel: detail.eraLabel,
+    kitTypeLabel: t(`enums.kitType.${detail.kitType}`),
+    manufacturerName: detail.manufacturerName,
+    suffix: t("kitDetail.imageSearchSuffix"),
+  });
+
   const choosePhotoSource = () =>
     Alert.alert(t("itemDetail.addPhotos"), undefined, [
       {
@@ -89,11 +98,15 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
       {
         text: t("itemDetail.photoFromWeb"),
         onPress: () =>
+          navigation.navigate("WebImagePicker", { itemId, query: imageQuery }),
+      },
+      {
+        text: t("webImagePicker.autoSearch"),
+        onPress: () =>
           navigation.navigate("WebImagePicker", {
             itemId,
-            query: `${detail.teamName} ${detail.eraLabel} ${t(
-              `enums.kitType.${detail.kitType}`,
-            )} ${t("kitDetail.imageSearchSuffix")}`,
+            query: imageQuery,
+            autoSelect: true,
           }),
       },
       { text: t("common.cancel"), style: "cancel" },
@@ -211,13 +224,14 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
                 key={photo.id}
                 onPress={() => photoOptions(photo, index)}
               >
-                <Image
-                  source={{ uri: photo.uri }}
+                <KitImageView
+                  uri={photo.uri}
+                  primaryColor={detail.teamPrimaryColor}
+                  secondaryColor={detail.teamSecondaryColor}
                   style={[
                     styles.photo,
                     { width: heroWidth, borderRadius: radius.xl },
                   ]}
-                  resizeMode="cover"
                 />
                 {index === 0 && detail.photos.length > 1 ? (
                   <View style={styles.defaultBadge}>
@@ -234,13 +248,14 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
         ) : detail.imageUri ? (
           // No photos of its own — show the kit's reference image, like the
           // collection/home cards do.
-          <Image
-            source={{ uri: detail.imageUri }}
+          <KitImageView
+            uri={detail.imageUri}
+            primaryColor={detail.teamPrimaryColor}
+            secondaryColor={detail.teamSecondaryColor}
             style={[
               styles.photo,
               { width: heroWidth, borderRadius: radius.xl },
             ]}
-            resizeMode="cover"
           />
         ) : (
           <View
