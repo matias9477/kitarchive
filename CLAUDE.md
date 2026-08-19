@@ -47,10 +47,12 @@ locales.
 
 Versioned, **insert-only** seeder (`SEED_VERSION` in `seed/index.ts`): rows are
 inserted `ON CONFLICT DO NOTHING` by stable slug IDs, so in-app corrections to
-seed rows are never overwritten — bumping the version only _adds_ rows. Every
+seed rows are never overwritten — bumping the version only _adds_ rows. The
+stored version also encodes the current year (`seed/season.ts`), so
+season/cycle rows extend to the present automatically each January. Every
 catalogue row carries `source: 'seed' | 'user'`. Seed data is best-effort
-historical research (Boca 1995–2025, Argentina 1990–2026, top-10 national
-teams 2018+); referential integrity is enforced by
+historical research (Boca 1995/96→present, Argentina 1990→present, top-10
+national teams 2014→present); referential integrity is enforced by
 `src/db/seed/__tests__/seed.test.ts` — run it after touching seed files.
 
 ### Feature modules (`src/features/<feature>/`)

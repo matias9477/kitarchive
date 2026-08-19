@@ -2,7 +2,7 @@ import { LATEST_SEASON_START } from "./season";
 import type { EraSeed, KitSeed } from "./types";
 
 /**
- * Recent kit cycles (2018+) for the other top national teams — lighter
+ * Recent kit cycles (2014+) for the other top national teams — lighter
  * coverage than the primary collections, expanded later in-app or by seed
  * bumps. Cycles are the common two-year tournament rhythm.
  */
@@ -25,10 +25,10 @@ const NATIONS: NationCycles[] = [
   { teamId: "portugal", manufacturer: () => "nike" },
 ];
 
-// Even-year tournament cycles from 2018 up to the current horizon.
+// Even-year tournament cycles from 2014 up to the current horizon.
 const CYCLE_STARTS = Array.from(
-  { length: Math.floor((LATEST_SEASON_START - 2018) / 2) + 1 },
-  (_, i) => 2018 + i * 2,
+  { length: Math.floor((LATEST_SEASON_START - 2014) / 2) + 1 },
+  (_, i) => 2014 + i * 2,
 );
 
 const eraId = (teamId: string, start: number) =>

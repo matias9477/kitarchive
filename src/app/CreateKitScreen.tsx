@@ -194,13 +194,20 @@ export const CreateKitScreen: React.FC<Props> = ({ route, navigation }) => {
           <PickerField
             label={t("createKit.team")}
             placeholder={t("common.select")}
-            options={teams.map((team) => ({
-              value: team.id,
-              label: team.name,
-              detail: team.countryName,
-            }))}
+            options={[
+              ...teams.map((team) => ({
+                value: team.id,
+                label: team.name,
+                detail: team.countryName,
+              })),
+              { value: "__new__", label: t("createKit.newTeamOption") },
+            ]}
             value={teamId}
             onChange={(value) => {
+              if (value === "__new__") {
+                setNewTeam(true);
+                return;
+              }
               setTeamId(value);
               setEraId(null);
             }}
@@ -261,9 +268,21 @@ export const CreateKitScreen: React.FC<Props> = ({ route, navigation }) => {
             placeholder={
               teamId ? t("common.select") : t("createKit.pickTeamFirst")
             }
-            options={eras.map((era) => ({ value: era.id, label: era.label }))}
+            options={[
+              ...eras.map((era) => ({ value: era.id, label: era.label })),
+              // Escape hatch when the season isn't catalogued (e.g. seed
+              // coverage starts later than the shirt being added).
+              { value: "__new__", label: t("createKit.newEraOption") },
+            ]}
             value={eraId}
-            onChange={setEraId}
+            onChange={(value) => {
+              if (value === "__new__") {
+                setNewEra(true);
+                setEraId(null);
+                return;
+              }
+              setEraId(value);
+            }}
             disabled={!teamId}
           />
         )}

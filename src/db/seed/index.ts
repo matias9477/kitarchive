@@ -24,7 +24,7 @@ import type { SeedBundle } from "./types";
  * NOTHING on stable IDs): new versions add rows, but rows already in the DB —
  * including seed rows the user has corrected in-app — are never overwritten.
  */
-export const SEED_VERSION = 1;
+export const SEED_VERSION = 2;
 
 /**
  * The stored version also encodes the season horizon (season.ts), so the
