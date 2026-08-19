@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import type { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
-import { itemPhotos, kitImages } from "@/db/schema";
+import { itemPhotos, kitImages, teams } from "@/db/schema";
 import { imagesDir } from "@/lib/images";
 import { rewriteImageUri } from "@/lib/imageUri";
 
@@ -39,6 +39,16 @@ export const normalizeImageUris = async (db: Db): Promise<void> => {
         .update(kitImages)
         .set({ uri: next })
         .where(eq(kitImages.id, row.id));
+    }
+  }
+
+  const teamLogos = await db
+    .select({ id: teams.id, logoUri: teams.logoUri })
+    .from(teams);
+  for (const row of teamLogos) {
+    const next = rewriteImageUri(row.logoUri, dirUri);
+    if (typeof next === "string" && next !== row.logoUri) {
+      await db.update(teams).set({ logoUri: next }).where(eq(teams.id, row.id));
     }
   }
 };

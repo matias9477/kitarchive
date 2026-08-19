@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { AppText } from "@/components/shared/AppText";
 import { CountryFlag } from "@/components/shared/CountryFlag";
+import { TeamLogo } from "@/components/shared/TeamLogo";
 import type { TeamWithCountry } from "@/features/catalogue/types";
 
 interface TeamRowProps {
@@ -13,7 +14,7 @@ interface TeamRowProps {
 }
 
 /**
- * Catalogue team list row: color swatch, name, flag + subtitle, chevron.
+ * Catalogue team list row: team logo, name, flag + subtitle, chevron.
  * National teams would repeat their name as the country ("Argentina /
  * Argentina"), so there the subtitle shows the team type instead.
  */
@@ -38,24 +39,7 @@ export const TeamRow: React.FC<TeamRowProps> = ({ team, onPress }) => {
         },
       ]}
     >
-      <View
-        style={[
-          styles.swatch,
-          {
-            backgroundColor: team.primaryColor,
-            borderColor: colors.outlineVariant,
-          },
-        ]}
-      >
-        {team.secondaryColor ? (
-          <View
-            style={[
-              styles.swatchBand,
-              { backgroundColor: team.secondaryColor },
-            ]}
-          />
-        ) : null}
-      </View>
+      <TeamLogo team={team} size={40} />
       <View style={styles.rowText}>
         <AppText variant="titleSm" numberOfLines={1}>
           {team.name}
@@ -86,18 +70,4 @@ const styles = StyleSheet.create({
   },
   rowText: { flex: 1, gap: 2 },
   subtitleRow: { flexDirection: "row", alignItems: "center", gap: 6 },
-  swatch: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    overflow: "hidden",
-  },
-  swatchBand: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: "33%",
-    width: "34%",
-  },
 });

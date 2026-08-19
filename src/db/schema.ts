@@ -66,6 +66,10 @@ export const teams = sqliteTable(
     /** Hex colors used for generated placeholder kit art. */
     primaryColor: text("primary_color").notNull().default("#1d2022"),
     secondaryColor: text("secondary_color"),
+    /** Key into the bundled logo library (config/teamLogos.ts). */
+    logoAsset: text("logo_asset"),
+    /** Custom logo photo stored in <documents>/images (file:// URI). */
+    logoUri: text("logo_uri"),
     source: source(),
     createdAt: createdAt(),
     updatedAt: updatedAt(),

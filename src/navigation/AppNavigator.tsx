@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { fonts } from "@/theme/typography";
 import { TeamDetailScreen } from "@/app/TeamDetailScreen";
+import { ExploreGroupScreen } from "@/app/ExploreGroupScreen";
 import { KitDetailScreen } from "@/app/KitDetailScreen";
 import { ItemDetailScreen } from "@/app/ItemDetailScreen";
 import { AddShirtScreen } from "@/app/AddShirtScreen";
@@ -21,6 +22,7 @@ import { BulkAddScreen } from "@/app/BulkAddScreen";
 import { ItemFormScreen } from "@/app/ItemFormScreen";
 import { CreateKitScreen } from "@/app/CreateKitScreen";
 import { WishlistConfigScreen } from "@/app/WishlistConfigScreen";
+import { TeamLogoPickerScreen } from "@/app/TeamLogoPickerScreen";
 import { WebImagePickerScreen } from "@/app/WebImagePickerScreen";
 import { SearchScreen } from "@/app/SearchScreen";
 import { SettingsScreen } from "@/app/SettingsScreen";
@@ -117,6 +119,11 @@ export const AppNavigator: React.FC<AppNavigatorProps> = ({
           options={{ title: "" }}
         />
         <Stack.Screen
+          name="ExploreGroup"
+          component={ExploreGroupScreen}
+          options={{ title: "" }}
+        />
+        <Stack.Screen
           name="KitDetail"
           component={KitDetailScreen}
           options={{ title: "" }}
@@ -158,6 +165,15 @@ export const AppNavigator: React.FC<AppNavigatorProps> = ({
           component={CreateKitScreen}
           options={{
             title: t("createKit.title"),
+            presentation: "modal",
+            headerLeft: headerClose,
+          }}
+        />
+        <Stack.Screen
+          name="TeamLogoPicker"
+          component={TeamLogoPickerScreen}
+          options={{
+            title: t("teamLogo.title"),
             presentation: "modal",
             headerLeft: headerClose,
           }}

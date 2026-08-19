@@ -63,6 +63,8 @@ const runMigrations = async () => {
       type TEXT NOT NULL,
       primary_color TEXT NOT NULL DEFAULT '#1d2022',
       secondary_color TEXT,
+      logo_asset TEXT,
+      logo_uri TEXT,
       source TEXT NOT NULL DEFAULT 'user',
       created_at INTEGER NOT NULL DEFAULT (unixepoch()),
       updated_at INTEGER NOT NULL DEFAULT (unixepoch())
@@ -197,6 +199,20 @@ const runMigrations = async () => {
       updated_at INTEGER NOT NULL DEFAULT (unixepoch())
     );
   `);
+
+  // Additive columns for databases created before the column existed —
+  // SQLite has no "ADD COLUMN IF NOT EXISTS", so each ALTER runs in its own
+  // try/catch and no-ops once the column is there.
+  for (const ddl of [
+    "ALTER TABLE teams ADD COLUMN logo_asset TEXT",
+    "ALTER TABLE teams ADD COLUMN logo_uri TEXT",
+  ]) {
+    try {
+      sqliteDb.execSync(ddl);
+    } catch {
+      // column already exists
+    }
+  }
 
   if (!drizzleDb && sqliteDb) drizzleDb = drizzle(sqliteDb, { schema });
 };

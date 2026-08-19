@@ -16,6 +16,8 @@ import {
   argentinaKitSeeds,
 } from "./argentina";
 import { nationEraSeeds, nationKitSeeds } from "./nations";
+import { worldCountrySeeds, worldNationTeamSeeds } from "./world";
+import { clubEraSeeds, clubKitSeeds, clubTeamSeeds } from "./clubs";
 import { LATEST_SEASON_START } from "./season";
 import type { SeedBundle } from "./types";
 
@@ -24,7 +26,7 @@ import type { SeedBundle } from "./types";
  * NOTHING on stable IDs): new versions add rows, but rows already in the DB —
  * including seed rows the user has corrected in-app — are never overwritten.
  */
-export const SEED_VERSION = 2;
+export const SEED_VERSION = 3;
 
 /**
  * The stored version also encodes the season horizon (season.ts), so the
@@ -35,14 +37,24 @@ export const SEED_VERSION = 2;
 const EFFECTIVE_SEED_VERSION = SEED_VERSION * 10_000 + LATEST_SEASON_START;
 
 const bundle: SeedBundle = {
-  countries: countrySeeds,
+  countries: [...countrySeeds, ...worldCountrySeeds],
   manufacturers: manufacturerSeeds,
   competitions: competitionSeeds,
   addons: addonSeeds,
   players: playerSeeds,
-  teams: teamSeeds,
-  eras: [...bocaEraSeeds, ...argentinaEraSeeds, ...nationEraSeeds],
-  kits: [...bocaKitSeeds, ...argentinaKitSeeds, ...nationKitSeeds],
+  teams: [...teamSeeds, ...worldNationTeamSeeds, ...clubTeamSeeds],
+  eras: [
+    ...bocaEraSeeds,
+    ...argentinaEraSeeds,
+    ...nationEraSeeds,
+    ...clubEraSeeds,
+  ],
+  kits: [
+    ...bocaKitSeeds,
+    ...argentinaKitSeeds,
+    ...nationKitSeeds,
+    ...clubKitSeeds,
+  ],
   kitCompetitions: [
     ...bocaKitCompetitionSeeds,
     ...argentinaKitCompetitionSeeds,

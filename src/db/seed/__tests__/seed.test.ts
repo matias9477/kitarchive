@@ -13,9 +13,23 @@ import {
   argentinaKitSeeds,
 } from "../argentina";
 import { nationEraSeeds, nationKitSeeds } from "../nations";
+import { worldCountrySeeds, worldNationTeamSeeds } from "../world";
+import { clubEraSeeds, clubKitSeeds, clubTeamSeeds } from "../clubs";
 
-const eras = [...bocaEraSeeds, ...argentinaEraSeeds, ...nationEraSeeds];
-const kits = [...bocaKitSeeds, ...argentinaKitSeeds, ...nationKitSeeds];
+const countries = [...countrySeeds, ...worldCountrySeeds];
+const allTeams = [...teamSeeds, ...worldNationTeamSeeds, ...clubTeamSeeds];
+const eras = [
+  ...bocaEraSeeds,
+  ...argentinaEraSeeds,
+  ...nationEraSeeds,
+  ...clubEraSeeds,
+];
+const kits = [
+  ...bocaKitSeeds,
+  ...argentinaKitSeeds,
+  ...nationKitSeeds,
+  ...clubKitSeeds,
+];
 const kitCompetitions = [
   ...bocaKitCompetitionSeeds,
   ...argentinaKitCompetitionSeeds,
@@ -26,12 +40,12 @@ const ids = (rows: { id: string }[]) => rows.map((r) => r.id);
 describe("catalogue seed integrity", () => {
   it("has unique ids within every entity", () => {
     for (const rows of [
-      countrySeeds,
+      countries,
       manufacturerSeeds,
       competitionSeeds,
       addonSeeds,
       playerSeeds,
-      teamSeeds,
+      allTeams,
       eras,
       kits,
     ]) {
@@ -41,17 +55,17 @@ describe("catalogue seed integrity", () => {
   });
 
   it("teams reference existing countries", () => {
-    const countryIds = new Set(ids(countrySeeds));
-    for (const team of teamSeeds) expect(countryIds).toContain(team.countryId);
+    const countryIds = new Set(ids(countries));
+    for (const team of allTeams) expect(countryIds).toContain(team.countryId);
   });
 
   it("eras reference existing teams", () => {
-    const teamIds = new Set(ids(teamSeeds));
+    const teamIds = new Set(ids(allTeams));
     for (const era of eras) expect(teamIds).toContain(era.teamId);
   });
 
   it("kits reference existing teams, eras and manufacturers", () => {
-    const teamIds = new Set(ids(teamSeeds));
+    const teamIds = new Set(ids(allTeams));
     const eraIds = new Set(ids(eras));
     const manufacturerIds = new Set(ids(manufacturerSeeds));
     for (const kit of kits) {

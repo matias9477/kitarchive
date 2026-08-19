@@ -1,22 +1,53 @@
-import React, { useCallback, useMemo } from "react";
-import { Pressable, SectionList, StyleSheet, View } from "react-native";
+import React, { useCallback, useMemo, useState } from "react";
+import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { AppText } from "@/components/shared/AppText";
+import { CountryFlag } from "@/components/shared/CountryFlag";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { TeamRow } from "@/components/kits/TeamRow";
+import { GroupRow } from "@/components/shared/GroupRow";
+import { SegmentedControl } from "@/components/shared/SegmentedControl";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
+import { confederationByCountry } from "@/db/seed/world";
+import type { Confederation } from "@/db/seed/world";
 
-/** Browse the catalogue: teams → eras → kits (spec §33.8). */
+type Mode = "clubs" | "national";
+
+/** Grouping order: the collector's confederation first, then the rest. */
+const CONFEDERATIONS: (Confederation | "other")[] = [
+  "conmebol",
+  "uefa",
+  "concacaf",
+  "caf",
+  "afc",
+  "ofc",
+  "other",
+];
+
+interface Group {
+  key: string;
+  title: string;
+  count: number;
+  leading: React.ReactNode;
+  onPress: () => void;
+}
+
+/**
+ * Browse the catalogue: teams → eras → kits (spec §33.8). With the world
+ * seed a flat team list stopped scaling, so the first level is groups —
+ * countries for clubs, confederations for national teams — and ExploreGroup
+ * shows one group's teams.
+ */
 export const ExploreScreen: React.FC = () => {
   const { colors, spacing } = useTheme();
   const { t } = useTranslation();
   const navigation = useNavigation();
   const teams = useCatalogueStore((s) => s.teams);
   const loadTeams = useCatalogueStore((s) => s.loadTeams);
+  const [mode, setMode] = useState<Mode>("clubs");
 
   useFocusEffect(
     useCallback(() => {
@@ -24,14 +55,57 @@ export const ExploreScreen: React.FC = () => {
     }, [loadTeams]),
   );
 
-  const sections = useMemo(() => {
-    const clubs = teams.filter((team) => team.type === "club");
-    const nationals = teams.filter((team) => team.type === "national");
-    return [
-      { title: t("explore.nationalTeams"), data: nationals },
-      { title: t("explore.clubs"), data: clubs },
-    ].filter((s) => s.data.length > 0);
-  }, [teams, t]);
+  const groups = useMemo<Group[]>(() => {
+    if (mode === "national") {
+      const counts = new Map<string, number>();
+      for (const team of teams) {
+        if (team.type !== "national") continue;
+        const key = confederationByCountry[team.countryId] ?? "other";
+        counts.set(key, (counts.get(key) ?? 0) + 1);
+      }
+      return CONFEDERATIONS.filter((key) => (counts.get(key) ?? 0) > 0).map(
+        (key) => ({
+          key,
+          title:
+            key === "other"
+              ? t("explore.otherRegion")
+              : t(`enums.confederation.${key}`),
+          count: counts.get(key) ?? 0,
+          leading: (
+            <Ionicons name="globe-outline" size={20} color={colors.outline} />
+          ),
+          onPress: () =>
+            navigation.navigate("ExploreGroup", {
+              kind: "confederation",
+              confederation: key,
+            }),
+        }),
+      );
+    }
+
+    const byCountry = new Map<string, { name: string; count: number }>();
+    for (const team of teams) {
+      if (team.type === "national") continue;
+      const entry = byCountry.get(team.countryId) ?? {
+        name: team.countryName,
+        count: 0,
+      };
+      entry.count += 1;
+      byCountry.set(team.countryId, entry);
+    }
+    return [...byCountry.entries()]
+      .sort(([, a], [, b]) => a.name.localeCompare(b.name))
+      .map(([countryId, { name, count }]) => ({
+        key: countryId,
+        title: name,
+        count,
+        leading: (
+          <CountryFlag countryId={countryId} countryName={name} size={16} />
+        ),
+        onPress: () =>
+          navigation.navigate("ExploreGroup", { kind: "country", countryId }),
+      }));
+  }, [teams, mode, t, colors, navigation]);
 
   return (
     <SafeAreaView
@@ -57,31 +131,36 @@ export const ExploreScreen: React.FC = () => {
         </View>
       </View>
 
-      <SectionList
-        sections={sections}
-        keyExtractor={(team) => team.id}
-        stickySectionHeadersEnabled={false}
+      <View
+        style={{ paddingHorizontal: spacing.screen, marginBottom: spacing.sm }}
+      >
+        <SegmentedControl<Mode>
+          options={[
+            { value: "clubs", label: t("explore.clubs") },
+            { value: "national", label: t("explore.nationalTeams") },
+          ]}
+          value={mode}
+          onChange={(value) => {
+            if (value) setMode(value);
+          }}
+        />
+      </View>
+
+      <FlatList
+        data={groups}
+        keyExtractor={(group) => group.key}
         contentContainerStyle={{
           paddingHorizontal: spacing.screen,
           paddingBottom: spacing.xl,
           gap: spacing.xs,
         }}
         ListEmptyComponent={<EmptyState title={t("explore.empty")} />}
-        renderSectionHeader={({ section }) => (
-          <AppText
-            variant="label"
-            color={colors.onPrimaryContainer}
-            style={{ marginTop: spacing.md, marginBottom: spacing.xs }}
-          >
-            {section.title}
-          </AppText>
-        )}
-        renderItem={({ item: team }) => (
-          <TeamRow
-            team={team}
-            onPress={() =>
-              navigation.navigate("TeamDetail", { teamId: team.id })
-            }
+        renderItem={({ item }) => (
+          <GroupRow
+            title={item.title}
+            subtitle={t("explore.teamCount", { count: item.count })}
+            leading={item.leading}
+            onPress={item.onPress}
           />
         )}
       />

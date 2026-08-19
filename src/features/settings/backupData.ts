@@ -58,6 +58,7 @@ export const BACKUP_TABLES = [
     name: "teams",
     table: schema.teams,
     dateFields: ["createdAt", "updatedAt"],
+    uriField: "logoUri",
   },
   { name: "eras", table: schema.eras, dateFields: [] },
   { name: "kits", table: schema.kits, dateFields: ["createdAt", "updatedAt"] },

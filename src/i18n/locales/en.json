@@ -62,7 +62,10 @@
     "title": "Explore",
     "nationalTeams": "National teams",
     "clubs": "Clubs",
-    "empty": "The catalogue is empty"
+    "empty": "The catalogue is empty",
+    "otherRegion": "Other",
+    "teamCount_one": "{{count}} team",
+    "teamCount_other": "{{count}} teams"
   },
   "team": {
     "kits": "kits",
@@ -74,7 +77,16 @@
     "ownedOnly": "Owned only",
     "addKitToEra": "Add a kit to this season",
     "extendCatalogue": "Missing a kit? Add it to the catalogue",
-    "noOwned": "You don't own any kit from this team yet"
+    "noOwned": "You don't own any kit from this team yet",
+    "editLogo": "Change team logo"
+  },
+  "teamLogo": {
+    "title": "Team logo",
+    "search": "Search",
+    "searchPlaceholder": "Search crests…",
+    "fromLibrary": "Choose photo from library",
+    "remove": "Use default art",
+    "empty": "No crest matches your search"
   },
   "kitDetail": {
     "addImage": "Add reference image",
@@ -305,6 +317,14 @@
       "anniversary": "Anniversary",
       "marking": "Special marking",
       "other": "Other"
+    },
+    "confederation": {
+      "conmebol": "South America",
+      "uefa": "Europe",
+      "concacaf": "North & Central America",
+      "caf": "Africa",
+      "afc": "Asia",
+      "ofc": "Oceania"
     }
   },
   "webImagePicker": {

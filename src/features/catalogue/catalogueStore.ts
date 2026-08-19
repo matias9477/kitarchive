@@ -36,6 +36,10 @@ interface State {
   loadKitDetail: (kitId: string) => Promise<void>;
 
   createTeam: (input: CreateTeamInput) => Promise<TeamWithCountry>;
+  setTeamLogo: (
+    teamId: string,
+    logo: { logoAsset?: string; logoUri?: string },
+  ) => Promise<void>;
   createEra: (input: CreateEraInput) => Promise<Era>;
   createKit: (input: CreateKitInput) => Promise<Kit>;
   createPlayer: (name: string, fullName?: string) => Promise<Player>;
@@ -116,6 +120,11 @@ export const useCatalogueStore = create<State>((set, get) => ({
     const team = await service.createTeam(input);
     await get().loadTeams();
     return team;
+  },
+
+  setTeamLogo: async (teamId, logo) => {
+    await service.setTeamLogo(teamId, logo);
+    set({ teams: await service.getTeams() });
   },
 
   createEra: async (input) => {

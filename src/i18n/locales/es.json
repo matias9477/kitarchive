@@ -62,7 +62,10 @@
     "title": "Explorar",
     "nationalTeams": "Selecciones",
     "clubs": "Clubes",
-    "empty": "El catálogo está vacío"
+    "empty": "El catálogo está vacío",
+    "otherRegion": "Otros",
+    "teamCount_one": "{{count}} equipo",
+    "teamCount_other": "{{count}} equipos"
   },
   "team": {
     "kits": "modelos",
@@ -74,7 +77,16 @@
     "ownedOnly": "Solo en colección",
     "addKitToEra": "Agregar un kit a esta temporada",
     "extendCatalogue": "¿Falta un kit? Agregalo al catálogo",
-    "noOwned": "Todavía no tenés modelos de este equipo"
+    "noOwned": "Todavía no tenés modelos de este equipo",
+    "editLogo": "Cambiar escudo del equipo"
+  },
+  "teamLogo": {
+    "title": "Escudo del equipo",
+    "search": "Buscar",
+    "searchPlaceholder": "Buscar escudos…",
+    "fromLibrary": "Elegir foto de la galería",
+    "remove": "Usar arte por defecto",
+    "empty": "Ningún escudo coincide con tu búsqueda"
   },
   "kitDetail": {
     "addImage": "Agregar imagen de referencia",
@@ -305,6 +317,14 @@
       "anniversary": "Aniversario",
       "marking": "Marcado especial",
       "other": "Otro"
+    },
+    "confederation": {
+      "conmebol": "Sudamérica",
+      "uefa": "Europa",
+      "concacaf": "Norte y Centroamérica",
+      "caf": "África",
+      "afc": "Asia",
+      "ofc": "Oceanía"
     }
   },
   "webImagePicker": {

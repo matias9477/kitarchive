@@ -7,26 +7,9 @@ import {
 } from "react-native";
 import { useTheme } from "@/theme/index";
 import { AppText } from "./AppText";
+import { COUNTRY_FLAGS } from "@/config/countryFlags";
 
-/**
- * Bundled flag art for the seed countries (public-domain PNGs from
- * flagcdn.com, w160). England has no ISO 3166-1 code, so the seed id "en"
- * maps to flagcdn's gb-eng (St George's Cross — never the Union Jack).
- * Countries created in-app fall back to an initials badge; to give one real
- * art, drop a w160 PNG into assets/flags and add it to this map.
- */
-const FLAGS: Record<string, ImageSourcePropType> = {
-  ar: require("../../../assets/flags/ar.png"),
-  br: require("../../../assets/flags/br.png"),
-  de: require("../../../assets/flags/de.png"),
-  en: require("../../../assets/flags/gb-eng.png"),
-  es: require("../../../assets/flags/es.png"),
-  fr: require("../../../assets/flags/fr.png"),
-  it: require("../../../assets/flags/it.png"),
-  nl: require("../../../assets/flags/nl.png"),
-  pt: require("../../../assets/flags/pt.png"),
-  uy: require("../../../assets/flags/uy.png"),
-};
+const FLAGS: Record<string, ImageSourcePropType> = COUNTRY_FLAGS;
 
 interface CountryFlagProps {
   countryId: string;

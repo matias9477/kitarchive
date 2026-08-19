@@ -13,6 +13,8 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { KitCard } from "@/components/kits/KitCard";
 import { KitListRow } from "@/components/kits/KitListRow";
 import { useStatsStore } from "@/features/stats/statsStore";
+import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
+import { TeamLogo } from "@/components/shared/TeamLogo";
 import type { RootStackParamList } from "@/navigation/types";
 
 type Props = NativeStackScreenProps<RootStackParamList, "TeamDetail">;
@@ -25,6 +27,10 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
   const navigation = useNavigation();
   const progress = useStatsStore((s) => s.progressByTeam[teamId]);
   const loadTeamProgress = useStatsStore((s) => s.loadTeamProgress);
+  const team = useCatalogueStore((s) =>
+    s.teams.find((candidate) => candidate.id === teamId),
+  );
+  const loadTeams = useCatalogueStore((s) => s.loadTeams);
   const favoriteTeamIds = usePreferencesStore((s) => s.favoriteTeamIds);
   const toggleFavoriteTeam = usePreferencesStore((s) => s.toggleFavoriteTeam);
   const isFavorite = favoriteTeamIds.includes(teamId);
@@ -36,7 +42,8 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
   useFocusEffect(
     useCallback(() => {
       void loadTeamProgress(teamId);
-    }, [loadTeamProgress, teamId]),
+      void loadTeams();
+    }, [loadTeamProgress, loadTeams, teamId]),
   );
 
   React.useLayoutEffect(() => {
@@ -90,19 +97,47 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
       }}
     >
       <View style={{ gap: spacing.sm }}>
-        <View style={styles.progressHeader}>
-          <AppText variant="headline">
-            {progress.ownedKits}
-            <AppText variant="title" color={colors.onSurfaceVariant}>
-              {" "}
-              / {progress.totalKits} {t("team.kits")}
-            </AppText>
-          </AppText>
-          <AppText variant="titleSm" color={colors.tertiary}>
-            {t("team.shirts", { count: progress.ownedItems })}
-          </AppText>
+        <View style={styles.headerRow}>
+          {team ? (
+            <Pressable
+              onPress={() => navigation.navigate("TeamLogoPicker", { teamId })}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel={t("team.editLogo")}
+            >
+              <TeamLogo team={team} size={72} />
+              <View
+                style={[
+                  styles.editBadge,
+                  {
+                    backgroundColor: colors.secondaryContainer,
+                    borderColor: colors.background,
+                  },
+                ]}
+              >
+                <Ionicons name="pencil" size={10} color={colors.onSurface} />
+              </View>
+            </Pressable>
+          ) : null}
+          <View style={[styles.progressBlock, { gap: spacing.sm }]}>
+            <View style={styles.progressHeader}>
+              <AppText variant="headline">
+                {progress.ownedKits}
+                <AppText variant="title" color={colors.onSurfaceVariant}>
+                  {" "}
+                  / {progress.totalKits} {t("team.kits")}
+                </AppText>
+              </AppText>
+              <AppText variant="titleSm" color={colors.tertiary}>
+                {t("team.shirts", { count: progress.ownedItems })}
+              </AppText>
+            </View>
+            <ProgressBar
+              value={progress.ownedKits}
+              total={progress.totalKits}
+            />
+          </View>
         </View>
-        <ProgressBar value={progress.ownedKits} total={progress.totalKits} />
         <View style={styles.filterRow}>
           <Pressable
             onPress={() => setOwnedOnly((v) => !v)}
@@ -206,6 +241,19 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  editBadge: {
+    position: "absolute",
+    right: -5,
+    bottom: -5,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  headerRow: { flexDirection: "row", alignItems: "center", gap: 14 },
+  progressBlock: { flex: 1 },
   progressHeader: {
     flexDirection: "row",
     alignItems: "flex-end",

@@ -8,11 +8,16 @@ export type TabParamList = {
 };
 
 import type { NavigatorScreenParams } from "@react-navigation/native";
+import type { Confederation } from "@/db/seed/world";
 
 export type RootStackParamList = {
   MainTabs: NavigatorScreenParams<TabParamList> | undefined;
   /** Team page: eras, kits, progress. */
   TeamDetail: { teamId: string };
+  /** Explore drill-down: one country's clubs or one confederation's nations. */
+  ExploreGroup:
+    | { kind: "country"; countryId: string }
+    | { kind: "confederation"; confederation: Confederation | "other" };
   /** Catalogue kit page: reference images, owned items, wishlist state. */
   KitDetail: { kitId: string };
   /** Physical shirt page. */
@@ -27,6 +32,8 @@ export type RootStackParamList = {
     | { itemId: string; kitId?: undefined };
   /** Extend the catalogue with a new kit (and optionally team/era). */
   CreateKit: { teamId?: string; eraId?: string } | undefined;
+  /** Pick a team's logo: bundled crest library or a custom photo (modal). */
+  TeamLogoPicker: { teamId: string };
   /** Optional desired configuration for a wishlist entry. */
   WishlistConfig: { kitId: string };
   /** Pick an image from Google Images (modal WebView): kit reference image

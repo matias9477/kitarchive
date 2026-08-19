@@ -315,6 +315,34 @@ export const createTeam = async (
   return team;
 };
 
+/**
+ * Sets a team's logo: a bundled asset key (config/teamLogos.ts), a custom
+ * stored photo URI, or neither to revert to the default art. A replaced
+ * custom photo file is deleted from disk.
+ */
+export const setTeamLogo = async (
+  teamId: string,
+  logo: { logoAsset?: string; logoUri?: string },
+): Promise<void> => {
+  const db = getDb();
+  const rows = await db
+    .select({ logoUri: teams.logoUri })
+    .from(teams)
+    .where(eq(teams.id, teamId))
+    .limit(1);
+  const previous = rows[0]?.logoUri ?? null;
+  const nextUri = logo.logoUri ?? null;
+  await db
+    .update(teams)
+    .set({
+      logoAsset: logo.logoAsset ?? null,
+      logoUri: nextUri,
+      updatedAt: new Date(),
+    })
+    .where(eq(teams.id, teamId));
+  if (previous && previous !== nextUri) await deleteStoredImage(previous);
+};
+
 export const createEra = async (input: CreateEraInput): Promise<Era> => {
   const row: Era = {
     id: generateId(),

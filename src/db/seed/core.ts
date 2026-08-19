@@ -39,6 +39,10 @@ export const manufacturerSeeds: ManufacturerSeed[] = [
   { id: "lotto", name: "Lotto", ...seed },
   { id: "kappa", name: "Kappa", ...seed },
   { id: "new-balance", name: "New Balance", ...seed },
+  { id: "macron", name: "Macron", ...seed },
+  { id: "hummel", name: "Hummel", ...seed },
+  { id: "joma", name: "Joma", ...seed },
+  { id: "marathon", name: "Marathon", ...seed },
 ];
 
 export const competitionSeeds: CompetitionSeed[] = [
