@@ -15,6 +15,8 @@ interface KitListRowProps {
   showTeam?: boolean;
   /** Extra context line inside the row (e.g. wishlist desired config). */
   detail?: string | null;
+  /** Replaces the default ownership/wishlist trailing (e.g. bulk-add queue). */
+  trailing?: React.ReactNode;
 }
 
 /** Compact list alternative to KitCard: thumbnail, names, ownership state. */
@@ -23,6 +25,7 @@ export const KitListRow: React.FC<KitListRowProps> = ({
   onPress,
   showTeam = true,
   detail,
+  trailing,
 }) => {
   const { colors, radius } = useTheme();
   const { t } = useTranslation();
@@ -78,7 +81,9 @@ export const KitListRow: React.FC<KitListRowProps> = ({
           </AppText>
         ) : null}
       </View>
-      {ownedCount > 0 ? (
+      {trailing !== undefined ? (
+        trailing
+      ) : ownedCount > 0 ? (
         <Chip
           label={ownedCount > 1 ? `×${ownedCount}` : t("enums.status.owned")}
           icon="checkmark-circle"

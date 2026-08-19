@@ -17,6 +17,7 @@ import { TeamDetailScreen } from "@/app/TeamDetailScreen";
 import { KitDetailScreen } from "@/app/KitDetailScreen";
 import { ItemDetailScreen } from "@/app/ItemDetailScreen";
 import { AddShirtScreen } from "@/app/AddShirtScreen";
+import { BulkAddScreen } from "@/app/BulkAddScreen";
 import { ItemFormScreen } from "@/app/ItemFormScreen";
 import { CreateKitScreen } from "@/app/CreateKitScreen";
 import { WishlistConfigScreen } from "@/app/WishlistConfigScreen";
@@ -131,6 +132,15 @@ export const AppNavigator: React.FC<AppNavigatorProps> = ({
           options={{
             title: t("addShirt.title"),
             presentation: "fullScreenModal",
+            headerLeft: headerClose,
+          }}
+        />
+        <Stack.Screen
+          name="BulkAdd"
+          component={BulkAddScreen}
+          options={{
+            title: t("bulkAdd.title"),
+            presentation: "modal",
             headerLeft: headerClose,
           }}
         />

@@ -167,6 +167,26 @@ export const AddShirtScreen: React.FC = () => {
                   ))}
                 </View>
               ) : null}
+              <Pressable
+                onPress={() => navigation.navigate("BulkAdd")}
+                style={[
+                  styles.bulkLink,
+                  {
+                    backgroundColor: colors.surfaceContainer,
+                    borderRadius: radius.md,
+                    marginBottom: spacing.md,
+                  },
+                ]}
+              >
+                <Ionicons
+                  name="albums-outline"
+                  size={18}
+                  color={colors.secondary}
+                />
+                <AppText variant="bodySm" color={colors.secondary}>
+                  {t("bulkAdd.entry")}
+                </AppText>
+              </Pressable>
               <AppText
                 variant="label"
                 color={colors.onPrimaryContainer}
@@ -202,4 +222,11 @@ const styles = StyleSheet.create({
   rowText: { flex: 1, gap: 2 },
   thumb: { width: 40, height: 52, overflow: "hidden" },
   footerLink: { paddingVertical: 16, alignItems: "center" },
+  bulkLink: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 12,
+  },
 });

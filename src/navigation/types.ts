@@ -19,6 +19,8 @@ export type RootStackParamList = {
   ItemDetail: { itemId: string };
   /** Add-shirt wizard step 1: find the catalogue kit (modal). */
   AddShirt: undefined;
+  /** Bulk-register shirts: team → season → kit cascade + local queue (modal). */
+  BulkAdd: undefined;
   /** Add/edit a physical shirt: kitId to create under a kit, itemId to edit. */
   ItemForm:
     | { kitId: string; itemId?: undefined }
