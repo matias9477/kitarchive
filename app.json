@@ -3,7 +3,7 @@
     "name": "kitarchive",
     "slug": "kitarchive",
     "scheme": "kitarchive",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -12,7 +12,7 @@
       "supportsTablet": true,
       "appleTeamId": "7VJ997Q842",
       "bundleIdentifier": "com.matiasturra.kitarchive",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "entitlements": {
         "com.apple.security.application-groups": [
           "group.com.matiasturra.kitarchive"
@@ -25,7 +25,10 @@
         "NSPhotoLibraryAddUsageDescription": "Save shirt photos to your Photos library.",
         "NSCameraUsageDescription": "Photograph the shirts in your collection.",
         "ITSAppUsesNonExemptEncryption": false,
-        "CFBundleLocalizations": ["en", "es"]
+        "CFBundleLocalizations": [
+          "en",
+          "es"
+        ]
       }
     },
     "android": {
