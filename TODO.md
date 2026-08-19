@@ -1,6 +1,7 @@
 # TODO
 
-- [x] Default teams: seeded 225 national teams (all confederations) + ~290 clubs (big-5 Europe, Argentina incl. iconic lower-division sides, Brazil, MLS, Uruguay, Chile, continental giants) with generated 2014+ seasons. Explore groups national teams by confederation and clubs by country.
-- [ ] Crests: 44 national logos are SVG, the rest are interim 512px PNGs (SVG host rate-limited us). Upgrade PNGs → SVG (VPN or cooldown), download club crests for the new leagues, and decide bundle-size strategy (svgo / on-demand). Sources + hashes saved in scratchpad manifest.
-- [ ] Widget team picker still lists only the original teams (enum baked in app.json) — decide curated subset vs favorites-driven.
-  - [x] National-team logos: SVG crest library downloaded from football-logos.cc into `assets/logos/national/` (plus Primera División clubs in `assets/logos/clubs/argentina/`), bundled via `src/config/teamLogos.ts`, shown on team rows/detail, user-overridable per team (bundled crest or custom photo). Note: trademarked art, fan/non-commercial use per the source site's license — revisit before any paid release.
+- [x] Default teams: seeded 225 national teams (all confederations) + ~290 clubs (big-5 Europe, Argentina incl. iconic lower-division sides, Brazil, MLS, Uruguay, Chile, continental giants) with generated 2014+ seasons. Explore drills down: clubs by country, national teams by confederation (with federation logos).
+- [x] Crests: every seeded team (498 entries) has bundled art; user-overridable per team (bundled crest or custom photo).
+- [ ] Crest polish (non-blocking): 43 national crests are SVG, the rest interim 512px PNGs — upgrade to SVG when the source's image host unbans us (or via VPN; hashes saved in scratchpad manifest). Assets weigh ~19 MB — consider svgo/downscale or on-demand loading.
+- [ ] Widget team picker still lists only the original teams (enum baked in app.json) — decide curated subset vs favorites-driven; needs a new binary.
+- [ ] Licensing before any *paid* release: crests/flags/confederation logos are trademarked art, fan/non-commercial use per the sources.
