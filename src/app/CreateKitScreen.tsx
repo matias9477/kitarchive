@@ -43,7 +43,9 @@ export const CreateKitScreen: React.FC<Props> = ({ route, navigation }) => {
   const [primaryColor, setPrimaryColor] = useState("#0d3b7d");
   const [secondaryColor, setSecondaryColor] = useState("");
 
-  const [eraId, setEraId] = useState<string | null>(null);
+  const [eraId, setEraId] = useState<string | null>(
+    route.params?.eraId ?? null,
+  );
   const [newEra, setNewEra] = useState(false);
   const [eraLabel, setEraLabel] = useState("");
   const [startYearText, setStartYearText] = useState("");

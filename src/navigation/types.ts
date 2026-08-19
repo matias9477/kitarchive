@@ -24,7 +24,7 @@ export type RootStackParamList = {
     | { kitId: string; itemId?: undefined }
     | { itemId: string; kitId?: undefined };
   /** Extend the catalogue with a new kit (and optionally team/era). */
-  CreateKit: { teamId?: string } | undefined;
+  CreateKit: { teamId?: string; eraId?: string } | undefined;
   /** Optional desired configuration for a wishlist entry. */
   WishlistConfig: { kitId: string };
   /** Pick an image from Google Images (modal WebView): kit reference image

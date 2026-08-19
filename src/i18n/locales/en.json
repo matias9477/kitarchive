@@ -72,6 +72,8 @@
     "emptyMessage": "Add a kit for this team from Explore.",
     "favorite": "Favorite team",
     "ownedOnly": "Owned only",
+    "addKitToEra": "Add a kit to this season",
+    "extendCatalogue": "Missing a kit? Add it to the catalogue",
     "noOwned": "You don't own any kit from this team yet"
   },
   "kitDetail": {

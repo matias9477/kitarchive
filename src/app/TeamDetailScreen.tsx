@@ -145,9 +145,27 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
           <View key={era.id} style={{ gap: spacing.sm }}>
             <View style={styles.eraHeader}>
               <AppText variant="title">{era.label}</AppText>
-              <AppText variant="labelSm" color={colors.onSurfaceVariant}>
-                {ownedKits} / {totalKits}
-              </AppText>
+              <View style={styles.eraActions}>
+                <AppText variant="labelSm" color={colors.onSurfaceVariant}>
+                  {ownedKits} / {totalKits}
+                </AppText>
+                {/* The season exists but its kit may not (third, special,
+                    cup…) — extend the catalogue right here. */}
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("CreateKit", { teamId, eraId: era.id })
+                  }
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel={t("team.addKitToEra")}
+                >
+                  <Ionicons
+                    name="add-circle-outline"
+                    size={20}
+                    color={colors.secondary}
+                  />
+                </Pressable>
+              </View>
             </View>
             <View style={isGrid ? styles.grid : styles.list}>
               {kits.map((summary) => {
@@ -170,6 +188,18 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
           </View>
         ))
       )}
+
+      {!ownedOnly ? (
+        <Pressable
+          onPress={() => navigation.navigate("CreateKit", { teamId })}
+          style={[styles.extendRow, { borderColor: colors.outlineVariant }]}
+        >
+          <Ionicons name="add" size={16} color={colors.secondary} />
+          <AppText variant="bodySm" color={colors.secondary}>
+            {t("team.extendCatalogue")}
+          </AppText>
+        </Pressable>
+      ) : null}
     </ScrollView>
   );
 };
@@ -183,8 +213,19 @@ const styles = StyleSheet.create({
   },
   eraHeader: {
     flexDirection: "row",
-    alignItems: "baseline",
+    alignItems: "center",
     justifyContent: "space-between",
+  },
+  eraActions: { flexDirection: "row", alignItems: "center", gap: 10 },
+  extendRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    borderRadius: 12,
+    paddingVertical: 12,
   },
   filterRow: {
     flexDirection: "row",

@@ -72,6 +72,8 @@
     "emptyMessage": "Agregá un modelo para este equipo desde Explorar.",
     "favorite": "Equipo favorito",
     "ownedOnly": "Solo en colección",
+    "addKitToEra": "Agregar un kit a esta temporada",
+    "extendCatalogue": "¿Falta un kit? Agregalo al catálogo",
     "noOwned": "Todavía no tenés modelos de este equipo"
   },
   "kitDetail": {
