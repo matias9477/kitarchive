@@ -69,6 +69,7 @@ export const PickerField = <T extends string>({
       <Modal
         visible={open}
         animationType="slide"
+        presentationStyle="pageSheet"
         onRequestClose={() => setOpen(false)}
       >
         <SafeAreaView
