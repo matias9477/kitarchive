@@ -11,6 +11,8 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { GroupRow } from "@/components/shared/GroupRow";
 import { SegmentedControl } from "@/components/shared/SegmentedControl";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
+import { Image } from "expo-image";
+import { CONFEDERATION_LOGOS } from "@/config/confederationLogos";
 import { confederationByCountry } from "@/db/seed/world";
 import type { Confederation } from "@/db/seed/world";
 
@@ -71,9 +73,23 @@ export const ExploreScreen: React.FC = () => {
               ? t("explore.otherRegion")
               : t(`enums.confederation.${key}`),
           count: counts.get(key) ?? 0,
-          leading: (
-            <Ionicons name="globe-outline" size={20} color={colors.outline} />
-          ),
+          leading:
+            key === "other" ? (
+              <Ionicons name="globe-outline" size={20} color={colors.outline} />
+            ) : (
+              <View
+                style={[
+                  styles.confedChip,
+                  { backgroundColor: colors.inverseSurface },
+                ]}
+              >
+                <Image
+                  source={CONFEDERATION_LOGOS[key]}
+                  style={styles.confedLogo}
+                  contentFit="contain"
+                />
+              </View>
+            ),
           onPress: () =>
             navigation.navigate("ExploreGroup", {
               kind: "confederation",
@@ -169,6 +185,15 @@ export const ExploreScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  confedChip: {
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    padding: 3,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  confedLogo: { width: "100%", height: "100%" },
   container: { flex: 1 },
   header: {
     flexDirection: "row",
