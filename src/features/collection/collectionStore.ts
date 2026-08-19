@@ -25,6 +25,8 @@ interface State {
   loadItemDetail: (itemId: string) => Promise<void>;
 
   add: (input: CreateItemInput) => Promise<CollectionItem>;
+  /** Bulk add: one insert, one reload, one widget sync. */
+  addMany: (inputs: Omit<CreateItemInput, "addonIds">[]) => Promise<void>;
   edit: (itemId: string, input: UpdateItemInput) => Promise<void>;
   markSold: (itemId: string) => Promise<void>;
   markOwned: (itemId: string) => Promise<void>;
@@ -82,6 +84,12 @@ export const useCollectionStore = create<State>((set, get) => ({
     await get().load();
     void syncWidget();
     return item;
+  },
+
+  addMany: async (inputs) => {
+    await service.createItems(inputs);
+    await get().load();
+    void syncWidget();
   },
 
   edit: async (itemId, input) => {

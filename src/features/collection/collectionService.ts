@@ -93,7 +93,7 @@ export const getItems = async (
 
   const rows = await selectJoinedItems()
     .where(and(...conditions))
-    .orderBy(desc(collectionItems.createdAt));
+    .orderBy(desc(collectionItems.createdAt), desc(collectionItems.id));
   return toSummaries(rows);
 };
 
@@ -114,7 +114,7 @@ export const getItemsByKit = async (
 ): Promise<CollectionItemSummary[]> => {
   const rows = await selectJoinedItems()
     .where(eq(collectionItems.kitId, kitId))
-    .orderBy(desc(collectionItems.createdAt));
+    .orderBy(desc(collectionItems.createdAt), desc(collectionItems.id));
   return toSummaries(rows);
 };
 
@@ -168,32 +168,37 @@ export const getItemDetail = async (
   };
 };
 
+/** Pure input → row mapping shared by createItem/createItems. */
+export const buildItemRow = (
+  input: Omit<CreateItemInput, "addonIds">,
+  createdAt: Date,
+): CollectionItem => ({
+  id: generateId(),
+  kitId: input.kitId,
+  status: "owned",
+  condition: input.condition,
+  conditionNote: input.conditionNote ?? null,
+  productVersion: input.productVersion ?? null,
+  edition: input.edition ?? null,
+  sleeve: input.sleeve ?? null,
+  backType: input.backType ?? "blank",
+  playerId: input.playerId ?? null,
+  customName: input.customName ?? null,
+  number: input.number ?? null,
+  purchaseDate: input.purchaseDate ?? null,
+  seller: input.seller ?? null,
+  purchasePrice: input.purchasePrice ?? null,
+  currency: input.currency ?? null,
+  createdAt,
+  updatedAt: createdAt,
+});
+
 export const createItem = async (
   input: CreateItemInput,
 ): Promise<CollectionItem> => {
   const db = getDb();
-  const now = new Date();
   const { addonIds, ...rest } = input;
-  const row: CollectionItem = {
-    id: generateId(),
-    kitId: rest.kitId,
-    status: "owned",
-    condition: rest.condition,
-    conditionNote: rest.conditionNote ?? null,
-    productVersion: rest.productVersion ?? null,
-    edition: rest.edition ?? null,
-    sleeve: rest.sleeve ?? null,
-    backType: rest.backType ?? "blank",
-    playerId: rest.playerId ?? null,
-    customName: rest.customName ?? null,
-    number: rest.number ?? null,
-    purchaseDate: rest.purchaseDate ?? null,
-    seller: rest.seller ?? null,
-    purchasePrice: rest.purchasePrice ?? null,
-    currency: rest.currency ?? null,
-    createdAt: now,
-    updatedAt: now,
-  };
+  const row = buildItemRow(rest, new Date());
   await db.insert(collectionItems).values(row);
   if (addonIds?.length) {
     await db
@@ -201,6 +206,26 @@ export const createItem = async (
       .values(addonIds.map((addonId) => ({ itemId: row.id, addonId })));
   }
   return row;
+};
+
+/** Timestamps are stored in whole seconds, so a batch inserted in one tick
+ * would collapse to one createdAt value and lose its order under
+ * ORDER BY created_at. Backdating row i of n to now − (n−1−i) seconds keeps
+ * insertion order stable (last row = now, nothing in the future). */
+export const staggeredDate = (nowMs: number, index: number, total: number) =>
+  new Date(nowMs - (total - 1 - index) * 1000);
+
+/** Batch create for the bulk-add flow (one multi-row INSERT, no addons). */
+export const createItems = async (
+  inputs: Omit<CreateItemInput, "addonIds">[],
+): Promise<CollectionItem[]> => {
+  if (inputs.length === 0) return [];
+  const nowMs = Date.now();
+  const rows = inputs.map((input, i) =>
+    buildItemRow(input, staggeredDate(nowMs, i, inputs.length)),
+  );
+  await getDb().insert(collectionItems).values(rows);
+  return rows;
 };
 
 export const updateItem = async (
