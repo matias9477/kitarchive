@@ -202,7 +202,8 @@
     "system": "Sistema",
     "about": "Acerca de",
     "version": "Versión",
-    "catalogueVersion": "Versión del catálogo"
+    "catalogueVersion": "Versión del catálogo",
+    "privacyPolicy": "Política de privacidad"
   },
   "enums": {
     "teamType": {

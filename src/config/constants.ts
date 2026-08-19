@@ -72,3 +72,7 @@ export const PHOTO_KINDS: PhotoKind[] = [
 
 /** Common purchase currencies, first is the picker default. */
 export const CURRENCIES = ["EUR", "USD", "ARS", "GBP"] as const;
+
+/** Hosted privacy policy (content lives in the my-portfolio repo). */
+export const PRIVACY_POLICY_URL =
+  "https://www.matiasturra.dev/privacy/kitarchive";

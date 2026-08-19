@@ -1,10 +1,11 @@
 import React from "react";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Linking, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { AppText } from "@/components/shared/AppText";
 import { Section } from "@/components/shared/Section";
+import { PRIVACY_POLICY_URL } from "@/config/constants";
 import { useLanguageStore } from "@/store/languageStore";
 import type { LanguagePreference } from "@/i18n/index";
 import { getAppVersion } from "@/utils/version";
@@ -90,6 +91,22 @@ export const SettingsScreen: React.FC = () => {
             </AppText>
             <AppText>{SEED_VERSION}</AppText>
           </View>
+          <Pressable
+            onPress={() => void Linking.openURL(PRIVACY_POLICY_URL)}
+            accessibilityRole="link"
+            style={[
+              styles.row,
+              {
+                backgroundColor: colors.surfaceContainer,
+                borderRadius: radius.md,
+              },
+            ]}
+          >
+            <AppText color={colors.onSurfaceVariant}>
+              {t("settings.privacyPolicy")}
+            </AppText>
+            <Ionicons name="open-outline" size={18} color={colors.outline} />
+          </Pressable>
         </View>
       </Section>
     </ScrollView>
