@@ -5,3 +5,9 @@
 - [ ] Crest polish (non-blocking): 43 national crests are SVG, the rest interim 512px PNGs — upgrade to SVG when the source's image host unbans us (or via VPN; hashes saved in scratchpad manifest). Assets weigh ~19 MB — consider svgo/downscale or on-demand loading.
 - [ ] Widget team picker still lists only the original teams (enum baked in app.json) — decide curated subset vs favorites-driven; needs a new binary.
 - [ ] Licensing before any *paid* release: crests/flags/confederation logos are trademarked art, fan/non-commercial use per the sources.
+
+## UX
+- [ ] Onboarding flow (module scaffolded but empty; add `Onboarding` route when built).
+- [ ] Empty states for all screens — audit each screen for a proper `EmptyState` treatment.
+- [ ] Loading states — screens render blank while data loads (TeamDetail, KitDetail, Explore, etc.); add skeletons/spinners so it doesn't look empty.
+- [ ] Third view mode: an even more compact list (denser than the current list), alongside grid + list in the view toggle.
