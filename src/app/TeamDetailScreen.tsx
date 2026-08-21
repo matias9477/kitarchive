@@ -40,8 +40,11 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
   const isFavorite = favoriteTeamIds.includes(teamId);
   const viewMode = usePreferencesStore((s) => s.viewMode);
   const setViewMode = usePreferencesStore((s) => s.setViewMode);
-  const isGrid = viewMode === "grid";
-  const isCompact = viewMode === "compact";
+  // Adding a shirt is a picking task — force the dense list so a whole era
+  // fits on screen, regardless of the browse view preference.
+  const isAdding = intent === "addItem";
+  const isGrid = viewMode === "grid" && !isAdding;
+  const isCompact = viewMode === "compact" || isAdding;
   const [ownedOnly, setOwnedOnly] = useState(false);
 
   useFocusEffect(
@@ -172,18 +175,20 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
               tone={ownedOnly ? "blue" : "outline"}
             />
           </Pressable>
-          <Pressable
-            onPress={() => setViewMode(nextViewMode(viewMode))}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel={t("common.toggleView")}
-          >
-            <Ionicons
-              name={viewModeIcon(viewMode)}
-              size={20}
-              color={colors.onSurfaceVariant}
-            />
-          </Pressable>
+          {!isAdding ? (
+            <Pressable
+              onPress={() => setViewMode(nextViewMode(viewMode))}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel={t("common.toggleView")}
+            >
+              <Ionicons
+                name={viewModeIcon(viewMode)}
+                size={20}
+                color={colors.onSurfaceVariant}
+              />
+            </Pressable>
+          ) : null}
         </View>
       </View>
 
