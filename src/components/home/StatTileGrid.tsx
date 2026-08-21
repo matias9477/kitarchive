@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { AppText } from "@/components/shared/AppText";
 import { StatTile } from "@/components/shared/StatTile";
+import { ExpandToggle } from "@/components/shared/ExpandToggle";
 import type { DashboardStats, TeamProgress } from "@/features/stats/types";
 
 interface StatTileGridProps {
@@ -90,23 +91,14 @@ export const StatTileGrid: React.FC<StatTileGridProps> = ({
         </View>
       ))}
       {hiddenCount > 0 ? (
-        <Pressable
-          onPress={() => setExpanded((v) => !v)}
-          hitSlop={8}
-          accessibilityRole="button"
-          style={styles.toggleRow}
-        >
-          <AppText variant="labelSm" color={colors.secondary}>
-            {expanded
-              ? t("home.showLessTeams")
-              : t("home.showAllTeams", { count: favoriteTeamIds.length })}
-          </AppText>
-          <Ionicons
-            name={expanded ? "chevron-up" : "chevron-down"}
-            size={14}
-            color={colors.secondary}
-          />
-        </Pressable>
+        <ExpandToggle
+          expanded={expanded}
+          onToggle={() => setExpanded((v) => !v)}
+          showAllLabel={t("home.showAllTeams", {
+            count: favoriteTeamIds.length,
+          })}
+          showLessLabel={t("home.showLessTeams")}
+        />
       ) : null}
       {favoriteTeamIds.length === 0 ? (
         <Pressable
@@ -126,13 +118,6 @@ export const StatTileGrid: React.FC<StatTileGridProps> = ({
 const styles = StyleSheet.create({
   tileRow: { flexDirection: "row", gap: 12 },
   tileSpacer: { flex: 1 },
-  toggleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 4,
-    paddingVertical: 2,
-  },
   hintRow: {
     flexDirection: "row",
     alignItems: "center",

@@ -10,10 +10,14 @@ import type { KitType } from "@/config/types";
 import { AppText } from "@/components/shared/AppText";
 import { FilterSelector } from "@/components/shared/FilterSelector";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { KitCard } from "@/components/kits/KitCard";
-import { KitListRow } from "@/components/kits/KitListRow";
+import { SkeletonList } from "@/components/shared/Skeleton";
+import { KitTile } from "@/components/kits/KitTile";
 import { useWishlistStore } from "@/features/wishlist/wishlistStore";
-import { usePreferencesStore } from "@/store/preferencesStore";
+import {
+  nextViewMode,
+  usePreferencesStore,
+  viewModeIcon,
+} from "@/store/preferencesStore";
 import type { WishlistEntry } from "@/features/wishlist/types";
 
 /** Desired catalogue kits, with optional desired configuration (§33.6). */
@@ -22,10 +26,12 @@ export const WishlistScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const entries = useWishlistStore((s) => s.entries);
+  const hasLoaded = useWishlistStore((s) => s.hasLoaded);
   const load = useWishlistStore((s) => s.load);
   const viewMode = usePreferencesStore((s) => s.viewMode);
   const setViewMode = usePreferencesStore((s) => s.setViewMode);
   const isGrid = viewMode === "grid";
+  const isCompact = viewMode === "compact";
   const [kitType, setKitType] = useState<KitType | null>(null);
   const [teamId, setTeamId] = useState<string | null>(null);
 
@@ -96,13 +102,13 @@ export const WishlistScreen: React.FC = () => {
       <View style={[styles.header, { paddingHorizontal: spacing.screen }]}>
         <AppText variant="headline">{t("wishlist.title")}</AppText>
         <Pressable
-          onPress={() => setViewMode(isGrid ? "list" : "grid")}
+          onPress={() => setViewMode(nextViewMode(viewMode))}
           hitSlop={8}
           accessibilityRole="button"
           accessibilityLabel={t("common.toggleView")}
         >
           <Ionicons
-            name={isGrid ? "list-outline" : "grid-outline"}
+            name={viewModeIcon(viewMode)}
             size={22}
             color={colors.onSurface}
           />
@@ -149,7 +155,10 @@ export const WishlistScreen: React.FC = () => {
           gap: isGrid ? spacing.gutter : spacing.xs,
         }}
         ListEmptyComponent={
-          entries.length > 0 ? (
+          !hasLoaded ? (
+            // Skeleton until the first load settles — never flash "empty".
+            <SkeletonList rows={6} />
+          ) : entries.length > 0 ? (
             <EmptyState icon="star-outline" title={t("addShirt.noResults")} />
           ) : (
             <EmptyState
@@ -166,16 +175,17 @@ export const WishlistScreen: React.FC = () => {
             navigation.navigate("KitDetail", { kitId: entry.entry.kitId });
           if (!isGrid) {
             return (
-              <KitListRow
+              <KitTile
                 summary={entry.kit}
                 onPress={onPress}
                 detail={desired}
+                variant={isCompact ? "compact" : "row"}
               />
             );
           }
           return (
             <View style={styles.cell}>
-              <KitCard summary={entry.kit} onPress={onPress} detail={desired} />
+              <KitTile summary={entry.kit} onPress={onPress} detail={desired} />
             </View>
           );
         }}

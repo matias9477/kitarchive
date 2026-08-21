@@ -7,7 +7,7 @@ import { AppText } from "@/components/shared/AppText";
 import { Button } from "@/components/shared/Button";
 import { Chip } from "@/components/shared/Chip";
 import { PickerField } from "@/components/shared/PickerField";
-import { KitListRow } from "@/components/kits/KitListRow";
+import { KitTile } from "@/components/kits/KitTile";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
 import { KIT_TYPES } from "@/config/constants";
 import type { KitType } from "@/config/types";
@@ -77,9 +77,10 @@ export const BulkKitPicker: React.FC<BulkKitPickerProps> = ({
       {kits.map((summary) => {
         const queued = queuedCounts[summary.kit.id] ?? 0;
         return (
-          <KitListRow
+          <KitTile
             key={summary.kit.id}
             summary={summary}
+            variant="row"
             showTeam={false}
             onPress={() => onQueue(summary)}
             {...(queued > 0

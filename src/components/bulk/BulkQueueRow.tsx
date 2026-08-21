@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { Chip } from "@/components/shared/Chip";
-import { KitListRow } from "@/components/kits/KitListRow";
+import { KitTile } from "@/components/kits/KitTile";
 import type { KitSummary } from "@/features/catalogue/types";
 import type { Condition } from "@/config/types";
 
@@ -30,8 +30,9 @@ export const BulkQueueRow: React.FC<BulkQueueRowProps> = ({
   const { t } = useTranslation();
 
   return (
-    <KitListRow
+    <KitTile
       summary={summary}
+      variant="row"
       showTeam={false}
       onPress={onEditCondition}
       trailing={

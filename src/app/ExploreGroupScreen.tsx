@@ -5,6 +5,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { SkeletonList } from "@/components/shared/Skeleton";
 import { TeamRow } from "@/components/kits/TeamRow";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
 import { confederationByCountry } from "@/db/seed/world";
@@ -18,6 +19,7 @@ export const ExploreGroupScreen: React.FC<Props> = ({ route, navigation }) => {
   const { colors, spacing } = useTheme();
   const { t } = useTranslation();
   const teams = useCatalogueStore((s) => s.teams);
+  const hasLoadedTeams = useCatalogueStore((s) => s.hasLoadedTeams);
   const loadTeams = useCatalogueStore((s) => s.loadTeams);
 
   useFocusEffect(
@@ -62,7 +64,13 @@ export const ExploreGroupScreen: React.FC<Props> = ({ route, navigation }) => {
           paddingBottom: spacing.xl,
           gap: spacing.xs,
         }}
-        ListEmptyComponent={<EmptyState title={t("explore.empty")} />}
+        ListEmptyComponent={
+          hasLoadedTeams ? (
+            <EmptyState title={t("explore.empty")} />
+          ) : (
+            <SkeletonList rows={8} />
+          )
+        }
         renderItem={({ item: team }) => (
           <TeamRow
             team={team}

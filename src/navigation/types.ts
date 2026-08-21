@@ -12,8 +12,12 @@ import type { Confederation } from "@/db/seed/world";
 
 export type RootStackParamList = {
   MainTabs: NavigatorScreenParams<TabParamList> | undefined;
-  /** Team page: eras, kits, progress. */
-  TeamDetail: { teamId: string };
+  /** First-launch walkthrough; initial route until the user completes it. */
+  Onboarding: undefined;
+  /** Team page: eras, kits, progress. With intent 'addItem' (set by the
+   * add-shirt wizard), tapping a kit goes straight to ItemForm instead of
+   * KitDetail, so the browse detour doesn't swallow the add flow. */
+  TeamDetail: { teamId: string; intent?: "addItem" };
   /** Explore drill-down: one country's clubs or one confederation's nations. */
   ExploreGroup:
     | { kind: "country"; countryId: string }

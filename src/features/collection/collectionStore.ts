@@ -18,6 +18,8 @@ interface State {
   filters: CollectionFilters;
   itemDetail: CollectionItemDetail | null;
   isLoading: boolean;
+  /** True once the first load settled — gates skeletons vs. empty states. */
+  hasLoaded: boolean;
   error: string | null;
 
   load: () => Promise<void>;
@@ -46,6 +48,7 @@ export const useCollectionStore = create<State>((set, get) => ({
   filters: {},
   itemDetail: null,
   isLoading: false,
+  hasLoaded: false,
   error: null,
 
   load: async () => {
@@ -56,9 +59,9 @@ export const useCollectionStore = create<State>((set, get) => ({
         service.getItems(filters),
         service.getCollectionTeams(filters.status ?? "owned"),
       ]);
-      set({ items, teams, isLoading: false });
+      set({ items, teams, isLoading: false, hasLoaded: true });
     } catch (error) {
-      set({ error: message(error), isLoading: false });
+      set({ error: message(error), isLoading: false, hasLoaded: true });
     }
   },
 

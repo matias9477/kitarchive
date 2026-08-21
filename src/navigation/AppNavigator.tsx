@@ -13,6 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { fonts } from "@/theme/typography";
+import { OnboardingScreen } from "@/app/OnboardingScreen";
 import { TeamDetailScreen } from "@/app/TeamDetailScreen";
 import { ExploreGroupScreen } from "@/app/ExploreGroupScreen";
 import { KitDetailScreen } from "@/app/KitDetailScreen";
@@ -82,8 +83,6 @@ export const AppNavigator: React.FC<AppNavigatorProps> = ({
 }) => {
   const { colors } = useTheme();
   const { t } = useTranslation();
-  // Onboarding is not scaffolded — gate the initial route here once you add it.
-  void onboardingCompleted;
 
   const navTheme = {
     ...DarkTheme,
@@ -100,7 +99,7 @@ export const AppNavigator: React.FC<AppNavigatorProps> = ({
   return (
     <NavigationContainer ref={navigationRef} linking={linking} theme={navTheme}>
       <Stack.Navigator
-        initialRouteName="MainTabs"
+        initialRouteName={onboardingCompleted ? "MainTabs" : "Onboarding"}
         screenOptions={{
           headerStyle: { backgroundColor: colors.surfaceContainerLowest },
           headerTintColor: colors.onSurface,
@@ -112,6 +111,11 @@ export const AppNavigator: React.FC<AppNavigatorProps> = ({
           name="MainTabs"
           component={TabNavigator}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Onboarding"
+          component={OnboardingScreen}
+          options={{ headerShown: false, gestureEnabled: false }}
         />
         <Stack.Screen
           name="TeamDetail"

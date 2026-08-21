@@ -20,10 +20,12 @@ import { AppText } from "@/components/shared/AppText";
 import { Button } from "@/components/shared/Button";
 import { Chip } from "@/components/shared/Chip";
 import { Section } from "@/components/shared/Section";
+import { Skeleton } from "@/components/shared/Skeleton";
 import {
   HeroGallery,
   type HeroGalleryHandle,
 } from "@/components/kits/HeroGallery";
+import { PhotoViewer } from "@/components/kits/PhotoViewer";
 import { useCollectionStore } from "@/features/collection/collectionStore";
 import type { ItemPhoto } from "@/features/collection/types";
 import type { RootStackParamList } from "@/navigation/types";
@@ -33,7 +35,7 @@ type Props = NativeStackScreenProps<RootStackParamList, "ItemDetail">;
 /** Physical-shirt page: photos, spec list, purchase info, actions (§33.4). */
 export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
   const { itemId } = route.params;
-  const { colors, spacing } = useTheme();
+  const { colors, spacing, radius } = useTheme();
   const { t } = useTranslation();
   const navigation = useNavigation();
   const detail = useCollectionStore((s) => s.itemDetail);
@@ -46,6 +48,7 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
   // Same cap as the kit page, so the spec list peeks above the fold.
   const heroHeight = Math.min((heroWidth * 4) / 3, windowHeight * 0.45);
   const heroRef = React.useRef<HeroGalleryHandle>(null);
+  const [viewerIndex, setViewerIndex] = React.useState<number | null>(null);
   const markSold = useCollectionStore((s) => s.markSold);
   const markOwned = useCollectionStore((s) => s.markOwned);
   const remove = useCollectionStore((s) => s.remove);
@@ -59,8 +62,21 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
   if (!detail || detail.item.id !== itemId) {
     return (
       <View
-        style={[styles.container, { backgroundColor: colors.background }]}
-      />
+        style={[
+          styles.container,
+          {
+            backgroundColor: colors.background,
+            padding: spacing.screen,
+            gap: spacing.lg,
+          },
+        ]}
+      >
+        <Skeleton height={heroHeight} borderRadius={radius.lg} />
+        <View style={{ gap: spacing.sm }}>
+          <Skeleton width="65%" height={20} />
+          <Skeleton width="40%" height={14} />
+        </View>
+      </View>
     );
   }
 
@@ -208,8 +224,8 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
       }}
     >
       {/* Photos: full-width paged carousel with the kit identity overlaid
-        (tap a photo for options); falls back to the kit's reference image
-        like the collection/home cards do. */}
+        (tap a photo to view it fullscreen); falls back to the kit's
+        reference image like the collection/home cards do. */}
       <View style={{ gap: spacing.sm }}>
         <HeroGallery
           ref={heroRef}
@@ -226,13 +242,21 @@ export const ItemDetailScreen: React.FC<Props> = ({ route }) => {
           ]}
           overlayTitle={detail.teamName}
           defaultBadgeLabel={t("itemDetail.defaultPhoto")}
-          onImagePress={(index) => {
-            const photo = detail.photos[index];
-            if (photo) photoOptions(photo, index);
-          }}
+          onImagePress={(index) => setViewerIndex(index)}
           onTitlePress={() =>
             navigation.navigate("TeamDetail", { teamId: detail.teamId })
           }
+        />
+        <PhotoViewer
+          images={detail.photos}
+          index={viewerIndex}
+          onClose={() => setViewerIndex(null)}
+          onOptions={(index) => {
+            setViewerIndex(null);
+            const photo = detail.photos[index];
+            if (photo) photoOptions(photo, index);
+          }}
+          optionsLabel={t("itemDetail.photoOptions")}
         />
         <Button
           label={t("itemDetail.addPhotos")}

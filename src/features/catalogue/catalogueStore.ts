@@ -28,6 +28,8 @@ interface State {
   kitsByTeam: Record<string, KitSummary[]>;
   kitDetail: KitDetail | null;
   isLoading: boolean;
+  /** True once the first teams load settled — gates skeletons vs. empty states. */
+  hasLoadedTeams: boolean;
   error: string | null;
 
   loadTeams: () => Promise<void>;
@@ -63,14 +65,19 @@ export const useCatalogueStore = create<State>((set, get) => ({
   kitsByTeam: {},
   kitDetail: null,
   isLoading: false,
+  hasLoadedTeams: false,
   error: null,
 
   loadTeams: async () => {
     set({ isLoading: true, error: null });
     try {
-      set({ teams: await service.getTeams(), isLoading: false });
+      set({
+        teams: await service.getTeams(),
+        isLoading: false,
+        hasLoadedTeams: true,
+      });
     } catch (error) {
-      set({ error: message(error), isLoading: false });
+      set({ error: message(error), isLoading: false, hasLoadedTeams: true });
     }
   },
 

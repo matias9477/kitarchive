@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Pressable, ScrollView, StyleSheet } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,6 +8,7 @@ import { useTheme } from "@/theme/index";
 import { usePreferencesStore } from "@/store/preferencesStore";
 import { ScreenHeader } from "@/components/shared/ScreenHeader";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { Skeleton, SkeletonList } from "@/components/shared/Skeleton";
 import { StatTileGrid } from "@/components/home/StatTileGrid";
 import { RecentlyAddedRail } from "@/components/home/RecentlyAddedRail";
 import { ArchiveProgressList } from "@/components/home/ArchiveProgressList";
@@ -64,28 +65,41 @@ export const HomeScreen: React.FC = () => {
           gap: spacing.lg,
         }}
       >
-        <StatTileGrid
-          dashboard={dashboard}
-          favoriteTeamIds={favoriteTeamIds}
-          progressByTeam={progressByTeam}
-        />
+        {dashboard ? (
+          <>
+            <StatTileGrid
+              dashboard={dashboard}
+              favoriteTeamIds={favoriteTeamIds}
+              progressByTeam={progressByTeam}
+            />
 
-        {dashboard && dashboard.totalOwned === 0 ? (
-          <EmptyState
-            title={t("home.emptyTitle")}
-            message={t("home.emptyMessage")}
-          />
-        ) : null}
+            {dashboard.totalOwned === 0 ? (
+              <EmptyState
+                title={t("home.emptyTitle")}
+                message={t("home.emptyMessage")}
+              />
+            ) : null}
 
-        <RecentlyAddedRail items={dashboard?.recentItems ?? []} />
-        <ArchiveProgressList progress={favoriteProgress} />
-        <TeamCountList buckets={dashboard?.byTeam ?? []} />
-        <StatsBreakdownSection
-          byType={dashboard?.byType ?? []}
-          byDecade={dashboard?.byDecade ?? []}
-          byCondition={dashboard?.byCondition ?? []}
-        />
-        <DuplicatesSection duplicates={dashboard?.duplicates ?? []} />
+            <RecentlyAddedRail items={dashboard.recentItems} />
+            <ArchiveProgressList progress={favoriteProgress} />
+            <TeamCountList buckets={dashboard.byTeam} />
+            <StatsBreakdownSection
+              byType={dashboard.byType}
+              byDecade={dashboard.byDecade}
+              byCondition={dashboard.byCondition}
+            />
+            <DuplicatesSection duplicates={dashboard.duplicates} />
+          </>
+        ) : (
+          // First-load skeleton: tile row + list rows instead of a blank page.
+          <>
+            <View style={styles.skeletonTiles}>
+              <Skeleton height={92} style={styles.skeletonTile} />
+              <Skeleton height={92} style={styles.skeletonTile} />
+            </View>
+            <SkeletonList rows={5} />
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -93,4 +107,6 @@ export const HomeScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  skeletonTiles: { flexDirection: "row", gap: 12 },
+  skeletonTile: { flex: 1, width: undefined },
 });

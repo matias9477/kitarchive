@@ -17,6 +17,7 @@ import { useTheme } from "@/theme/index";
 import { persistPickedImage } from "@/lib/images";
 import { kitImageQuery } from "@/lib/webImagePicker";
 import { AppText } from "@/components/shared/AppText";
+import { Skeleton } from "@/components/shared/Skeleton";
 import { Button } from "@/components/shared/Button";
 import { Chip } from "@/components/shared/Chip";
 import { Section } from "@/components/shared/Section";
@@ -24,6 +25,7 @@ import {
   HeroGallery,
   type HeroGalleryHandle,
 } from "@/components/kits/HeroGallery";
+import { PhotoViewer } from "@/components/kits/PhotoViewer";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
 import { useWishlistStore } from "@/features/wishlist/wishlistStore";
 import { getItemsByKit } from "@/features/collection/collectionService";
@@ -54,6 +56,7 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
   // below keeps add/wishlist reachable without scrolling.
   const heroHeight = Math.min((heroWidth * 4) / 3, windowHeight * 0.45);
   const heroRef = React.useRef<HeroGalleryHandle>(null);
+  const [viewerIndex, setViewerIndex] = React.useState<number | null>(null);
   const wishlistLoad = useWishlistStore((s) => s.load);
   const wishlistAdd = useWishlistStore((s) => s.add);
   const wishlistRemove = useWishlistStore((s) => s.removeByKit);
@@ -76,8 +79,21 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
   if (!detail || detail.kit.id !== kitId) {
     return (
       <View
-        style={[styles.container, { backgroundColor: colors.background }]}
-      />
+        style={[
+          styles.container,
+          {
+            backgroundColor: colors.background,
+            padding: spacing.screen,
+            gap: spacing.lg,
+          },
+        ]}
+      >
+        <Skeleton height={heroHeight} borderRadius={radius.lg} />
+        <View style={{ gap: spacing.sm }}>
+          <Skeleton width="65%" height={20} />
+          <Skeleton width="40%" height={14} />
+        </View>
+      </View>
     );
   }
 
@@ -166,7 +182,7 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
         }}
       >
         {/* Hero: paged reference images with the kit metadata overlaid
-          (tap an image for options) */}
+          (tap an image to view it fullscreen) */}
         <View style={{ gap: spacing.sm }}>
           <HeroGallery
             ref={heroRef}
@@ -191,13 +207,21 @@ export const KitDetailScreen: React.FC<Props> = ({ route }) => {
                 />
               ) : null
             }
-            onImagePress={(index) => {
-              const image = detail.images[index];
-              if (image) imageOptions(image, index);
-            }}
+            onImagePress={(index) => setViewerIndex(index)}
             onTitlePress={() =>
               navigation.navigate("TeamDetail", { teamId: detail.kit.teamId })
             }
+          />
+          <PhotoViewer
+            images={detail.images}
+            index={viewerIndex}
+            onClose={() => setViewerIndex(null)}
+            onOptions={(index) => {
+              setViewerIndex(null);
+              const image = detail.images[index];
+              if (image) imageOptions(image, index);
+            }}
+            optionsLabel={t("kitDetail.imageOptions")}
           />
           <Button
             label={t("kitDetail.addImage")}

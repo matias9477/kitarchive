@@ -24,6 +24,7 @@ import { AppText } from "@/components/shared/AppText";
 import { Button } from "@/components/shared/Button";
 import { MultiPickerField } from "@/components/shared/MultiPickerField";
 import { TextField } from "@/components/shared/TextField";
+import { ChoiceField } from "@/components/shared/ChoiceField";
 import { PickerField } from "@/components/shared/PickerField";
 import { Section } from "@/components/shared/Section";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
@@ -251,17 +252,15 @@ export const ItemFormScreen: React.FC<Props> = ({ route, navigation }) => {
           onChange={setProductVersion}
           optional
         />
-        <PickerField
+        <ChoiceField
           label={t("itemForm.edition")}
-          placeholder={t("common.optional")}
           options={enumOptions(EDITIONS, "edition")}
           value={edition}
           onChange={setEdition}
           optional
         />
-        <PickerField
+        <ChoiceField
           label={t("itemForm.sleeve")}
-          placeholder={t("common.optional")}
           options={enumOptions(SLEEVE_TYPES, "sleeve")}
           value={sleeve}
           onChange={setSleeve}

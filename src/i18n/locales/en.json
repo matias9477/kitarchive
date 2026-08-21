@@ -16,7 +16,10 @@
     "done": "Done",
     "selectedCount_one": "{{count}} selected",
     "selectedCount_other": "{{count}} selected",
-    "toggleView": "Switch view"
+    "toggleView": "Switch view",
+    "showAll": "Show all ({{count}})",
+    "showLess": "Show less",
+    "close": "Close"
   },
   "home": {
     "title": "KitArchive",
@@ -168,7 +171,8 @@
     "save_other": "Add {{count}} shirts",
     "discardTitle": "Discard queued shirts?",
     "discardMessage": "The shirts you queued haven't been saved yet.",
-    "discard": "Discard"
+    "discard": "Discard",
+    "noTeams": "No teams match your search"
   },
   "itemForm": {
     "title": "Shirt details",
@@ -335,5 +339,16 @@
     "selected": "Image selected",
     "use": "Use this image",
     "downloadFailed": "Couldn't download that image. Try another one."
+  },
+  "onboarding": {
+    "skip": "Skip",
+    "next": "Next",
+    "getStarted": "Get started",
+    "catalogueTitle": "Explore the catalogue",
+    "catalogueMessage": "Countries, teams, seasons and kits — an archive of what exists, ready to browse.",
+    "collectionTitle": "Track what you own",
+    "collectionMessage": "Add each physical shirt with its condition, version and photos. Everything stays on your device.",
+    "wishlistTitle": "Complete your archive",
+    "wishlistMessage": "Star your teams, wishlist the kits you're missing and watch your progress grow season by season."
   }
 }

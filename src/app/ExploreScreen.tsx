@@ -8,6 +8,7 @@ import { useTheme } from "@/theme/index";
 import { AppText } from "@/components/shared/AppText";
 import { CountryFlag } from "@/components/shared/CountryFlag";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { SkeletonList } from "@/components/shared/Skeleton";
 import { GroupRow } from "@/components/shared/GroupRow";
 import { SegmentedControl } from "@/components/shared/SegmentedControl";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
@@ -48,6 +49,7 @@ export const ExploreScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const teams = useCatalogueStore((s) => s.teams);
+  const hasLoadedTeams = useCatalogueStore((s) => s.hasLoadedTeams);
   const loadTeams = useCatalogueStore((s) => s.loadTeams);
   const [mode, setMode] = useState<Mode>("clubs");
 
@@ -170,7 +172,13 @@ export const ExploreScreen: React.FC = () => {
           paddingBottom: spacing.xl,
           gap: spacing.xs,
         }}
-        ListEmptyComponent={<EmptyState title={t("explore.empty")} />}
+        ListEmptyComponent={
+          hasLoadedTeams ? (
+            <EmptyState title={t("explore.empty")} />
+          ) : (
+            <SkeletonList rows={8} />
+          )
+        }
         renderItem={({ item }) => (
           <GroupRow
             title={item.title}

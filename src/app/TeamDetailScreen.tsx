@@ -5,13 +5,17 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
-import { usePreferencesStore } from "@/store/preferencesStore";
+import {
+  nextViewMode,
+  usePreferencesStore,
+  viewModeIcon,
+} from "@/store/preferencesStore";
 import { AppText } from "@/components/shared/AppText";
 import { Chip } from "@/components/shared/Chip";
 import { ProgressBar } from "@/components/shared/ProgressBar";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { KitCard } from "@/components/kits/KitCard";
-import { KitListRow } from "@/components/kits/KitListRow";
+import { Skeleton, SkeletonList } from "@/components/shared/Skeleton";
+import { KitTile } from "@/components/kits/KitTile";
 import { useStatsStore } from "@/features/stats/statsStore";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
 import { TeamLogo } from "@/components/shared/TeamLogo";
@@ -21,7 +25,7 @@ type Props = NativeStackScreenProps<RootStackParamList, "TeamDetail">;
 
 /** Team page: per-era kit grid with owned/missing progress (spec §33.7). */
 export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
-  const { teamId } = route.params;
+  const { teamId, intent } = route.params;
   const { colors, spacing } = useTheme();
   const { t } = useTranslation();
   const navigation = useNavigation();
@@ -37,6 +41,7 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
   const viewMode = usePreferencesStore((s) => s.viewMode);
   const setViewMode = usePreferencesStore((s) => s.setViewMode);
   const isGrid = viewMode === "grid";
+  const isCompact = viewMode === "compact";
   const [ownedOnly, setOwnedOnly] = useState(false);
 
   useFocusEffect(
@@ -77,8 +82,24 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
   if (!progress)
     return (
       <View
-        style={[styles.container, { backgroundColor: colors.background }]}
-      />
+        style={[
+          styles.container,
+          {
+            backgroundColor: colors.background,
+            padding: spacing.screen,
+            gap: spacing.lg,
+          },
+        ]}
+      >
+        <View style={styles.headerRow}>
+          <Skeleton width={72} height={72} borderRadius={36} />
+          <View style={[styles.progressBlock, { gap: spacing.sm }]}>
+            <Skeleton width="55%" height={24} />
+            <Skeleton height={10} borderRadius={5} />
+          </View>
+        </View>
+        <SkeletonList rows={6} />
+      </View>
     );
 
   const erasWithKits = progress.eras
@@ -152,13 +173,13 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
             />
           </Pressable>
           <Pressable
-            onPress={() => setViewMode(isGrid ? "list" : "grid")}
+            onPress={() => setViewMode(nextViewMode(viewMode))}
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel={t("common.toggleView")}
           >
             <Ionicons
-              name={isGrid ? "list-outline" : "grid-outline"}
+              name={viewModeIcon(viewMode)}
               size={20}
               color={colors.onSurfaceVariant}
             />
@@ -205,17 +226,22 @@ export const TeamDetailScreen: React.FC<Props> = ({ route }) => {
             <View style={isGrid ? styles.grid : styles.list}>
               {kits.map((summary) => {
                 const onPress = () =>
-                  navigation.navigate("KitDetail", { kitId: summary.kit.id });
+                  intent === "addItem"
+                    ? navigation.navigate("ItemForm", { kitId: summary.kit.id })
+                    : navigation.navigate("KitDetail", {
+                        kitId: summary.kit.id,
+                      });
                 return isGrid ? (
                   <View key={summary.kit.id} style={styles.gridCell}>
-                    <KitCard summary={summary} onPress={onPress} />
+                    <KitTile summary={summary} onPress={onPress} />
                   </View>
                 ) : (
-                  <KitListRow
+                  <KitTile
                     key={summary.kit.id}
                     summary={summary}
                     onPress={onPress}
                     showTeam={false}
+                    variant={isCompact ? "compact" : "row"}
                   />
                 );
               })}

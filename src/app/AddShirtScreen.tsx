@@ -87,7 +87,12 @@ export const AddShirtScreen: React.FC = () => {
   const renderTeamRow = (team: TeamWithCountry) => (
     <TeamRow
       team={team}
-      onPress={() => navigation.navigate("TeamDetail", { teamId: team.id })}
+      onPress={() =>
+        navigation.navigate("TeamDetail", {
+          teamId: team.id,
+          intent: "addItem",
+        })
+      }
     />
   );
 

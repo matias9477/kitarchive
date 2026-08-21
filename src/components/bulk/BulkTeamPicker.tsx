@@ -120,6 +120,11 @@ export const BulkTeamPicker: React.FC<BulkTeamPickerProps> = ({
         {filtered.map((team) => (
           <TeamRow key={team.id} team={team} onPress={() => pick(team)} />
         ))}
+        {trimmed && filtered.length === 0 ? (
+          <AppText variant="bodySm" color={colors.onSurfaceVariant}>
+            {t("bulkAdd.noTeams")}
+          </AppText>
+        ) : null}
       </View>
 
       {creating ? (

@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { AppText } from "@/components/shared/AppText";
-import { RecentItemCard } from "@/components/kits/RecentItemCard";
+import { KitTile } from "@/components/kits/KitTile";
 import type { CollectionItemSummary } from "@/features/collection/types";
 
 interface RecentlyAddedRailProps {
@@ -47,8 +47,9 @@ export const RecentlyAddedRail: React.FC<RecentlyAddedRailProps> = ({
           gap: spacing.gutter,
         }}
         renderItem={({ item: summary }) => (
-          <RecentItemCard
+          <KitTile
             summary={summary}
+            width={180}
             onPress={() =>
               navigation.navigate("ItemDetail", { itemId: summary.item.id })
             }

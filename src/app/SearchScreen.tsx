@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@/theme/index";
 import { AppText } from "@/components/shared/AppText";
-import { Chip } from "@/components/shared/Chip";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { KitPlaceholder } from "@/components/kits/KitPlaceholder";
+import { KitTile } from "@/components/kits/KitTile";
 import { useSearchStore } from "@/features/search/searchStore";
 import type { KitSummary } from "@/features/catalogue/types";
 
@@ -47,51 +40,14 @@ export const SearchScreen: React.FC = () => {
           {title}
         </AppText>
         {kits.map((summary) => (
-          <Pressable
+          <KitTile
             key={summary.kit.id}
+            summary={summary}
+            variant="row"
             onPress={() =>
               navigation.navigate("KitDetail", { kitId: summary.kit.id })
             }
-            style={({ pressed }) => [
-              styles.row,
-              {
-                backgroundColor: colors.surfaceContainer,
-                borderRadius: radius.md,
-                opacity: pressed ? 0.85 : 1,
-              },
-            ]}
-          >
-            <View style={[styles.thumb, { borderRadius: radius.sm + 4 }]}>
-              <KitPlaceholder
-                primaryColor={summary.teamPrimaryColor}
-                secondaryColor={summary.teamSecondaryColor}
-              />
-            </View>
-            <View style={styles.rowText}>
-              <AppText variant="titleSm" numberOfLines={1}>
-                {summary.teamName} · {t(`enums.kitType.${summary.kit.type}`)}
-              </AppText>
-              <AppText variant="labelSm" color={colors.onSurfaceVariant}>
-                {summary.eraLabel}
-                {summary.manufacturerName
-                  ? ` · ${summary.manufacturerName}`
-                  : ""}
-              </AppText>
-            </View>
-            {summary.ownedCount > 0 ? (
-              <Chip
-                label={
-                  summary.ownedCount > 1
-                    ? `×${summary.ownedCount}`
-                    : t("enums.status.owned")
-                }
-                icon="checkmark-circle"
-                tone="goldSoft"
-              />
-            ) : summary.wishlisted ? (
-              <Ionicons name="star" size={16} color={colors.tertiary} />
-            ) : null}
-          </Pressable>
+          />
         ))}
       </View>
     );
@@ -163,13 +119,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   searchInput: { flex: 1, paddingVertical: 12 },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-  },
-  rowText: { flex: 1, gap: 2 },
-  thumb: { width: 40, height: 52, overflow: "hidden" },
 });

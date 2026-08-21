@@ -16,7 +16,10 @@
     "done": "Listo",
     "selectedCount_one": "{{count}} seleccionado",
     "selectedCount_other": "{{count}} seleccionados",
-    "toggleView": "Cambiar vista"
+    "toggleView": "Cambiar vista",
+    "showAll": "Ver todo ({{count}})",
+    "showLess": "Ver menos",
+    "close": "Cerrar"
   },
   "home": {
     "title": "KitArchive",
@@ -168,7 +171,8 @@
     "save_other": "Agregar {{count}} camisetas",
     "discardTitle": "¿Descartar las camisetas en cola?",
     "discardMessage": "Las camisetas que sumaste todavía no se guardaron.",
-    "discard": "Descartar"
+    "discard": "Descartar",
+    "noTeams": "Ningún equipo coincide con tu búsqueda"
   },
   "itemForm": {
     "title": "Detalles de la camiseta",
@@ -335,5 +339,16 @@
     "selected": "Imagen seleccionada",
     "use": "Usar esta imagen",
     "downloadFailed": "No se pudo descargar esa imagen. Probá con otra."
+  },
+  "onboarding": {
+    "skip": "Omitir",
+    "next": "Siguiente",
+    "getStarted": "Empezar",
+    "catalogueTitle": "Explorá el catálogo",
+    "catalogueMessage": "Países, equipos, temporadas y camisetas: un archivo de lo que existe, listo para recorrer.",
+    "collectionTitle": "Registrá lo que tenés",
+    "collectionMessage": "Agregá cada camiseta física con su condición, versión y fotos. Todo queda en tu dispositivo.",
+    "wishlistTitle": "Completá tu archivo",
+    "wishlistMessage": "Marcá tus equipos con la estrella, agregá a deseados los modelos que te faltan y mirá tu progreso temporada a temporada."
   }
 }

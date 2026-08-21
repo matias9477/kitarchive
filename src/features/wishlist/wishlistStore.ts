@@ -5,6 +5,8 @@ import type { WishlistConfigInput, WishlistEntry } from "./types";
 interface State {
   entries: WishlistEntry[];
   isLoading: boolean;
+  /** True once the first load settled — gates skeletons vs. empty states. */
+  hasLoaded: boolean;
   error: string | null;
 
   load: () => Promise<void>;
@@ -21,14 +23,19 @@ const message = (error: unknown) =>
 export const useWishlistStore = create<State>((set, get) => ({
   entries: [],
   isLoading: false,
+  hasLoaded: false,
   error: null,
 
   load: async () => {
     set({ isLoading: true, error: null });
     try {
-      set({ entries: await service.getEntries(), isLoading: false });
+      set({
+        entries: await service.getEntries(),
+        isLoading: false,
+        hasLoaded: true,
+      });
     } catch (error) {
-      set({ error: message(error), isLoading: false });
+      set({ error: message(error), isLoading: false, hasLoaded: true });
     }
   },
 

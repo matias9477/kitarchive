@@ -7,6 +7,7 @@ import { EDITIONS, PRODUCT_VERSIONS, SLEEVE_TYPES } from "@/config/constants";
 import type { Edition, ProductVersion, SleeveType } from "@/config/types";
 import { Button } from "@/components/shared/Button";
 import { TextField } from "@/components/shared/TextField";
+import { ChoiceField } from "@/components/shared/ChoiceField";
 import { PickerField } from "@/components/shared/PickerField";
 import { useCatalogueStore } from "@/features/catalogue/catalogueStore";
 import { useWishlistStore } from "@/features/wishlist/wishlistStore";
@@ -104,17 +105,15 @@ export const WishlistConfigScreen: React.FC<Props> = ({
         onChange={setProductVersion}
         optional
       />
-      <PickerField
+      <ChoiceField
         label={t("itemForm.edition")}
-        placeholder={t("common.optional")}
         options={enumOptions(EDITIONS, "edition")}
         value={edition}
         onChange={setEdition}
         optional
       />
-      <PickerField
+      <ChoiceField
         label={t("itemForm.sleeve")}
-        placeholder={t("common.optional")}
         options={enumOptions(SLEEVE_TYPES, "sleeve")}
         value={sleeve}
         onChange={setSleeve}

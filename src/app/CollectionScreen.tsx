@@ -16,10 +16,14 @@ import { CONDITIONS, KIT_TYPES } from "@/config/constants";
 import { AppText } from "@/components/shared/AppText";
 import { FilterSelector } from "@/components/shared/FilterSelector";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { ItemCard } from "@/components/kits/ItemCard";
-import { ItemListRow } from "@/components/kits/ItemListRow";
+import { SkeletonList } from "@/components/shared/Skeleton";
+import { KitTile } from "@/components/kits/KitTile";
 import { useCollectionStore } from "@/features/collection/collectionStore";
-import { usePreferencesStore } from "@/store/preferencesStore";
+import {
+  nextViewMode,
+  usePreferencesStore,
+  viewModeIcon,
+} from "@/store/preferencesStore";
 import type { CollectionItemSummary } from "@/features/collection/types";
 
 /** Rows of 1 (list) or 2 (grid) items, sectioned per team. */
@@ -35,6 +39,7 @@ export const CollectionScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
   const items = useCollectionStore((s) => s.items);
+  const hasLoaded = useCollectionStore((s) => s.hasLoaded);
   const teams = useCollectionStore((s) => s.teams);
   const filters = useCollectionStore((s) => s.filters);
   const load = useCollectionStore((s) => s.load);
@@ -46,6 +51,7 @@ export const CollectionScreen: React.FC = () => {
   const sortOption = usePreferencesStore((s) => s.sortOption);
   const setSortOption = usePreferencesStore((s) => s.setSortOption);
   const isGrid = viewMode === "grid";
+  const isCompact = viewMode === "compact";
 
   useFocusEffect(
     useCallback(() => {
@@ -138,20 +144,25 @@ export const CollectionScreen: React.FC = () => {
   const renderSummary = (summary: CollectionItemSummary) => {
     const onPress = () =>
       navigation.navigate("ItemDetail", { itemId: summary.item.id });
-    return isGrid ? (
-      <ItemCard summary={summary} onPress={onPress} />
-    ) : (
-      <ItemListRow summary={summary} onPress={onPress} />
+    return (
+      <KitTile
+        summary={summary}
+        onPress={onPress}
+        variant={isGrid ? "card" : isCompact ? "compact" : "row"}
+      />
     );
   };
 
-  const emptyState = (
+  // Skeleton until the first load settles, so the list never flashes "empty".
+  const emptyState = hasLoaded ? (
     <EmptyState
       title={
         showingSold ? t("collection.emptySold") : t("collection.emptyTitle")
       }
       message={showingSold ? undefined : t("collection.emptyMessage")}
     />
+  ) : (
+    <SkeletonList rows={8} />
   );
 
   return (
@@ -192,13 +203,13 @@ export const CollectionScreen: React.FC = () => {
             />
           </Pressable>
           <Pressable
-            onPress={() => setViewMode(isGrid ? "list" : "grid")}
+            onPress={() => setViewMode(nextViewMode(viewMode))}
             hitSlop={8}
             accessibilityRole="button"
             accessibilityLabel={t("common.toggleView")}
           >
             <Ionicons
-              name={isGrid ? "list-outline" : "grid-outline"}
+              name={viewModeIcon(viewMode)}
               size={22}
               color={colors.onSurface}
             />

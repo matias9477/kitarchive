@@ -3,12 +3,27 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type SortOption = "dateDescending" | "dateAscending" | "alphabetical";
-export type ViewMode = "grid" | "list";
+export type ViewMode = "grid" | "list" | "compact";
+
+/** Toggle order for the view-mode button: grid → list → compact → grid. */
+export const nextViewMode = (mode: ViewMode): ViewMode =>
+  mode === "grid" ? "list" : mode === "list" ? "compact" : "grid";
+
+/** Icon previewing the mode the toggle switches to next. */
+export const viewModeIcon = (
+  mode: ViewMode,
+): "list-outline" | "reorder-four-outline" | "grid-outline" =>
+  mode === "grid"
+    ? "list-outline"
+    : mode === "list"
+      ? "reorder-four-outline"
+      : "grid-outline";
 
 export interface PreferencesState {
   sortOption: SortOption;
   setSortOption: (option: SortOption) => void;
-  /** Card grid vs compact rows, shared by the collection and kit lists. */
+  /** Card grid, rows with thumbnails, or dense text-only rows — shared by the
+   * collection and kit lists. */
   viewMode: ViewMode;
   setViewMode: (mode: ViewMode) => void;
   /** Collection screen: section the list by team. */
